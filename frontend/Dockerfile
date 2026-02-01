@@ -8,10 +8,7 @@ RUN npm ci
 
 COPY . .
 
-# Build the application
-RUN npm run build
-
-# Start the application
-CMD ["npm", "start"]
+# Start the application in dev mode
+CMD ["npm", "run", "dev"]
 
 EXPOSE 3000
