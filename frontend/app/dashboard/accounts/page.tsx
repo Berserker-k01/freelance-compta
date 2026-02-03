@@ -43,8 +43,10 @@ export default function AccountsPage() {
         try {
             await seedAccounts(COMPANY_ID);
             await loadAccounts(); // Reload after seed
-        } catch (error) {
-            alert("Erreur lors de l'import");
+            await loadAccounts(); // Reload after seed
+        } catch (error: any) {
+            const message = error.message || "Erreur lors de l'import";
+            alert(`Erreur: ${message}`);
         } finally {
             setLoading(false);
         }

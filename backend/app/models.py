@@ -91,3 +91,22 @@ class EntryLine(Base):
     credit = Column(Float, default=0.0)
     
     label = Column(String, nullable=True) # Libellé ligne si différent entête
+
+class ReportTemplate(Base):
+    """Modèles de Liasses Fiscales (Excel + Mapping)"""
+    __tablename__ = "report_templates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True) # Ex: "Liasse GUDEF Togo 2026"
+    description = Column(String, nullable=True)
+    
+    country = Column(String) # Ex: "TOGO"
+    year = Column(Integer) # Ex: 2026
+    
+    file_path = Column(String) # Path to stored .xlsx
+    
+    # Configuration JSON: { "F14": "101,102", "G14": "131" }
+    mapping_config = Column(String, default="{}") 
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+

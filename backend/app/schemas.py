@@ -85,3 +85,23 @@ class UserOut(UserBase):
     class Config:
         from_attributes = True
 
+
+# --- TEMPLATE SCHEMAS ---
+class TemplateBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    country: str
+    year: int
+    mapping_config: Optional[str] = "{}"
+
+class TemplateCreate(TemplateBase):
+    pass
+
+class Template(TemplateBase):
+    id: int
+    file_path: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+

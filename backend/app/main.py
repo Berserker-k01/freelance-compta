@@ -2,9 +2,19 @@ from fastapi import FastAPI
 
 app = FastAPI(title="Auditia API", version="2.0.0")
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allow all for dev, or ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 from .database import engine, Base
 from . import models
-from .routers import accounting, audit, auth, safe, reports
+from .routers import accounting, audit, auth, safe, reports, dashboard, templates
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -14,6 +24,8 @@ app.include_router(audit.router)
 app.include_router(auth.router)
 app.include_router(safe.router)
 app.include_router(reports.router)
+app.include_router(dashboard.router)
+app.include_router(templates.router)
 
 @app.get("/")
 def read_root():

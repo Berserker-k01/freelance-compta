@@ -50,18 +50,28 @@ SYSCOHADA_ACCOUNTS = [
 def seed_syscohada(db: Session, company_id: int):
     """Seed the database with standard SYSCOHADA accounts for a new company."""
     # Check if accounts already exist
-    existing = db.query(models.Account).filter(models.Account.company_id == company_id).first()
-    if existing:
-        return {"message": "Accounts already seeded for this company"}
+    existing_count = db.query(models.Account).filter(models.Account.company_id == company_id).count()
     
+    # If 0 accounts, we seed. If accounts exist, we skip to avoid duplicates for now (safe mode)
+    # BUT user said "import doesn't work". Maybe they have 1 account?
+    # Let's change logic: Only add if code doesn't exist.
+    
+    added_count = 0
     for acc in SYSCOHADA_ACCOUNTS:
-        db_acc = models.Account(
-            code=acc["code"],
-            name=acc["name"],
-            class_code=acc["class_code"],
-            company_id=company_id
-        )
-        db.add(db_acc)
+        existing_acc = db.query(models.Account).filter(models.Account.company_id == company_id, models.Account.code == acc["code"]).first()
+        if not existing_acc:
+            db_acc = models.Account(
+                code=acc["code"],
+                name=acc["name"],
+                class_code=acc["class_code"],
+                company_id=company_id
+            )
+            db.add(db_acc)
+            added_count += 1
     
     db.commit()
-    return {"message": f"Successfully seeded {len(SYSCOHADA_ACCOUNTS)} SYSCOHADA accounts"}
+    
+    if added_count == 0 and existing_count > 0:
+         return {"message": "Plan comptable déjà initialisé (Aucun nouveau compte ajouté)."}
+         
+    return {"message": f"Succès : {added_count} comptes SYSCOHADA ajoutés."}
