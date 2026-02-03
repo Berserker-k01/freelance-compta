@@ -1,43 +1,108 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from . import models
 from typing import List, Dict
 
-def analyze_entries(db: Session, company_id: int) -> List[Dict]:
+def analyze_entries(db: Session, company_id: int) -> Dict:
     """
-    AuditIA: Scans ledger entries for potential anomalies.
-    
-    Rules currently implemented:
-    1. SUSPICIOUS_ROUND_NUMBER: Amounts ending perfectly in 000 (often estimates/fraud).
-    2. MISSING_LABEL: Entries with generic or empty labels.
+    AuditIA: Performs a full certification check.
+    Returns: {
+        "status": "GREEN" | "ORANGE" | "RED",
+        "score": int,
+        "checks": List[Dict],
+        "anomalies": List[Dict]
+    }
     """
     anomalies = []
-    
-    # Get all entries for the company (via journals)
+    checks = []
+    score = 100
+    status = "GREEN"
+
+    # --- 1. ENTRY LEVEL CHECKS (Anomalies) ---
     entries = db.query(models.Entry).join(models.Journal).filter(models.Journal.company_id == company_id).all()
     
     for entry in entries:
-        # Rule 1: Check for missing or too short labels
+        # Rule: Missing Labels
         if not entry.label or len(entry.label) < 3:
             anomalies.append({
                 "entry_id": entry.id,
                 "date": entry.date,
                 "type": "MISSING_CONTEXT",
                 "severity": "MEDIUM",
-                "description": f"Libellé absent ou trop court ('{entry.label}'). Une description précise est requise."
+                "description": f"Libellé absent ou trop court ('{entry.label}')."
             })
             
+        # Rule: Suspicious Round Numbers (> 5000 and % 1000 == 0)
         for line in entry.lines:
             amount = line.debit if line.debit > 0 else line.credit
-            
-            # Rule 2: Suspicious Round Numbers (e.g. 500000)
-            # Logic: If > 1000 and perfectly divisible by 1000
-            if amount > 1000 and amount % 1000 == 0:
+            if amount > 5000 and amount % 1000 == 0:
                 anomalies.append({
                     "entry_id": entry.id,
                     "date": entry.date,
-                    "type": "SUSPICIOUS_ROUND_AMOUNT",
+                    "type": "SUSPICIOUS_ROUND",
                     "severity": "LOW",
-                    "description": f"Montant rond détecté ({amount}). Les vraies factures ont souvent des décimales ou ne sont pas si rondes."
+                    "description": f"Montant rond ({amount}) sur le compte {line.account.code if line.account else '?'}. Vérifiez la pièce."
                 })
-                
-    return anomalies
+
+    # --- 2. GLOBAL CHECKS (Certification) ---
+    
+    # Check A: General Balance (Debit = Credit)
+    total_debit = db.query(func.sum(models.EntryLine.debit)).join(models.Entry).join(models.Journal).filter(models.Journal.company_id == company_id).scalar() or 0
+    total_credit = db.query(func.sum(models.EntryLine.credit)).join(models.Entry).join(models.Journal).filter(models.Journal.company_id == company_id).scalar() or 0
+    
+    diff = round(abs(total_debit - total_credit), 2)
+    if diff > 0.01:
+        checks.append({"name": "Équilibre Général", "status": "KO", "message": f"Déséquilibre de {diff} FCFA"})
+        score -= 50
+        status = "RED"
+    else:
+        checks.append({"name": "Équilibre Général", "status": "OK", "message": "Balance équilibrée"})
+
+    # Check B: Negative Cash Accounts (Caisse créditrice) - Class 5
+    # Warning: Simplified check.
+    cash_accounts = db.query(models.Account).filter(
+        models.Account.company_id == company_id, 
+        models.Account.code.like("5%")
+    ).all()
+    
+    negative_cash_found = False
+    for acc in cash_accounts:
+        # Calculate balance
+        debit = db.query(func.sum(models.EntryLine.debit)).filter(models.EntryLine.account_id == acc.id).scalar() or 0
+        credit = db.query(func.sum(models.EntryLine.credit)).filter(models.EntryLine.account_id == acc.id).scalar() or 0
+        balance = debit - credit
+        
+        # Caisse (57) shouldn't be credit. Bank (52) can be (overdraft).
+        # Let's just flag huge negatives for now.
+        if balance < -100 : # Tolerance
+            checks.append({"name": f"Trésorerie ({acc.code})", "status": "WARNING", "message": f"Solde négatif : {balance}"})
+            negative_cash_found = True
+            
+    if negative_cash_found:
+        score -= 15
+        if status != "RED": status = "ORANGE"
+    else:
+        checks.append({"name": "Comptes de Trésorerie", "status": "OK", "message": "Aucun solde anormal"})
+
+    # Check C: Volume (Empty ledger?)
+    if len(entries) == 0:
+        checks.append({"name": "Volume d'activité", "status": "KO", "message": "Aucune écriture trouvée"})
+        status = "RED"
+        score = 0
+    else:
+        checks.append({"name": "Volume d'activité", "status": "OK", "message": f"{len(entries)} écritures validées"})
+
+    # Adjust Score based on anomalies count
+    score -= len(anomalies) * 2
+    score = max(0, score) # No negative score
+
+    # Final Status Logic override
+    if score < 50: status = "RED"
+    elif score < 80: status = "ORANGE"
+
+    return {
+        "status": status,
+        "score": score,
+        "checks": checks,
+        "anomalies": anomalies
+    }

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Link from "next/link";
 import { Trash2, FileSpreadsheet, Upload, Globe, Play, Settings } from "lucide-react";
 import { getTemplates, uploadTemplate, deleteTemplate, generateReportFromTemplate, Template } from "@/lib/templates-api";
 
@@ -153,6 +154,11 @@ export default function TemplatesPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-right flex justify-end gap-2">
+                                                <Link href={`/dashboard/templates/${t.id}/mapping`}>
+                                                    <Button variant="outline" size="sm">
+                                                        <Settings className="h-4 w-4 text-gray-600" />
+                                                    </Button>
+                                                </Link>
                                                 <Button variant="outline" size="sm" onClick={() => handleGenerate(t.id, t.name)} disabled={generating}>
                                                     <Play className="h-4 w-4 mr-1 text-blue-600" /> {generating ? "..." : "Générer"}
                                                 </Button>

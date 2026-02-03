@@ -48,3 +48,23 @@ export async function generateReportFromTemplate(templateId: number, companyId: 
     }
     return res.blob();
 }
+
+export async function getTemplate(id: number) {
+    const templates = await getTemplates(); // In real app, fetching single would be better
+    return templates.find((t: Template) => t.id === id);
+}
+
+export async function updateTemplateMapping(id: number, mappingConfig: string) {
+    const formData = new FormData();
+    formData.append("mapping_config", mappingConfig);
+
+    const res = await fetch(`http://localhost:8000/templates/${id}`, {
+        method: "PATCH",
+        body: formData,
+    });
+
+    if (!res.ok) {
+        throw new Error("Update failed");
+    }
+    return res.json();
+}

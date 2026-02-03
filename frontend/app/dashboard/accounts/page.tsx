@@ -1,31 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from "@/components/ui/table";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowLeft, Search } from "lucide-react";
+import Link from "next/link";
 import { getAccounts, seedAccounts, Account } from "@/lib/api";
 
+import { useCompany } from "@/components/company-provider";
+
 export default function AccountsPage() {
+    const { activeCompany } = useCompany();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
 
-    const COMPANY_ID = 1; // Mock Company ID
-
     const loadAccounts = async () => {
+        if (!activeCompany) return;
         setLoading(true);
         try {
-            const data = await getAccounts(COMPANY_ID);
+            const data = await getAccounts(activeCompany.id);
             setAccounts(data);
         } catch (error) {
             console.error("Failed to load accounts", error);
@@ -36,13 +33,13 @@ export default function AccountsPage() {
 
     useEffect(() => {
         loadAccounts();
-    }, []);
+    }, [activeCompany]);
 
     const handleSeed = async () => {
+        if (!activeCompany) return;
         setLoading(true);
         try {
-            await seedAccounts(COMPANY_ID);
-            await loadAccounts(); // Reload after seed
+            await seedAccounts(activeCompany.id);
             await loadAccounts(); // Reload after seed
         } catch (error: any) {
             const message = error.message || "Erreur lors de l'import";
@@ -58,58 +55,64 @@ export default function AccountsPage() {
 
     return (
         <div className="container mx-auto p-10">
-            <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">Plan Comptable (SYSCOHADA)</h1>
-                <Button onClick={handleSeed} disabled={loading || accounts.length > 0}>
-                    {loading ? "Chargement..." : "Importer SYSCOHADA par défaut"}
-                </Button>
+            <div className="flex flex-col gap-4 mb-8">
+                <Link href="/dashboard">
+                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:underline text-muted-foreground">
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Retour au Dashboard
+                    </Button>
+                </Link>
+                <div className="flex justify-between items-center">
+                    <h1 className="text-3xl font-bold tracking-tight">Plan Comptable (SYSCOHADA)</h1>
+                    <Button onClick={handleSeed} disabled={loading || accounts.length > 0}>
+                        {loading ? "Chargement..." : "Importer SYSCOHADA par défaut"}
+                    </Button>
+                </div>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Liste des Comptes</CardTitle>
-                    <div className="pt-2">
-                        <Input
-                            placeholder="Rechercher (Code ou Nom)..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            className="max-w-sm"
-                        />
+                    <div className="flex items-center justify-between">
+                        <CardTitle>Comptes du Grand Livre</CardTitle>
+                        <div className="relative w-72">
+                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                placeholder="Rechercher (Code ou Nom)..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="pl-8"
+                            />
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[100px]">Compte</TableHead>
-                                <TableHead>Intitulé</TableHead>
-                                <TableHead>Classe</TableHead>
-                                <TableHead className="text-right">Statut</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredAccounts.length === 0 ? (
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                                        Aucun compte trouvé. Importez le plan comptable pour commencer.
-                                    </TableCell>
+                                    <TableHead className="w-[150px]">Compte</TableHead>
+                                    <TableHead>Intitulé</TableHead>
+                                    <TableHead className="w-[100px]">Type</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredAccounts.map((account) => (
-                                    <TableRow key={account.id}>
-                                        <TableCell className="font-medium">{account.code}</TableCell>
-                                        <TableCell>{account.name}</TableCell>
-                                        <TableCell>Class {account.class_code}</TableCell>
-                                        <TableCell className="text-right">
-                                            <Badge variant={account.is_active ? "default" : "secondary"}>
-                                                {account.is_active ? "Actif" : "Archivé"}
-                                            </Badge>
+                            </TableHeader>
+                            <TableBody>
+                                {filteredAccounts.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={3} className="text-center h-24 text-muted-foreground">
+                                            {loading ? "Chargement..." : "Aucun compte trouvé. Importez le plan par défaut."}
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                                ) : (
+                                    filteredAccounts.map((account) => (
+                                        <TableRow key={account.id}>
+                                            <TableCell className="font-medium">{account.code}</TableCell>
+                                            <TableCell>{account.name}</TableCell>
+                                            <TableCell><Badge variant="outline">Général</Badge></TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
         </div>

@@ -77,3 +77,25 @@ def delete_template(template_id: int, db: Session = Depends(get_db)):
     db.delete(template)
     db.commit()
     return {"status": "deleted"}
+
+@router.patch("/{template_id}", response_model=schemas.Template)
+def update_template_mapping(
+    template_id: int, 
+    mapping_config: str = Form(...), 
+    db: Session = Depends(get_db)
+):
+    """Update only the mapping configuration of a template."""
+    template = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    if not template:
+        raise HTTPException(404, "Template not found")
+    
+    # Validate JSON
+    try:
+        json.loads(mapping_config)
+    except:
+        raise HTTPException(400, "Invalid JSON format for mapping_config")
+
+    template.mapping_config = mapping_config
+    db.commit()
+    db.refresh(template)
+    return template

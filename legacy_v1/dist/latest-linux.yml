@@ -1,9 +1,0 @@
-version: 0.2.2
-files:
-  - url: freelance_compta.AppImage
-    sha512: zC3Uol9ltBGnSbB6l84Nf1whAnYIVzfcHVQFaS9z9OeTehEEaM7ro9ztobGHQRkhbr920Ee5cfgrtRFvIE51bA==
-    size: 118751922
-    blockMapSize: 123590
-path: freelance_compta.AppImage
-sha512: zC3Uol9ltBGnSbB6l84Nf1whAnYIVzfcHVQFaS9z9OeTehEEaM7ro9ztobGHQRkhbr920Ee5cfgrtRFvIE51bA==
-releaseDate: '2022-04-01T19:12:14.595Z'

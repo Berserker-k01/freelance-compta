@@ -21,6 +21,7 @@ class Company(Base):
     city = Column(String, nullable=True)
     phone = Column(String, nullable=True)
     email = Column(String, nullable=True)
+    status = Column(String, default="active") # active, closed, archived
     
     # Relations
     accounts = relationship("Account", back_populates="company")

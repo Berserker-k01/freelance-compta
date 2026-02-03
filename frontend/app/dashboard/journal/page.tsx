@@ -5,19 +5,21 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Plus, Trash2, Save } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, Trash2, Save, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar"; // Ensure this component exists or use native date
+import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { createEntry } from "@/lib/entries-api";
 import { getAccounts, Account } from "@/lib/api";
+import { useCompany } from "@/components/company-provider";
 
 // Schema Validation
 const entrySchema = z.object({
@@ -41,6 +43,7 @@ const entrySchema = z.object({
 type EntryFormValues = z.infer<typeof entrySchema>;
 
 export default function JournalPage() {
+    const { activeCompany } = useCompany();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -63,18 +66,34 @@ export default function JournalPage() {
         name: "lines"
     });
 
+    const loadAccounts = async () => {
+        if (!activeCompany) return;
+        try {
+            const data = await getAccounts(activeCompany.id);
+            setAccounts(data);
+        } catch (error) {
+            console.error("Failed to load accounts", error);
+        }
+    };
+
     useEffect(() => {
-        getAccounts(1).then(setAccounts); // Company 1
-    }, []);
+        loadAccounts();
+    }, [activeCompany]);
 
     const totalDebit = form.watch("lines").reduce((acc, curr) => acc + Number(curr.debit || 0), 0);
     const totalCredit = form.watch("lines").reduce((acc, curr) => acc + Number(curr.credit || 0), 0);
     const isBalanced = Math.abs(totalDebit - totalCredit) < 0.01;
 
     async function onSubmit(data: EntryFormValues) {
+        if (!activeCompany) {
+            alert("Veuillez sélectionner un dossier.");
+            return;
+        }
+
         try {
             await createEntry({
                 ...data,
+                company_id: activeCompany.id, // Ensure this is handled by backend or derived
                 date: data.date.toISOString(),
             });
             setSuccess("Écriture enregistrée avec succès !");
@@ -94,11 +113,20 @@ export default function JournalPage() {
         }
     }
 
+    if (!activeCompany) {
+        return <div className="p-10">Veuillez sélectionner un dossier pour saisir des écritures.</div>;
+    }
+
     return (
         <div className="container mx-auto p-10 max-w-6xl">
             <div className="mb-8">
+                <Link href="/dashboard">
+                    <Button variant="ghost" size="sm" className="pl-0 mb-4 hover:bg-transparent hover:underline text-muted-foreground">
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Retour au Dashboard
+                    </Button>
+                </Link>
                 <h1 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Saisie d'Opérations Diverses (OD)</h1>
-                <p className="text-muted-foreground">Enregistrez vos écritures comptables manuellement.</p>
+                <p className="text-muted-foreground">{activeCompany.name} - Exercice 2026</p>
             </div>
 
             <Form {...form}>

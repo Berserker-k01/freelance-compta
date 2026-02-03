@@ -1,26 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { fetchAPI } from "@/lib/api";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { ArrowUpRight, ArrowDownRight, Activity, CreditCard, DollarSign, Users } from "lucide-react";
+import { ArrowUpRight, Activity, FileText, Users, Building2 } from "lucide-react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useCompany } from "@/components/company-provider";
 
 export default function DashboardPage() {
+    const { activeCompany, companies } = useCompany();
     const [stats, setStats] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false); // Default to false, wait for company
     const router = useRouter();
 
-    const COMPANY_ID = 1;
-
     useEffect(() => {
+        if (!activeCompany) return;
+
         async function loadStats() {
+            setLoading(true);
             try {
-                const data = await fetchAPI(`/dashboard/stats/${COMPANY_ID}`);
+                const data = await fetchAPI(`/dashboard/stats/${activeCompany?.id}`);
                 setStats(data);
             } catch (error) {
                 console.error("Failed to load dashboard stats", error);
@@ -29,14 +31,28 @@ export default function DashboardPage() {
             }
         }
         loadStats();
-    }, []);
+    }, [activeCompany]);
+
+    if (!activeCompany) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[80vh] space-y-4">
+                <h2 className="text-2xl font-bold text-gray-700">Aucun dossier sélectionné 📁</h2>
+                <p className="text-muted-foreground">Veuillez choisir un client dans le menu ou en créer un nouveau.</p>
+                <div className="flex gap-4">
+                    <Button asChild variant="outline">
+                        <Link href="/dashboard/companies">Liste des Clients</Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     if (loading) {
-        return <div className="p-10 text-center">Chargement du tableau de bord...</div>;
+        return <div className="p-10 text-center">Chargement des données de {activeCompany.name}...</div>;
     }
 
     if (!stats) {
-        return <div className="p-10 text-center">Erreur de chargement.</div>;
+        return <div className="p-10 text-center">Aucune donnée disponible pour ce dossier.</div>;
     }
 
     return (
@@ -52,93 +68,118 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            {/* KPI Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* Activité et Avancement */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Trésorerie Totale</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.kpi.cash_balance.toLocaleString()} FCFA</div>
-                        <p className="text-xs text-muted-foreground">
-                            +20.1% par rapport au mois dernier
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Recettes (30j)</CardTitle>
-                        <ArrowUpRight className="h-4 w-4 text-green-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{stats.kpi.revenue_month.toLocaleString()} FCFA</div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Dépenses (30j)</CardTitle>
-                        <ArrowDownRight className="h-4 w-4 text-red-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-600">{stats.kpi.expenses_month.toLocaleString()} FCFA</div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Volume d'activité</CardTitle>
-                        <Activity className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Volume d'Écritures</CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.kpi.total_entries}</div>
                         <p className="text-xs text-muted-foreground">
-                            Écritures saisies
+                            Lignes saisies dans le journal
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">État de l'Audit</CardTitle>
+                        <Activity className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">En Cours</div>
+                        <p className="text-xs text-muted-foreground">
+                            Analyse IA prête à être lancée
+                        </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Portefeuille Clients</CardTitle>
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex justify-between items-baseline">
+                            <div className="flex flex-col">
+                                <span className="text-2xl font-bold">{companies.filter(c => c.status !== 'closed').length}</span>
+                                <span className="text-xs text-muted-foreground">En Cours</span>
+                            </div>
+                            <div className="flex flex-col text-right">
+                                <span className="text-2xl font-bold text-gray-400">{companies.filter(c => c.status === 'closed').length}</span>
+                                <span className="text-xs text-muted-foreground">Clôturés</span>
+                            </div>
+                        </div>
+                        <div className="mt-2 text-xs text-muted-foreground border-t pt-2">
+                            Total: {companies.length} Dossiers
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Dossier Actif</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold truncate">{activeCompany.name}</div>
+                        <p className="text-xs text-muted-foreground">
+                            Exercice 2026
                         </p>
                     </CardContent>
                 </Card>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                {/* Main Chart */}
                 <Card className="col-span-4">
                     <CardHeader>
-                        <CardTitle>Évolution de la Trésorerie</CardTitle>
+                        <CardTitle>Actions Rapides</CardTitle>
                     </CardHeader>
-                    <CardContent className="pl-2">
-                        <ResponsiveContainer width="100%" height={350}>
-                            <BarChart data={stats.chart_data}>
-                                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}€`} />
-                                <Tooltip />
-                                <Bar dataKey="solde" fill="#2563eb" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                                <Link href="/dashboard/journal">
+                                    <FileText className="h-6 w-6 text-blue-600" />
+                                    <span>Saisir Journal</span>
+                                </Link>
+                            </Button>
+                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                                <Link href="/dashboard/audit">
+                                    <Activity className="h-6 w-6 text-orange-600" />
+                                    <span>Lancer Audit</span>
+                                </Link>
+                            </Button>
+                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                                <Link href="/dashboard/templates">
+                                    <ArrowUpRight className="h-6 w-6 text-green-600" />
+                                    <span>Gérer les Liasses</span>
+                                </Link>
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
 
-                {/* Recent Activity */}
                 <Card className="col-span-3">
                     <CardHeader>
-                        <CardTitle>Dernières Opérations</CardTitle>
+                        <CardTitle>Dernières Activités</CardTitle>
                         <CardDescription>
-                            Vos 5 dernières saisies comptables.
+                            Historique des actions sur ce dossier.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="space-y-8">
-                            {stats.recent_entries.map((entry: any) => (
-                                <div className="flex items-center" key={entry.id}>
-                                    <div className="ml-4 space-y-1">
-                                        <p className="text-sm font-medium leading-none">{entry.label}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {new Date(entry.date).toLocaleDateString()} • {entry.journal}
-                                        </p>
-                                    </div>
-                                    <div className="ml-auto font-medium">
-                                        {entry.amount.toLocaleString()} FCFA
-                                    </div>
-                                </div>
-                            ))}
+                        <div className="space-y-4 text-sm">
+                            <div className="flex items-center">
+                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                                <div className="flex-1">Ouverture du dossier</div>
+                                <div className="text-muted-foreground">Aujourd'hui</div>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="w-2 h-2 bg-gray-300 rounded-full mr-2"></span>
+                                <div className="flex-1">Import Plan Comptable</div>
+                                <div className="text-muted-foreground">Automatique</div>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

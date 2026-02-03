@@ -14,7 +14,7 @@ app.add_middleware(
 
 from .database import engine, Base
 from . import models
-from .routers import accounting, audit, auth, safe, reports, dashboard, templates
+from .routers import accounting, audit, auth, safe, reports, dashboard, templates, companies
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -26,6 +26,7 @@ app.include_router(safe.router)
 app.include_router(reports.router)
 app.include_router(dashboard.router)
 app.include_router(templates.router)
+app.include_router(companies.router)
 
 @app.get("/")
 def read_root():

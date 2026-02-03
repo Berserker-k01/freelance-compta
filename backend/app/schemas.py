@@ -105,3 +105,23 @@ class Template(TemplateBase):
     class Config:
         from_attributes = True
 
+# --- COMPANY SCHEMAS ---
+class CompanyBase(BaseModel):
+    name: str
+    tax_id: str
+    address: Optional[str] = None
+    city: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    status: Optional[str] = "active"
+
+class CompanyCreate(CompanyBase):
+    pass
+
+class Company(CompanyBase):
+    id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
