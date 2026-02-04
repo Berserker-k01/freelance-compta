@@ -16,6 +16,7 @@ export default function CompaniesPage() {
     const { companies, refreshCompanies, setActiveCompany } = useCompany();
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     // Form State
@@ -26,8 +27,9 @@ export default function CompaniesPage() {
     const handleCreate = async () => {
         if (!newName || !newTaxId) return;
         setLoading(true);
+        setError(null);
         try {
-            const created = await createCompany({
+            await createCompany({
                 name: newName,
                 tax_id: newTaxId,
                 address: newAddress
@@ -35,12 +37,13 @@ export default function CompaniesPage() {
             await refreshCompanies(); // Reload list
             setOpen(false); // Close modal
 
-            // Optional: Auto-select newly created company
+            // Reset form
             setNewName("");
             setNewTaxId("");
             setNewAddress("");
         } catch (e) {
-            alert("Erreur lors de la création");
+            console.error(e);
+            setError("Impossible de créer le dossier. Vérifiez les informations.");
         } finally {
             setLoading(false);
         }
@@ -70,7 +73,7 @@ export default function CompaniesPage() {
                     </h1>
                     <p className="text-muted-foreground">Gérez votre portefeuille de clients et de sociétés.</p>
                 </div>
-                <Dialog open={open} onOpenChange={setOpen}>
+                <Dialog open={open} onOpenChange={(val) => { setOpen(val); if (!val) setError(null); }}>
                     <DialogTrigger asChild>
                         <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                             <Plus className="mr-2 h-5 w-5" /> Nouveau Dossier
@@ -93,6 +96,11 @@ export default function CompaniesPage() {
                                 <Label>Adresse (Optionnel)</Label>
                                 <Input value={newAddress} onChange={e => setNewAddress(e.target.value)} placeholder="Ex: Quartier Administratif" />
                             </div>
+                            {error && (
+                                <p className="text-sm font-medium text-red-600 bg-red-50 p-2 rounded border border-red-200">
+                                    {error}
+                                </p>
+                            )}
                         </div>
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>

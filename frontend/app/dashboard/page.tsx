@@ -56,19 +56,18 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Vue d'ensemble</h2>
-                <div className="flex items-center space-x-2">
-                    <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
-                        <Link href="/dashboard/journal">
-                            + Nouvelle Écriture
-                        </Link>
-                    </Button>
-                </div>
+        <div className="center items-center justify-between space-y-2">
+            <h2 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Pilotage Cabinet & États Financiers</h2>
+            <div className="flex items-center space-x-2">
+                <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    <Link href="/dashboard/journal">
+                        + Nouvelle Écriture
+                    </Link>
+                </Button>
             </div>
+        </div>
 
-            {/* Activité et Avancement */}
+            {/* Activité et Avancement */ }
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -85,13 +84,13 @@ export default function DashboardPage() {
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">État de l'Audit</CardTitle>
+                        <CardTitle className="text-sm font-medium">Préparation États Financiers</CardTitle>
                         <Activity className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">En Cours</div>
+                        <div className="text-2xl font-bold">En Préparation</div>
                         <p className="text-xs text-muted-foreground">
-                            Analyse IA prête à être lancée
+                            Bilan, Compte de Résultat (SYSCOHADA)
                         </p>
                     </CardContent>
                 </Card>
@@ -105,7 +104,7 @@ export default function DashboardPage() {
                         <div className="flex justify-between items-baseline">
                             <div className="flex flex-col">
                                 <span className="text-2xl font-bold">{companies.filter(c => c.status !== 'closed').length}</span>
-                                <span className="text-xs text-muted-foreground">En Cours</span>
+                                <span className="text-xs text-muted-foreground">Actifs</span>
                             </div>
                             <div className="flex flex-col text-right">
                                 <span className="text-2xl font-bold text-gray-400">{companies.filter(c => c.status === 'closed').length}</span>
@@ -113,20 +112,20 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className="mt-2 text-xs text-muted-foreground border-t pt-2">
-                            Total: {companies.length} Dossiers
+                            Total: {companies.length} Dossiers Gérés
                         </div>
                     </CardContent>
                 </Card>
 
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Dossier Actif</CardTitle>
+                        <CardTitle className="text-sm font-medium">Dossier en Traitement</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold truncate">{activeCompany.name}</div>
                         <p className="text-xs text-muted-foreground">
-                            Exercice 2026
+                            Exercice 2026 - TOGO
                         </p>
                     </CardContent>
                 </Card>
@@ -135,26 +134,33 @@ export default function DashboardPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <Card className="col-span-4">
                     <CardHeader>
-                        <CardTitle>Actions Rapides</CardTitle>
+                        <CardTitle>Production Comptable</CardTitle>
+                        <CardDescription>Outils de génération des états financiers et fiscaux.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-blue-500 hover:bg-blue-50 transition-all text-left" asChild>
                                 <Link href="/dashboard/journal">
-                                    <FileText className="h-6 w-6 text-blue-600" />
-                                    <span>Saisir Journal</span>
+                                    <div className="flex items-center gap-2 font-semibold text-blue-700">
+                                        <FileText className="h-5 w-5" /> Saisie Comptable
+                                    </div>
+                                    <span className="text-xs text-muted-foreground text-wrap">Journaux et OD</span>
                                 </Link>
                             </Button>
-                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-orange-500 hover:bg-orange-50 transition-all text-left" asChild>
                                 <Link href="/dashboard/audit">
-                                    <Activity className="h-6 w-6 text-orange-600" />
-                                    <span>Lancer Audit</span>
+                                    <div className="flex items-center gap-2 font-semibold text-orange-700">
+                                        <Activity className="h-5 w-5" /> Audit & Contrôle
+                                    </div>
+                                    <span className="text-xs text-muted-foreground text-wrap">Pré-validation des comptes</span>
                                 </Link>
                             </Button>
-                            <Button variant="outline" className="h-20 flex flex-col gap-2" asChild>
+                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-green-500 hover:bg-green-50 transition-all text-left" asChild>
                                 <Link href="/dashboard/templates">
-                                    <ArrowUpRight className="h-6 w-6 text-green-600" />
-                                    <span>Gérer les Liasses</span>
+                                    <div className="flex items-center gap-2 font-semibold text-green-700">
+                                        <ArrowUpRight className="h-5 w-5" /> États Financiers
+                                    </div>
+                                    <span className="text-xs text-muted-foreground text-wrap">Bilan, CR, TAFIRE (OHADA)</span>
                                 </Link>
                             </Button>
                         </div>
@@ -184,6 +190,6 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     );
 }
