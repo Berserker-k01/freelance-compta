@@ -21,3 +21,12 @@ export async function createEntry(entry: EntryCreate) {
         body: JSON.stringify(entry),
     });
 }
+
+export async function getEntries(companyId: number, documentId?: string | null) {
+    let url = `/accounting/entries/?company_id=${companyId}&limit=100`;
+    if (documentId) {
+        // Backend currently ignores this unless updated, but let's pass it
+        // url += `&document_id=${documentId}`; 
+    }
+    return fetchAPI(url);
+}

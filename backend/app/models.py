@@ -11,6 +11,22 @@ class AccountType(str, enum.Enum):
     REVENUE = "REVENUE"       # Produits
     EXPENSE = "EXPENSE"       # Charges
 
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class License(Base):
+    """Licences Commerciales"""
+    __tablename__ = "licenses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String, unique=True, index=True)
+    client_name = Column(String)
+    max_workstations = Column(Integer, default=1)
+    expiration_date = Column(DateTime)
+    is_active = Column(Boolean, default=True)
+    activated_at = Column(DateTime, nullable=True)
+    machine_id = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
 class Company(Base):
     __tablename__ = "companies"
 
@@ -26,6 +42,7 @@ class Company(Base):
     # Relations
     accounts = relationship("Account", back_populates="company")
     journals = relationship("Journal", back_populates="company")
+    documents = relationship("Document", back_populates="company")
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -70,6 +87,9 @@ class Entry(Base):
     
     journal_id = Column(Integer, ForeignKey("journals.id"))
     journal = relationship("Journal", back_populates="entries")
+
+    document_id = Column(Integer, ForeignKey("documents.id"), nullable=True)
+    document = relationship("Document", back_populates="entries")
     
     lines = relationship("EntryLine", back_populates="entry", cascade="all, delete-orphan")
     
@@ -108,6 +128,22 @@ class ReportTemplate(Base):
     
     # Configuration JSON: { "F14": "101,102", "G14": "131" }
     mapping_config = Column(String, default="{}") 
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class Document(Base):
+    """Fichiers stockés (Balances, Justificatifs, etc.)"""
+    __tablename__ = "documents"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    filename = Column(String)
+    file_path = Column(String)
+    file_type = Column(String) # "balance", "other"
+    
+    company_id = Column(Integer, ForeignKey("companies.id"))
+    company = relationship("Company", back_populates="documents")
+    entries = relationship("Entry", back_populates="document")
     
     created_at = Column(DateTime, default=datetime.utcnow)
 

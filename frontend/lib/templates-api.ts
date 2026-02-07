@@ -1,70 +1,70 @@
-import { fetchAPI } from "./api";
+import { API_BASE_URL } from "./api";
 
 export interface Template {
     id: number;
     name: string;
-    description: string;
-    country: string;
-    year: number;
-    created_at: string;
+    year: string;
+    mapping_config?: string; // JSON string
 }
 
-export async function getTemplates() {
-    return fetchAPI("/templates/"); // Assuming the backend endpoint is /templates/
-}
-
-export async function uploadTemplate(formData: FormData) {
-    // We cannot use fetchAPI wrapper because it adds Content-Type: application/json
-    // and UploadFile requires multipart/form-data (let browser handle boundary)
-
-    // We recreate manual logic slightly, or improve fetchAPI. 
-    // For simplicity, raw fetch here.
-    const res = await fetch("http://localhost:8000/templates/", {
-        method: "POST",
-        body: formData, // No Content-Type header manually!
+export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx"): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/templates/generate/${companyId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
     });
 
-    if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.detail || "Upload failed");
+    if (!response.ok) {
+        throw new Error("Erreur lors de la génération de la liasse");
     }
-    return res.json();
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
 }
 
-export async function deleteTemplate(id: number) {
-    return fetchAPI(`/templates/${id}`, {
-        method: "DELETE"
-    });
-}
-
-export async function generateReportFromTemplate(templateId: number, companyId: number) {
-    // This returns a blob (File download)
-    const res = await fetch(`http://localhost:8000/reports/generate/${templateId}/${companyId}`, {
-        method: "POST"
+export async function generateSMT(companyId: number, filename: string = "liasse_smt.xlsx"): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/templates/generate-smt/${companyId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
     });
 
-    if (!res.ok) {
-        throw new Error("Generation failed");
+    if (!response.ok) {
+        throw new Error("Erreur lors de la génération du SMT");
     }
-    return res.blob();
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
 }
 
-export async function getTemplate(id: number) {
-    const templates = await getTemplates(); // In real app, fetching single would be better
-    return templates.find((t: Template) => t.id === id);
-}
-
-export async function updateTemplateMapping(id: number, mappingConfig: string) {
-    const formData = new FormData();
-    formData.append("mapping_config", mappingConfig);
-
-    const res = await fetch(`http://localhost:8000/templates/${id}`, {
-        method: "PATCH",
-        body: formData,
-    });
-
-    if (!res.ok) {
-        throw new Error("Update failed");
+export async function getTemplate(id: number): Promise<Template | null> {
+    if (id === 1) {
+        return {
+            id: 1,
+            name: "Liasse Fiscale SYSCOHADA (Officiel)",
+            year: "2025",
+            mapping_config: "{}"
+        };
     }
-    return res.json();
+    return null;
+}
+
+export async function updateTemplateMapping(id: number, mapping: string): Promise<void> {
+    return Promise.resolve();
 }

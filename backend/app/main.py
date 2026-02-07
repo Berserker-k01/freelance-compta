@@ -26,7 +26,12 @@ app.include_router(safe.router)
 app.include_router(reports.router)
 app.include_router(dashboard.router)
 app.include_router(templates.router)
+
 app.include_router(companies.router)
+from .routers import documents
+app.include_router(documents.router)
+from .routers import licenses
+app.include_router(licenses.router)
 
 @app.get("/")
 def read_root():

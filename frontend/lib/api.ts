@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8000";
+export const API_BASE_URL = "http://localhost:8000";
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -35,4 +35,21 @@ export async function seedAccounts(companyId: number) {
     return fetchAPI(`/accounting/accounts/seed/${companyId}`, {
         method: "POST",
     });
+}
+
+export async function importBalance(companyId: number, file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch(`${API_BASE_URL}/accounting/import-balance/${companyId}`, {
+        method: "POST",
+        body: formData,
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.detail || "Upload failed");
+    }
+
+    return res.json();
 }

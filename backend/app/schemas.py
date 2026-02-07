@@ -19,6 +19,31 @@ class Account(AccountBase):
     class Config:
         from_attributes = True
 
+# --- LICENSE SCHEMAS ---
+class LicenseBase(BaseModel):
+    client_name: str
+    max_workstations: int = 1
+    duration_days: int = 365
+
+class LicenseCreate(LicenseBase):
+    pass
+
+class LicenseOut(BaseModel):
+    id: int
+    key: str
+    client_name: str
+    max_workstations: int
+    expiration_date: datetime
+    is_active: bool
+    machine_id: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+class LicenseActivate(BaseModel):
+    key: str
+    machine_id: str
+
 # --- JOURNAL SCHEMAS ---
 class JournalBase(BaseModel):
     code: str
@@ -56,6 +81,7 @@ class EntryBase(BaseModel):
     reference: str
     label: str
     journal_id: int
+    document_id: Optional[int] = None
 
 class EntryCreate(EntryBase):
     lines: List[EntryLineCreate]
@@ -121,6 +147,24 @@ class CompanyCreate(CompanyBase):
 class Company(CompanyBase):
     id: int
     created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# --- DOCUMENT SCHEMAS ---
+class DocumentBase(BaseModel):
+    name: str
+    file_type: str
+
+class DocumentCreate(DocumentBase):
+    pass
+
+class Document(DocumentBase):
+    id: int
+    filename: str
+    file_path: str
+    created_at: datetime
+    company_id: int
     
     class Config:
         from_attributes = True

@@ -1,176 +1,107 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useCompany } from "@/components/company-provider";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FileDown, FileText, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Trash2, FileSpreadsheet, Upload, Globe, Play, Settings } from "lucide-react";
-import { getTemplates, uploadTemplate, deleteTemplate, generateReportFromTemplate, Template } from "@/lib/templates-api";
+import { useState } from "react";
+import { generateLiasse, generateSMT } from "@/lib/templates-api";
 
 export default function TemplatesPage() {
-    const [templates, setTemplates] = useState<Template[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [uploading, setUploading] = useState(false);
-    const [generating, setGenerating] = useState(false);
+    const { activeCompany } = useCompany();
+    const [generating, setGenerating] = useState<string | null>(null);
 
-    // Load templates
-    const load = async () => {
+    const handleGenerate = async () => {
+        if (!activeCompany) return;
+        setGenerating("normal");
         try {
-            const data = await getTemplates();
-            setTemplates(data);
-        } catch (err) {
-            console.error(err);
+            await generateLiasse(activeCompany.id, `Liasse_${activeCompany.name}_2026.xlsx`);
+        } catch (error) {
+            alert("Erreur lors de la génération");
         } finally {
-            setLoading(false);
+            setGenerating(null);
         }
     };
 
-    useEffect(() => { load(); }, []);
-
-    // Form handling
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setUploading(true);
-
+    const handleGenerateSMT = async () => {
+        if (!activeCompany) return;
+        setGenerating("smt");
         try {
-            const formData = new FormData(e.currentTarget);
-            await uploadTemplate(formData);
-            await load(); // Reload list
-            (e.target as HTMLFormElement).reset(); // Reset form
-        } catch (err: any) {
-            alert("Erreur upload: " + err.message);
+            await generateSMT(activeCompany.id, `SMT_${activeCompany.name}_2026.xlsx`);
+        } catch (error) {
+            alert("Erreur lors de la génération SMT");
         } finally {
-            setUploading(false);
+            setGenerating(null);
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!confirm("Supprimer ce modèle ?")) return;
-        await deleteTemplate(id);
-        load();
-    }
-
-    const handleGenerate = async (id: number, name: string) => {
-        setGenerating(true);
-        try {
-            const blob = await generateReportFromTemplate(id, 1); // Company ID 1 hardcoded
-            // Download Blob
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Liasse_${name}.xlsx`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-        } catch (err) {
-            alert("Erreur génération");
-        } finally {
-            setGenerating(false);
-        }
-    }
+    if (!activeCompany) return <div className="p-10">Veuillez sélectionner un dossier.</div>;
 
     return (
-        <div className="container mx-auto p-10 max-w-5xl space-y-8">
-            <div className="flex justify-between items-center">
+        <div className="container mx-auto p-10 max-w-5xl">
+            <div className="flex flex-col gap-4 mb-8">
+                <Link href="/dashboard">
+                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:underline text-muted-foreground">
+                        <ArrowLeft className="mr-2 h-4 w-4" /> Retour au Dashboard
+                    </Button>
+                </Link>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Modèles de Liasses (Templates)</h1>
-                    <p className="text-muted-foreground">Gérez vos fichiers Excel (SYSCOHADA, OTR, GUDEF) pour chaque pays et année.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">États Financiers & Fiscaux</h1>
+                    <p className="text-muted-foreground">Génération automatique des liasses selon les normes SYSCOHADA Révisé.</p>
                 </div>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-3">
-                {/* Upload Form */}
-                <Card className="md:col-span-1 h-fit">
+            <div className="grid gap-6 md:grid-cols-2">
+                <Card className="border-l-4 border-l-green-600 shadow-md">
                     <CardHeader>
-                        <CardTitle>Nouveau Modèle</CardTitle>
-                        <CardDescription>Ajouter un fichier vierge (.xlsx)</CardDescription>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-6 w-6 text-green-600" />
+                            Liasse Fiscale Complète (Normal)
+                        </CardTitle>
+                        <CardDescription>
+                            Modèle officiel 2025. Inclut Bilan, Compte de Résultat, TAFIRE et notes annexes.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={onSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Nom du Modèle</Label>
-                                <Input id="name" name="name" placeholder="Ex: Liasse GUDEF Togo" required />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="country">Pays</Label>
-                                    <Input id="country" name="country" placeholder="TG" defaultValue="TG" required />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="year">Année</Label>
-                                    <Input id="year" name="year" type="number" defaultValue="2026" required />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="file">Fichier Excel</Label>
-                                <Input id="file" name="file" type="file" accept=".xlsx" required />
-                            </div>
-
-                            <Button type="submit" className="w-full" disabled={uploading}>
-                                {uploading ? "Envoi..." : "Uploader"} <Upload className="ml-2 h-4 w-4" />
-                            </Button>
-                        </form>
+                        <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1 mb-6">
+                            <li>Bilan (Actif/Passif)</li>
+                            <li>Compte de Résultat</li>
+                            <li>Tableau des Flux (TAFIRE)</li>
+                            <li>États Annexés (36 tableaux)</li>
+                        </ul>
+                        <Button onClick={handleGenerate} disabled={!!generating} className="w-full bg-green-600 hover:bg-green-700">
+                            {generating === "normal" ? (
+                                <>Génération en cours...</>
+                            ) : (
+                                <><FileDown className="mr-2 h-4 w-4" /> Générer Excel (.xlsx)</>
+                            )}
+                        </Button>
                     </CardContent>
                 </Card>
 
-                {/* List */}
-                <Card className="md:col-span-2">
+                <Card className="border-l-4 border-l-blue-600 shadow-md">
                     <CardHeader>
-                        <CardTitle>Modèles Disponibles</CardTitle>
+                        <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-6 w-6 text-blue-600" />
+                            Système Minimal de Trésorerie (SMT)
+                        </CardTitle>
+                        <CardDescription>
+                            Pour les petites entités (Déclaration simplifiée).
+                        </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Nom</TableHead>
-                                    <TableHead>Pays / Année</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {templates.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                            Aucun modèle. Uploadez votre premier fichier Excel.
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    templates.map((t) => (
-                                        <TableRow key={t.id}>
-                                            <TableCell className="font-medium flex items-center gap-2">
-                                                <FileSpreadsheet className="h-4 w-4 text-green-600" />
-                                                {t.name}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <Globe className="h-3 w-3" /> {t.country}
-                                                    <span className="bg-slate-100 px-2 py-0.5 rounded text-xs">{t.year}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-right flex justify-end gap-2">
-                                                <Link href={`/dashboard/templates/${t.id}/mapping`}>
-                                                    <Button variant="outline" size="sm">
-                                                        <Settings className="h-4 w-4 text-gray-600" />
-                                                    </Button>
-                                                </Link>
-                                                <Button variant="outline" size="sm" onClick={() => handleGenerate(t.id, t.name)} disabled={generating}>
-                                                    <Play className="h-4 w-4 mr-1 text-blue-600" /> {generating ? "..." : "Générer"}
-                                                </Button>
-                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(t.id)}>
-                                                    <Trash2 className="h-4 w-4 text-red-500" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
+                        <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1 mb-6">
+                            <li>Bilan Simplifié</li>
+                            <li>Compte de Résultat Simplifié</li>
+                        </ul>
+                        <Button onClick={handleGenerateSMT} disabled={!!generating} className="w-full bg-blue-600 hover:bg-blue-700">
+                            {generating === "smt" ? (
+                                <>Génération en cours...</>
+                            ) : (
+                                <><FileDown className="mr-2 h-4 w-4" /> Générer SMT (.xlsx)</>
+                            )}
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

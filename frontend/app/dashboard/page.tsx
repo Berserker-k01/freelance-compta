@@ -56,18 +56,17 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="center items-center justify-between space-y-2">
-            <h2 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Pilotage Cabinet & États Financiers</h2>
-            <div className="flex items-center space-x-2">
-                <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
-                    <Link href="/dashboard/journal">
-                        + Nouvelle Écriture
-                    </Link>
-                </Button>
+        <div className="flex-1 space-y-4 p-8 pt-6">
+            <div className="flex items-center justify-between space-y-2">
+                <h2 className="text-3xl font-bold tracking-tight text-blue-900 dark:text-blue-400">Pilotage Cabinet & États Financiers</h2>
+                <div className="flex items-center space-x-2">
+                    <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        <Link href="/dashboard/journal">
+                            + Nouvelle Écriture
+                        </Link>
+                    </Button>
+                </div>
             </div>
-        </div>
-
-            {/* Activité et Avancement */ }
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -132,40 +131,58 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
-                    <CardHeader>
-                        <CardTitle>Production Comptable</CardTitle>
-                        <CardDescription>Outils de génération des états financiers et fiscaux.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-blue-500 hover:bg-blue-50 transition-all text-left" asChild>
-                                <Link href="/dashboard/journal">
-                                    <div className="flex items-center gap-2 font-semibold text-blue-700">
-                                        <FileText className="h-5 w-5" /> Saisie Comptable
-                                    </div>
-                                    <span className="text-xs text-muted-foreground text-wrap">Journaux et OD</span>
-                                </Link>
-                            </Button>
-                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-orange-500 hover:bg-orange-50 transition-all text-left" asChild>
-                                <Link href="/dashboard/audit">
-                                    <div className="flex items-center gap-2 font-semibold text-orange-700">
-                                        <Activity className="h-5 w-5" /> Audit & Contrôle
-                                    </div>
-                                    <span className="text-xs text-muted-foreground text-wrap">Pré-validation des comptes</span>
-                                </Link>
-                            </Button>
-                            <Button variant="outline" className="h-24 flex flex-col gap-2 items-start p-4 hover:border-green-500 hover:bg-green-50 transition-all text-left" asChild>
-                                <Link href="/dashboard/templates">
-                                    <div className="flex items-center gap-2 font-semibold text-green-700">
-                                        <ArrowUpRight className="h-5 w-5" /> États Financiers
-                                    </div>
-                                    <span className="text-xs text-muted-foreground text-wrap">Bilan, CR, TAFIRE (OHADA)</span>
-                                </Link>
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                <div className="col-span-4 grid gap-4 grid-cols-1 md:grid-cols-3">
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500" onClick={() => router.push('/dashboard/import')}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-blue-700">1. Alimenter</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-blue-100 rounded-full">
+                                    <ArrowUpRight className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <span className="font-bold text-lg">Importer Balance</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Chargez votre fichier Excel (Grand Livre/Balance) pour démarrer.
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-slate-500" onClick={() => router.push('/dashboard/documents')}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-slate-700">2. Gérer</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-slate-100 rounded-full">
+                                    <FileText className="h-5 w-5 text-slate-600" />
+                                </div>
+                                <span className="font-bold text-lg">Mes Documents</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Consultez l'historique des fichiers et justificatifs stockés.
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-green-500" onClick={() => router.push('/dashboard/templates')}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium text-green-700">3. Produire</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-green-100 rounded-full">
+                                    <Activity className="h-5 w-5 text-green-600" />
+                                </div>
+                                <span className="font-bold text-lg">Éditer Liasses</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                Générez le Bilan, Compte de Résultat et SMT au format SYSCOHADA.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
 
                 <Card className="col-span-3">
                     <CardHeader>

@@ -1,101 +1,133 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
-from typing import List
+from app.database import get_db
+from app.models import Company, Entry, EntryLine, Account
+import pandas as pd
 import shutil
 import os
-from pathlib import Path
-import json
-
-from .. import models, schemas
-from ..database import get_db
+from datetime import datetime
 
 router = APIRouter(
     prefix="/templates",
     tags=["templates"],
+    responses={404: {"description": "Not found"}},
 )
 
-TEMPLATE_DIR = Path("/app/templates_storage") # Mounted volume
+# Robust path finding: 
+# This file is in backend/app/routers/
+# We want to reach backend/templates/
+# So we go up 3 levels from here.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+TEMPLATE_PATH = os.path.join(BASE_DIR, "templates", "syscohada_template.xlsx")
+OUTPUT_DIR = os.path.join(BASE_DIR, "temp_exports")
 
-@router.on_event("startup")
-async def ensure_template_dir():
-    TEMPLATE_DIR.mkdir(exist_ok=True, parents=True)
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
 
-@router.post("/", response_model=schemas.Template)
-def create_template(
-    name: str = Form(...),
-    country: str = Form(...),
-    year: int = Form(...),
-    description: str = Form(None),
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
-    """Upload a new Excel Template."""
-    # 1. Save File
-    file_ext = os.path.splitext(file.filename)[1]
-    if file_ext not in [".xlsx", ".xls"]:
-        raise HTTPException(400, "Only Excel files are allowed.")
-        
-    safe_filename = f"{country}_{year}_{name.replace(' ', '_')}{file_ext}"
-    file_path = TEMPLATE_DIR / safe_filename
+@router.get("/generate/{company_id}")
+async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Company not found")
+
+    # 1. Fetch Accounting Data (General Balance)
+    # We aggregate all lines by account
+    accounts = db.query(Account).filter(Account.company_id == company_id).all()
     
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-        
-    # 2. Save DB Record
-    db_template = models.ReportTemplate(
-        name=name,
-        country=country,
-        year=year,
-        description=description,
-        file_path=str(file_path),
-        mapping_config="{}" # Empty by default, configured later
-    )
-    db.add(db_template)
-    db.commit()
-    db.refresh(db_template)
+    balance_data = []
     
-    return db_template
-
-@router.get("/", response_model=List[schemas.Template])
-def read_templates(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(models.ReportTemplate).offset(skip).limit(limit).all()
-
-@router.delete("/{template_id}")
-def delete_template(template_id: int, db: Session = Depends(get_db)):
-    template = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
-    if not template:
-        raise HTTPException(404, "Template not found")
+    for acc in accounts:
+        # Calculate debit/credit sum for this account
+        # Optimization: In a real app, do this with a specialized SQL query (GROUP BY)
+        lines = db.query(EntryLine).filter(EntryLine.account_id == acc.id).all()
+        debit_sum = sum(l.debit for l in lines)
+        credit_sum = sum(l.credit for l in lines)
         
-    # Delete from Disk
+        if debit_sum == 0 and credit_sum == 0:
+            continue
+
+        balance = debit_sum - credit_sum
+        solde_debit = balance if balance > 0 else 0
+        solde_credit = abs(balance) if balance < 0 else 0
+
+        balance_data.append({
+            "Numéro de Compte": acc.code,
+            "Intitulé de Compte": acc.name,
+            "Mvt Débit": debit_sum,
+            "Mvt Crédit": credit_sum,
+            "Solde Débit": solde_debit,
+            "Solde Crédit": solde_credit
+        })
+
+    # 2. Process Excel
+    output_filename = f"Liasse_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}.xlsx"
+    output_path = os.path.join(OUTPUT_DIR, output_filename)
+    
     try:
-        if os.path.exists(template.file_path):
-            os.remove(template.file_path)
+        # Copy template
+        shutil.copy(TEMPLATE_PATH, output_path)
+        
+        if balance_data:
+            # Load workbook
+            # Strategy: We append data to 'Balance (Optionnel)' sheet starting at a specific row (e.g., row 12 based on inspection)
+            # OR we try to find the header row.
+            
+            # For robustness, we REPLACE the sheet content to ensure no garbage remains.
+            # We explicitly write headers.
+            
+            with pd.ExcelWriter(output_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+                df = pd.DataFrame(balance_data)
+                
+                # Write to 'Balance (Optionnel)' starting at Row 1 (header=True)
+                # This ensures standard format: Account, Label, Debit, Credit, Solde D, Solde C
+                df.to_excel(writer, sheet_name="Balance (Optionnel)", index=False, header=True)
+                
     except Exception as e:
-        print(f"Error deleting file: {e}")
+        print(f"Error generating Excel: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # Delete from DB
-    db.delete(template)
-    db.commit()
-    return {"status": "deleted"}
+    return FileResponse(output_path, filename=output_filename, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-@router.patch("/{template_id}", response_model=schemas.Template)
-def update_template_mapping(
-    template_id: int, 
-    mapping_config: str = Form(...), 
-    db: Session = Depends(get_db)
-):
-    """Update only the mapping configuration of a template."""
-    template = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
-    if not template:
-        raise HTTPException(404, "Template not found")
+@router.get("/generate-smt/{company_id}")
+async def generate_smt(company_id: int, db: Session = Depends(get_db)):
+    # SMT uses the same logic for this MVP, but we might filter accounts differently later.
+    # For now, we reuse the robust Balance Injection engine.
+    company = db.query(Company).filter(Company.id == company_id).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Company not found")
+        
+    # Reuse the generation logic (would refactor to shared function in production)
+    # 1. Fetch Data
+    accounts = db.query(Account).filter(Account.company_id == company_id).all()
+    balance_data = []
     
-    # Validate JSON
-    try:
-        json.loads(mapping_config)
-    except:
-        raise HTTPException(400, "Invalid JSON format for mapping_config")
+    for acc in accounts:
+        lines = db.query(EntryLine).filter(EntryLine.account_id == acc.id).all()
+        debit_sum = sum(l.debit for l in lines)
+        credit_sum = sum(l.credit for l in lines)
+        if debit_sum == 0 and credit_sum == 0: continue
+        balance = debit_sum - credit_sum
+        balance_data.append({
+            "Numéro de Compte": acc.code,
+            "Intitulé de Compte": acc.name,
+            "Mvt Débit": debit_sum,
+            "Mvt Crédit": credit_sum,
+            "Solde Débit": balance if balance > 0 else 0,
+            "Solde Crédit": abs(balance) if balance < 0 else 0
+        })
 
-    template.mapping_config = mapping_config
-    db.commit()
-    db.refresh(template)
-    return template
+    # 2. Process
+    output_filename = f"SMT_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}.xlsx"
+    output_path = os.path.join(OUTPUT_DIR, output_filename)
+    
+    try:
+        shutil.copy(TEMPLATE_PATH, output_path)
+        if balance_data:
+            with pd.ExcelWriter(output_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+                pd.DataFrame(balance_data).to_excel(writer, sheet_name="Balance (Optionnel)", index=False, header=True)
+    except Exception as e:
+        print(f"Error SMT: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return FileResponse(output_path, filename=output_filename, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
