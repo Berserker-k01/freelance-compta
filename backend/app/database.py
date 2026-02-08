@@ -6,10 +6,15 @@ import os
 POSTGRES_USER = os.getenv("POSTGRES_USER", "auditia_admin")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "secure_password_2026")
 POSTGRES_DB = os.getenv("POSTGRES_DB", "auditia_core")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST", "db")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
 POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
 
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+# Prioritize DATABASE_URL if in environment (Docker)
+env_db_url = os.getenv("DATABASE_URL")
+if env_db_url:
+    DATABASE_URL = env_db_url
+else:
+    DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

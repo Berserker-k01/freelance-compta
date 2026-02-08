@@ -23,9 +23,25 @@ class License(Base):
     max_workstations = Column(Integer, default=1)
     expiration_date = Column(DateTime)
     is_active = Column(Boolean, default=True)
-    activated_at = Column(DateTime, nullable=True)
-    machine_id = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # Relations
+    activations = relationship("LicenseActivation", back_populates="license", cascade="all, delete-orphan")
+
+class LicenseActivation(Base):
+    """Postes activés sur une licence"""
+    __tablename__ = "license_activations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    license_id = Column(Integer, ForeignKey("licenses.id"))
+    
+    machine_id = Column(String, index=True) # Hardware ID unique
+    machine_name = Column(String, nullable=True) # "PC de Jean"
+    ip_address = Column(String, nullable=True)
+    
+    activated_at = Column(DateTime, default=datetime.utcnow)
+    
+    license = relationship("License", back_populates="activations")
 
 class Company(Base):
     __tablename__ = "companies"

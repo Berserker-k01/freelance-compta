@@ -28,6 +28,21 @@ class LicenseBase(BaseModel):
 class LicenseCreate(LicenseBase):
     pass
 
+class LicenseActivationBase(BaseModel):
+    machine_id: str
+    machine_name: Optional[str] = None
+
+class LicenseActivationCreate(LicenseActivationBase):
+    key: str # License key to activate against
+
+class LicenseActivationOut(LicenseActivationBase):
+    id: int
+    activated_at: datetime
+    ip_address: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
 class LicenseOut(BaseModel):
     id: int
     key: str
@@ -35,7 +50,10 @@ class LicenseOut(BaseModel):
     max_workstations: int
     expiration_date: datetime
     is_active: bool
-    machine_id: Optional[str] = None
+    created_at: datetime
+    
+    # Nested activations
+    activations: List[LicenseActivationOut] = []
     
     class Config:
         from_attributes = True
@@ -43,6 +61,7 @@ class LicenseOut(BaseModel):
 class LicenseActivate(BaseModel):
     key: str
     machine_id: str
+    machine_name: Optional[str] = "Unknown PC"
 
 # --- JOURNAL SCHEMAS ---
 class JournalBase(BaseModel):

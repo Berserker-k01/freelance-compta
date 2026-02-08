@@ -26,7 +26,7 @@ if not os.path.exists(OUTPUT_DIR):
     os.makedirs(OUTPUT_DIR)
 
 @router.get("/generate/{company_id}")
-async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
+async def generate_liasse(company_id: int, document_id: int = None, db: Session = Depends(get_db)):
     company = db.query(Company).filter(Company.id == company_id).first()
     if not company:
         raise HTTPException(status_code=404, detail="Company not found")
@@ -39,8 +39,12 @@ async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
     
     for acc in accounts:
         # Calculate debit/credit sum for this account
-        # Optimization: In a real app, do this with a specialized SQL query (GROUP BY)
-        lines = db.query(EntryLine).filter(EntryLine.account_id == acc.id).all()
+        query = db.query(EntryLine).join(Entry).filter(EntryLine.account_id == acc.id)
+        
+        if document_id:
+            query = query.filter(Entry.document_id == document_id)
+            
+        lines = query.all()
         debit_sum = sum(l.debit for l in lines)
         credit_sum = sum(l.credit for l in lines)
         
@@ -61,7 +65,8 @@ async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
         })
 
     # 2. Process Excel
-    output_filename = f"Liasse_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}.xlsx"
+    suffix = f"_DOC{document_id}" if document_id else ""
+    output_filename = f"Liasse_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}{suffix}.xlsx"
     output_path = os.path.join(OUTPUT_DIR, output_filename)
     
     try:
@@ -69,18 +74,8 @@ async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
         shutil.copy(TEMPLATE_PATH, output_path)
         
         if balance_data:
-            # Load workbook
-            # Strategy: We append data to 'Balance (Optionnel)' sheet starting at a specific row (e.g., row 12 based on inspection)
-            # OR we try to find the header row.
-            
-            # For robustness, we REPLACE the sheet content to ensure no garbage remains.
-            # We explicitly write headers.
-            
             with pd.ExcelWriter(output_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
                 df = pd.DataFrame(balance_data)
-                
-                # Write to 'Balance (Optionnel)' starting at Row 1 (header=True)
-                # This ensures standard format: Account, Label, Debit, Credit, Solde D, Solde C
                 df.to_excel(writer, sheet_name="Balance (Optionnel)", index=False, header=True)
                 
     except Exception as e:
@@ -90,20 +85,22 @@ async def generate_liasse(company_id: int, db: Session = Depends(get_db)):
     return FileResponse(output_path, filename=output_filename, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
 @router.get("/generate-smt/{company_id}")
-async def generate_smt(company_id: int, db: Session = Depends(get_db)):
-    # SMT uses the same logic for this MVP, but we might filter accounts differently later.
-    # For now, we reuse the robust Balance Injection engine.
+async def generate_smt(company_id: int, document_id: int = None, db: Session = Depends(get_db)):
+    # SMT uses the same logic for this MVP
     company = db.query(Company).filter(Company.id == company_id).first()
     if not company:
         raise HTTPException(status_code=404, detail="Company not found")
         
-    # Reuse the generation logic (would refactor to shared function in production)
     # 1. Fetch Data
     accounts = db.query(Account).filter(Account.company_id == company_id).all()
     balance_data = []
     
     for acc in accounts:
-        lines = db.query(EntryLine).filter(EntryLine.account_id == acc.id).all()
+        query = db.query(EntryLine).join(Entry).filter(EntryLine.account_id == acc.id)
+        if document_id:
+             query = query.filter(Entry.document_id == document_id)
+             
+        lines = query.all()
         debit_sum = sum(l.debit for l in lines)
         credit_sum = sum(l.credit for l in lines)
         if debit_sum == 0 and credit_sum == 0: continue
@@ -118,7 +115,8 @@ async def generate_smt(company_id: int, db: Session = Depends(get_db)):
         })
 
     # 2. Process
-    output_filename = f"SMT_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}.xlsx"
+    suffix = f"_DOC{document_id}" if document_id else ""
+    output_filename = f"SMT_{company.name.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d%H%M')}{suffix}.xlsx"
     output_path = os.path.join(OUTPUT_DIR, output_filename)
     
     try:

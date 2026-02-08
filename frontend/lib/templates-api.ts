@@ -7,8 +7,9 @@ export interface Template {
     mapping_config?: string; // JSON string
 }
 
-export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx"): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/templates/generate/${companyId}`, {
+export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx", documentId?: number): Promise<void> {
+    const url = `${API_BASE_URL}/templates/generate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
+    const response = await fetch(url, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -20,18 +21,19 @@ export async function generateLiasse(companyId: number, filename: string = "lias
     }
 
     const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const urlBlob = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
+    a.href = urlBlob;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(urlBlob);
     document.body.removeChild(a);
 }
 
-export async function generateSMT(companyId: number, filename: string = "liasse_smt.xlsx"): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/templates/generate-smt/${companyId}`, {
+export async function generateSMT(companyId: number, filename: string = "liasse_smt.xlsx", documentId?: number): Promise<void> {
+    const url = `${API_BASE_URL}/templates/generate-smt/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
+    const response = await fetch(url, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -43,13 +45,13 @@ export async function generateSMT(companyId: number, filename: string = "liasse_
     }
 
     const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    const urlBlob = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
+    a.href = urlBlob;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    window.URL.revokeObjectURL(url);
+    window.URL.revokeObjectURL(urlBlob);
     document.body.removeChild(a);
 }
 
