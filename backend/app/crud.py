@@ -23,6 +23,7 @@ def create_entry(db: Session, entry: schemas.EntryCreate):
         reference=entry.reference,
         label=entry.label,
         journal_id=entry.journal_id,
+        document_id=entry.document_id, # Add this
         validated=False
     )
     db.add(db_entry)

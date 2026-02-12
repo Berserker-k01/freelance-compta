@@ -90,25 +90,63 @@ async def import_balance(company_id: int, file: UploadFile = File(...), db: Sess
 
     try:
         if file.filename.endswith('.csv'):
-            df = pd.read_csv(io.BytesIO(contents))
+            df = pd.read_csv(io.BytesIO(contents), header=None)
         else:
-            df = pd.read_excel(io.BytesIO(contents))
+            df = pd.read_excel(io.BytesIO(contents), header=None)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid file format: {str(e)}")
 
-    # Normalize columns
+    # Header Detection Strategy
+    # We read with header=None to capture the first row.
+    # 1. Check if first row contains 'compte' or 'account'
+    first_row = df.iloc[0].astype(str).str.lower().tolist()
+    has_headers = any(k in first_row for k in ['compte', 'account', 'numero', 'numéro'])
+    
+    if has_headers:
+        # Promote row 0 to header
+        df.columns = first_row
+        df = df[1:].reset_index(drop=True)
+    else:
+        # No headers found (e.g. raw data "101000...")
+        # Fallback to column index based on shape
+        # 6-col balance: 0=Account, 1=Label, 4=Debit, 5=Credit (Solde)
+        # 8-col balance: 0=Account, 1=Label, 6=Debit, 7=Credit (Solde)
+        num_cols = df.shape[1]
+        
+        # Create standard headers
+        new_cols = [f"col_{i}" for i in range(num_cols)]
+        if num_cols >= 6:
+            new_cols[0] = 'account'
+            new_cols[1] = 'label'
+            
+            if num_cols == 8:
+                new_cols[6] = 'solde_debit'
+                new_cols[7] = 'solde_credit'
+            elif num_cols == 6:
+                # Assuming standard 6 col: Compte, Label, DebMvt, CredMvt, SoldeDeb, SoldeCred
+                new_cols[4] = 'solde_debit'
+                new_cols[5] = 'solde_credit'
+            else:
+                 # Try 6/7 rule if plenty of cols
+                 if num_cols >= 8:
+                     new_cols[6] = 'solde_debit'
+                     new_cols[7] = 'solde_credit'
+                 
+        df.columns = new_cols
+
+    # Normalize columns (again, just in case)
     df.columns = [str(c).strip().lower() for c in df.columns]
     
     # Column Mapping Strategy
     col_map = {}
     possible_account = ['compte', 'numéro', 'account', 'numero']
     possible_label = ['intitulé', 'libellé', 'label', 'description', 'libelle']
-    possible_debit = ['débit', 'debit']
-    possible_credit = ['crédit', 'credit']
+    possible_debit = ['débit', 'debit', 'solde_debit']
+    possible_credit = ['crédit', 'credit', 'solde_credit']
     possible_balance = ['solde', 'balance']
 
     for col in df.columns:
-        if any(x in col for x in possible_account) and 'compte' not in col_map: col_map['account'] = col
+        if any(x in col for x in possible_account) and 'account' not in col_map: col_map['account'] = col
         if any(x in col for x in possible_label) and 'label' not in col_map: col_map['label'] = col
         if any(x in col for x in possible_debit) and 'debit' not in col_map: col_map['debit'] = col
         if any(x in col for x in possible_credit) and 'credit' not in col_map: col_map['credit'] = col
@@ -118,9 +156,18 @@ async def import_balance(company_id: int, file: UploadFile = File(...), db: Sess
         raise HTTPException(status_code=400, detail="Colonne 'Compte' introuvable.")
 
     # Prepare for Entry Creation
-    # Check if 'AN' Journal exists (Journal ID 1 usually, or we create it)
-    # For MVP, we use Journal ID 1 or a specific 'IMPORT' journal.
-    # Let's assume Journal 1 is OD/General.
+    # Ensure Default Journal Exists (ID 1)
+    default_journal = db.query(models.Journal).filter(models.Journal.id == 1).first()
+    if not default_journal:
+        # Create default journal "Opérations Diverses" if missing
+        default_journal = models.Journal(
+            id=1,
+            code="OD", 
+            name="Opérations Diverses", 
+            company_id=company_id
+        )
+        db.add(default_journal)
+        db.commit()
     
     entry_lines = []
     
@@ -157,7 +204,12 @@ async def import_balance(company_id: int, file: UploadFile = File(...), db: Sess
         # Find or Create Account
         if code_raw not in existing_accounts:
             # Create on the fly
-            new_acc = schemas.AccountCreate(code=code_raw, name=str(label)[:100], type="general")
+            try:
+                class_code = int(code_raw[0])
+            except:
+                class_code = 0
+                
+            new_acc = schemas.AccountCreate(code=code_raw, name=str(label)[:100], class_code=class_code)
             db_acc = crud.create_account(db, new_acc, company_id)
             existing_accounts[code_raw] = db_acc
         
