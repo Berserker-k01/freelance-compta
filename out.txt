@@ -1,0 +1,208 @@
+﻿Liasse: c:/Users/ROG FLOW/OneDrive/Documents/GitHub/Auditia\Liasse_gloire Ó dieu_2026_DOC7 (1).xlsx
+
+=== TEMPLATE ù BILAN ACTIF (lignes 1-35) ===
+  A1     : b3e3af56-abb3-42b9-bb39-76a794dfbb86
+  B1     : - 8 -
+  B2     : BILAN ACTIF
+  B3     : DÚsignation de l'entitÚ:
+  D3     : ='FICHE DEPOT'!$E$28
+  F4     : Sigle usuel:
+  G4     : ='FICHE DEPOT'!$D$31
+  B5     : Adresse:
+  D5     : ='FICHE DEPOT'!$E$34
+  B6     : N░ d'immatriculation fiscale:
+  D6     : ='FICHE DEPOT'!$G$38
+  F6     : Exercice clos le:
+  G6     : ='FICHE DEPOT'!$G$23
+  H6     : DurÚe (en mois) :
+  I6     : ='FICHE IDENTIFICATION 1 '!$R$5
+  B9     : RÚf.
+  C9     : ACTIF
+  E9     : NOTE
+  F9     : ="EXERCICE"&" "&YEAR(G6)
+  I9     : ="EXERCICE"&" "&YEAR(G6)-1
+  F11    : BRUT
+  G11    : AMORT et DEPREC
+  H11    : NET
+  I11    : NET
+  B12    : AD
+  C12    : IMMOBILISATIONS INCORPORELLES
+  E12    : 3
+  F12    : =F13+F14+F15+F16
+  G12    : =G13+G14+G15+G16
+  H12    : =H13+H14+H15+H16
+  I12    : =I13+I14+I15+I16
+  B13    : AE
+  C13    : Frais de dÚveloppement et de prospection
+  H13    : =F13-G13
+  B14    : AF
+  C14    : Brevets, licences,logiciels et droits similaires
+  H14    : =F14-G14
+  B15    : AG
+  C15    : Fonds commercial et droit au bail
+  H15    : =F15-G15
+  B16    : AH
+  C16    : Autres immobilisations incorporelles
+  H16    : =F16-G16
+  B17    : AI
+  C17    : IMMOBILISATIONS CORPORELLES
+  E17    : 3
+  F17    : =F18+F19+F20+F21+F22
+  G17    : =G18+G19+G20+G21+G22
+  H17    : =H18+H19+H20+H21+H22
+  I17    : =I18+I19+I20+I21+I22
+  B18    : AJ
+  C18    : Terrains (1)
+dont placement en Net
+  H18    : =F18-G18
+  B19    : AK
+  C19    : BÔtiments (1) 
+dont placement en Net
+  H19    : =F19-G19
+  B20    : AL
+  C20    : AmÚnagements, agencements et installations
+  H20    : =F20-G20
+  B21    : AM
+  C21    : MatÚriel, mobiliers et actifs biologiques
+  H21    : =F21-G21
+  B22    : AN
+  C22    : MatÚriel de transport
+  H22    : =F22-G22
+  B23    : AP
+  C23    : AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS
+  E23    : 3
+  H23    : 0
+  B24    : AQ
+  C24    : IMMOBILISATIONS FINANCIERES
+  E24    : 4
+  F24    : =F25+F26
+  G24    : =G25+G26
+  H24    : =H25+H26
+  I24    : =I25+I26
+  B25    : AR
+  C25    : Titres de participation
+  H25    : =F25-G25
+  B26    : AS
+  C26    : Autres immobilisations financiÞres
+  H26    : =F26-G26
+  B27    : AZ
+  C27    : TOTAL ACTIF IMMOBILISE
+  F27    : =F24+F23+F17+F12
+  G27    : =G24+G23+G17+G12
+  H27    : =H24+H23+H17+H12
+  I27    : =I24+I23+I17+I12
+  B28    : BA
+  C28    : ACTIF CIRCULANT HAO
+  E28    : 5
+  H28    : 0
+  B29    : BB
+  C29    : STOCKS ET EN-COURS
+  E29    : 6
+  H29    : 0
+  B30    : BG
+  C30    : CREANCES ET EMPLOIS ASSIMILES
+  F30    : =F31+F32+F33
+  G30    : =G31+G32+G33
+  H30    : =H31+H32+H33
+  I30    : =I31+I32+I33
+  B31    : BH
+  C31    : Fournisseurs avances versÚes
+  E31    : 17
+  H31    : =F31-G31
+  B32    : BI
+  C32    : Clients
+  E32    : 7
+  H32    : =F32-G32
+  B33    : BJ
+  C33    : Autres crÚances
+  E33    : 8
+  H33    : =F33-G33
+  B34    : BK
+  C34    : TOTAL ACTIF CIRCULANT
+  F34    : =F28+F29+F30
+  G34    : =G28+G29+G30
+  H34    : =H28+H29+H30
+  I34    : =I28+I29+I30
+  B35    : BQ
+  C35    : Titres de placement
+  E35    : 9
+  H35    : =F35-G35
+
+=== LIASSE G╔N╔R╔E ù BILAN ACTIF (lignes 1-35) ===
+  A1     : b3e3af56-abb3-42b9-bb39-76a794dfbb86
+  B1     : - 8 -
+  B2     : BILAN ACTIF
+  B3     : DÚsignation de l'entitÚ:
+  F4     : Sigle usuel:
+  B5     : Adresse:
+  B6     : N░ d'immatriculation fiscale:
+  F6     : Exercice clos le:
+  H6     : DurÚe (en mois) :
+  B9     : RÚf.
+  C9     : ACTIF
+  E9     : NOTE
+  F11    : BRUT
+  G11    : AMORT et DEPREC
+  H11    : NET
+  I11    : NET
+  B12    : AD
+  C12    : IMMOBILISATIONS INCORPORELLES
+  B13    : AE
+  C13    : Frais de dÚveloppement et de prospection
+  B14    : AF
+  C14    : Brevets, licences,logiciels et droits similaires
+  B15    : AG
+  C15    : Fonds commercial et droit au bail
+  B16    : AH
+  C16    : Autres immobilisations incorporelles
+  E16    :   12,000,000.00
+  F16    :    1,000,000.00
+  B17    : AI
+  C17    : IMMOBILISATIONS CORPORELLES
+  E17    :   20,000,000.00
+  F17    :    1,000,000.00
+  B18    : AJ
+  C18    : Terrains (1)
+dont placement en Net
+  F18    :    1,000,000.00
+  B19    : AK
+  C19    : BÔtiments (1) 
+dont placement en Net
+  B20    : AL
+  C20    : AmÚnagements, agencements et installations
+  B21    : AM
+  C21    : MatÚriel, mobiliers et actifs biologiques
+  B22    : AN
+  C22    : MatÚriel de transport
+  B23    : AP
+  C23    : AVANCES ET ACOMPTES VERSES SUR IMMOBILISATIONS
+  E23    :   20,000,000.00
+  B24    : AQ
+  C24    : IMMOBILISATIONS FINANCIERES
+  B25    : AR
+  C25    : Titres de participation
+  E25    :   15,000,000.00
+  B26    : AS
+  C26    : Autres immobilisations financiÞres
+  B27    : AZ
+  C27    : TOTAL ACTIF IMMOBILISE
+  B28    : BA
+  C28    : ACTIF CIRCULANT HAO
+  E28    :  128,500,000.00
+  B29    : BB
+  C29    : STOCKS ET EN-COURS
+  B30    : BG
+  C30    : CREANCES ET EMPLOIS ASSIMILES
+  B31    : BH
+  C31    : Fournisseurs avances versÚes
+  B32    : BI
+  C32    : Clients
+  B33    : BJ
+  C33    : Autres crÚances
+  B34    : BK
+  C34    : TOTAL ACTIF CIRCULANT
+  B35    : BQ
+  C35    : Titres de placement
+
+=== FIN ===
+

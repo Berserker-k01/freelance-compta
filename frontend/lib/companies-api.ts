@@ -17,16 +17,17 @@ export async function getCompanies(): Promise<Company[]> {
 }
 
 export async function createCompany(data: Partial<Company>): Promise<Company> {
-    const res = await fetch("http://localhost:8000/companies/", {
+    return fetchAPI("/companies/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
     });
-    if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.detail || "Creation failed");
-    }
-    return res.json();
+}
+
+export async function updateCompany(id: number, data: Partial<Company>): Promise<Company> {
+    return fetchAPI(`/companies/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+    });
 }
 
 export async function deleteCompany(id: number) {

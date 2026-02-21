@@ -12,6 +12,7 @@ export interface EntryCreate {
     reference: string;
     label: string;
     journal_id: number;
+    company_id?: number; // Optional, used by backend to validate context
     lines: EntryLineItem[];
 }
 

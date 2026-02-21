@@ -15,7 +15,7 @@ const CompanyContext = createContext<CompanyContextType | undefined>(undefined);
 
 export function CompanyProvider({ children }: { children: ReactNode }) {
     const [companies, setCompanies] = useState<Company[]>([]);
-    const [activeCompany, setActiveCompany] = useState<Company | null>(null);
+    const [activeCompany, setActiveCompanyState] = useState<Company | null>(null);
     const [loading, setLoading] = useState(true);
 
     const refreshCompanies = async () => {
@@ -23,15 +23,18 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
             const data = await getCompanies();
             setCompanies(data);
 
-            // Auto-select first company if none selected (or if stored in localStorage)
-            if (data.length > 0 && !activeCompany) {
-                // Try from localStorage ?
-                // const savedId = localStorage.getItem("activeCompanyId");
-                // const found = data.find(c => c.id === Number(savedId));
-                setActiveCompany(data[0]);
+            // Restore active company from localStorage
+            if (data.length > 0) {
+                const savedId = localStorage.getItem("auditia_activeCompanyId");
+                const found = savedId ? data.find(c => c.id === Number(savedId)) : null;
+                // Only auto-select if no active company is set yet
+                setActiveCompanyState(prev => {
+                    if (prev) return prev; // keep existing selection
+                    return found || data[0];
+                });
             }
         } catch (e) {
-            console.error(e);
+            console.error("Failed to load companies:", e);
         } finally {
             setLoading(false);
         }
@@ -42,8 +45,8 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const handleSetActive = (c: Company) => {
-        setActiveCompany(c);
-        // localStorage.setItem("activeCompanyId", c.id.toString());
+        setActiveCompanyState(c);
+        localStorage.setItem("auditia_activeCompanyId", c.id.toString());
     };
 
     return (

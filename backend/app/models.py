@@ -11,8 +11,6 @@ class AccountType(str, enum.Enum):
     REVENUE = "REVENUE"       # Produits
     EXPENSE = "EXPENSE"       # Charges
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-
 class License(Base):
     """Licences Commerciales"""
     __tablename__ = "licenses"
@@ -56,9 +54,9 @@ class Company(Base):
     status = Column(String, default="active") # active, closed, archived
     
     # Relations
-    accounts = relationship("Account", back_populates="company")
-    journals = relationship("Journal", back_populates="company")
-    documents = relationship("Document", back_populates="company")
+    accounts = relationship("Account", back_populates="company", cascade="all, delete-orphan")
+    journals = relationship("Journal", back_populates="company", cascade="all, delete-orphan")
+    documents = relationship("Document", back_populates="company", cascade="all, delete-orphan")
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -90,7 +88,7 @@ class Journal(Base):
     company_id = Column(Integer, ForeignKey("companies.id"))
     company = relationship("Company", back_populates="journals")
     
-    entries = relationship("Entry", back_populates="journal")
+    entries = relationship("Entry", back_populates="journal", cascade="all, delete-orphan")
 
 class Entry(Base):
     """Une écriture comptable (Header)"""

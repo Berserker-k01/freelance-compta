@@ -13,6 +13,11 @@ services:
       - "5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auditia_admin -d auditia_core"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -21,13 +26,18 @@ services:
     container_name: auditia-api
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://auditia_admin:secure_password_2026@db:5432/auditia_core
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
+      # Persist uploaded files and generated exports outside the container
+      - uploads_data:/app/uploads
+      - exports_data:/app/temp_exports
+      - ./backend/templates:/app/templates  # Excel templates (read-only source)
 
   frontend:
     build:
@@ -35,12 +45,16 @@ services:
       dockerfile: Dockerfile
     container_name: auditia-web
     restart: always
+    depends_on:
+      - backend
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     environment:
+      # Browser-side: must be reachable from the USER's browser (localhost)
       NEXT_PUBLIC_API_URL: http://localhost:8000
 
   pgadmin:
@@ -57,3 +71,5 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:
+  exports_data:

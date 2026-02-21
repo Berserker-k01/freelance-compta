@@ -103,6 +103,7 @@ class EntryBase(BaseModel):
     document_id: Optional[int] = None
 
 class EntryCreate(EntryBase):
+    company_id: Optional[int] = None  # Sent from frontend, resolved via journal
     lines: List[EntryLineCreate]
 
 class Entry(EntryBase):

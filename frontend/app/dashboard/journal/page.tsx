@@ -20,7 +20,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { createEntry, getEntries } from "@/lib/entries-api";
-import { getAccounts, Account, API_BASE_URL } from "@/lib/api";
+import { getAccounts, Account, getJournals, Journal } from "@/lib/api";
 import { useCompany } from "@/components/company-provider";
 
 // --- SCHEMA & TYPES ---
@@ -66,6 +66,7 @@ interface JournalEntry {
 export default function JournalPage() {
     const { activeCompany } = useCompany();
     const [accounts, setAccounts] = useState<Account[]>([]);
+    const [journals, setJournals] = useState<Journal[]>([]);
     const [success, setSuccess] = useState<string | null>(null);
     const searchParams = useSearchParams();
     const documentIdFilter = searchParams.get('documentId');
@@ -103,6 +104,20 @@ export default function JournalPage() {
         }
     };
 
+    const loadJournals = async () => {
+        if (!activeCompany) return;
+        try {
+            const data = await getJournals(activeCompany.id);
+            setJournals(data);
+            // Auto-select first journal (OD)
+            if (data.length > 0) {
+                form.setValue("journal_id", data[0].id);
+            }
+        } catch (error) {
+            console.error("Failed to load journals", error);
+        }
+    };
+
     const loadEntries = async () => {
         if (!activeCompany) return;
         setLoadingEntries(true);
@@ -126,6 +141,7 @@ export default function JournalPage() {
 
     useEffect(() => {
         loadAccounts();
+        loadJournals();
         loadEntries();
     }, [activeCompany, documentIdFilter]);
 
@@ -219,7 +235,7 @@ export default function JournalPage() {
                                                         </FormControl>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0" align="start">
-                                                        <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
+                                                        <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date: Date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                                                     </PopoverContent>
                                                 </Popover>
                                                 <FormMessage />

@@ -1,11 +1,11 @@
-import { fetchAPI } from "./api";
+import { fetchAPI, API_BASE_URL } from "./api";
 
 export async function login(email: string, password: string) {
     const formData = new URLSearchParams();
     formData.append("username", email);
     formData.append("password", password);
 
-    const res = await fetch("http://localhost:8000/token", {
+    const res = await fetch(`${API_BASE_URL}/token`, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",

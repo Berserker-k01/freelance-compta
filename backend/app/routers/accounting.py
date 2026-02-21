@@ -34,6 +34,19 @@ def seed_default_plan(company_id: int, db: Session = Depends(get_db)):
     """Initialize SYSCOHADA plan for a company"""
     return seed_syscohada(db, company_id)
 
+# --- JOURNALS ---
+@router.get("/journals/{company_id}", response_model=List[schemas.Journal])
+def read_journals(company_id: int, db: Session = Depends(get_db)):
+    return db.query(models.Journal).filter(models.Journal.company_id == company_id).all()
+
+@router.post("/journals/", response_model=schemas.Journal)
+def create_journal(journal: schemas.JournalCreate, company_id: int, db: Session = Depends(get_db)):
+    db_journal = models.Journal(**journal.model_dump(), company_id=company_id)
+    db.add(db_journal)
+    db.commit()
+    db.refresh(db_journal)
+    return db_journal
+
 # --- ENTRIES ---
 @router.post("/entries/", response_model=schemas.Entry)
 def create_entry_transaction(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
@@ -47,211 +60,327 @@ def create_entry_transaction(entry: schemas.EntryCreate, db: Session = Depends(g
     return crud.create_entry(db=db, entry=entry)
 
 @router.get("/entries/", response_model=List[schemas.Entry])
-def read_entries(journal_id: int = None, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_entries(db, journal_id=journal_id, skip=skip, limit=limit)
+def read_entries(company_id: int = None, journal_id: int = None, skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
+    query = db.query(models.Entry)
+    if journal_id:
+        query = query.filter(models.Entry.journal_id == journal_id)
+    elif company_id:
+        # Filter by company through journal
+        query = query.join(models.Journal).filter(models.Journal.company_id == company_id)
+    return query.order_by(models.Entry.date.desc()).offset(skip).limit(limit).all()
 
 # --- IMPORT BALANCE ---
 @router.post("/import-balance/{company_id}")
 async def import_balance(company_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     """
-    Import a General Balance from Excel/CSV to populate accounts and create an opening entry (AN).
-    ALSO: Saves the file to the Document Storage.
-    """
-    # 1. Save File
-    BASE_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "uploads")
-    if not os.path.exists(BASE_UPLOAD_DIR):
-        os.makedirs(BASE_UPLOAD_DIR)
+    Importe une Balance Générale (Excel ou CSV) au format SYSCOHADA Révisé.
 
+    Formats acceptés :
+    - 4 colonnes  : Compte | Libellé | Débit | Crédit
+    - 6 colonnes  : Compte | Libellé | Débit Mvt | Crédit Mvt | Solde D | Solde C
+    - 8 colonnes  : Compte | Libellé | Débit Mvt | Crédit Mvt | Reprise AN | ... | Solde D | Solde C
+    Lorsque les soldes ET les mouvements sont présents, on utilise les SOLDES (colonnes finales).
+    """
+
+    # ------------------------------------------------------------------ #
+    # 1. Sauvegarde physique du fichier                                    #
+    # ------------------------------------------------------------------ #
+    BASE_UPLOAD_DIR = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "uploads"
+    )
     company_dir = os.path.join(BASE_UPLOAD_DIR, str(company_id))
-    if not os.path.exists(company_dir):
-        os.makedirs(company_dir)
-    
+    os.makedirs(company_dir, exist_ok=True)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     safe_filename = f"{timestamp}_{file.filename.replace(' ', '_')}"
     file_path = os.path.join(company_dir, safe_filename)
-    
-    # Read content once into memory for processing AND saving
-    contents = await file.read()
-    
-    with open(file_path, "wb") as buffer:
-        buffer.write(contents)
 
-    # 2. Create Document Record
+    contents = await file.read()
+    with open(file_path, "wb") as buf:
+        buf.write(contents)
+
+    # Essai de détection de l'exercice dans le nom de fichier (ex: "Balance_2025.xlsx")
+    import re
+    year_match = re.search(r"20\d{2}", file.filename)
+    fiscal_year = int(year_match.group()) if year_match else datetime.now().year
+
+    # ------------------------------------------------------------------ #
+    # 2. Enregistrement du Document                                        #
+    # ------------------------------------------------------------------ #
     db_doc = models.Document(
-        name=f"Balance Import {datetime.now().strftime('%d/%m/%Y')}",
+        name=f"Balance Générale {fiscal_year} — Import {datetime.now().strftime('%d/%m/%Y %H:%M')}",
         filename=safe_filename,
         file_path=file_path,
         file_type="balance",
-        company_id=company_id
+        company_id=company_id,
     )
     db.add(db_doc)
     db.commit()
     db.refresh(db_doc)
 
+    # ------------------------------------------------------------------ #
+    # 3. Lecture du fichier                                                #
+    # ------------------------------------------------------------------ #
     try:
-        if file.filename.endswith('.csv'):
-            df = pd.read_csv(io.BytesIO(contents), header=None)
+        if file.filename.lower().endswith(".csv"):
+            # Try semicolon first (French locale), then comma
+            try:
+                df_raw = pd.read_csv(io.BytesIO(contents), sep=";", header=None, dtype=str)
+                if df_raw.shape[1] < 3:
+                    df_raw = pd.read_csv(io.BytesIO(contents), sep=",", header=None, dtype=str)
+            except Exception:
+                df_raw = pd.read_csv(io.BytesIO(contents), header=None, dtype=str)
         else:
-            df = pd.read_excel(io.BytesIO(contents), header=None)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid file format: {str(e)}")
+            df_raw = pd.read_excel(io.BytesIO(contents), header=None, dtype=str)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Fichier illisible : {str(exc)}")
 
-    # Header Detection Strategy
-    # We read with header=None to capture the first row.
-    # 1. Check if first row contains 'compte' or 'account'
-    first_row = df.iloc[0].astype(str).str.lower().tolist()
-    has_headers = any(k in first_row for k in ['compte', 'account', 'numero', 'numéro'])
-    
-    if has_headers:
-        # Promote row 0 to header
-        df.columns = first_row
-        df = df[1:].reset_index(drop=True)
+    # ------------------------------------------------------------------ #
+    # 4. Détection des en-têtes                                           #
+    # ------------------------------------------------------------------ #
+    # Scan the first 5 rows to find a header row
+    header_row_idx = None
+    HEADER_KEYWORDS = {"compte", "account", "numero", "numéro", "code", "libellé", "intitulé"}
+
+    for i in range(min(5, len(df_raw))):
+        row_vals = {str(v).strip().lower() for v in df_raw.iloc[i].tolist()}
+        if row_vals & HEADER_KEYWORDS:
+            header_row_idx = i
+            break
+
+    if header_row_idx is not None:
+        df = df_raw.iloc[header_row_idx + 1:].reset_index(drop=True)
+        df.columns = [str(v).strip().lower() for v in df_raw.iloc[header_row_idx].tolist()]
     else:
-        # No headers found (e.g. raw data "101000...")
-        # Fallback to column index based on shape
-        # 6-col balance: 0=Account, 1=Label, 4=Debit, 5=Credit (Solde)
-        # 8-col balance: 0=Account, 1=Label, 6=Debit, 7=Credit (Solde)
+        df = df_raw.copy()
+        # Generate positional column names
         num_cols = df.shape[1]
-        
-        # Create standard headers
-        new_cols = [f"col_{i}" for i in range(num_cols)]
-        if num_cols >= 6:
-            new_cols[0] = 'account'
-            new_cols[1] = 'label'
-            
-            if num_cols == 8:
-                new_cols[6] = 'solde_debit'
-                new_cols[7] = 'solde_credit'
-            elif num_cols == 6:
-                # Assuming standard 6 col: Compte, Label, DebMvt, CredMvt, SoldeDeb, SoldeCred
-                new_cols[4] = 'solde_debit'
-                new_cols[5] = 'solde_credit'
-            else:
-                 # Try 6/7 rule if plenty of cols
-                 if num_cols >= 8:
-                     new_cols[6] = 'solde_debit'
-                     new_cols[7] = 'solde_credit'
-                 
-        df.columns = new_cols
+        col_names = [f"col_{i}" for i in range(num_cols)]
+        # ── Standard SYSCOHADA balance layouts ──
+        # 4-col : Compte | Libellé | Débit | Crédit
+        # 6-col : Compte | Libellé | Débit Mvt | Crédit Mvt | Solde D | Solde C
+        # 8-col : Compte | Libellé | Débit Mvt | Crédit Mvt | AN D | AN C | Solde D | Solde C
+        if num_cols >= 2:
+            col_names[0] = "compte"
+            col_names[1] = "libellé"
+        if num_cols == 4:
+            col_names[2] = "solde_debit"
+            col_names[3] = "solde_credit"
+        elif num_cols == 6:
+            col_names[2] = "mvt_debit"
+            col_names[3] = "mvt_credit"
+            col_names[4] = "solde_debit"
+            col_names[5] = "solde_credit"
+        elif num_cols >= 8:
+            # Use last two numeric columns as soldes
+            col_names[num_cols - 2] = "solde_debit"
+            col_names[num_cols - 1] = "solde_credit"
+        df.columns = col_names
 
-    # Normalize columns (again, just in case)
     df.columns = [str(c).strip().lower() for c in df.columns]
-    
-    # Column Mapping Strategy
-    col_map = {}
-    possible_account = ['compte', 'numéro', 'account', 'numero']
-    possible_label = ['intitulé', 'libellé', 'label', 'description', 'libelle']
-    possible_debit = ['débit', 'debit', 'solde_debit']
-    possible_credit = ['crédit', 'credit', 'solde_credit']
-    possible_balance = ['solde', 'balance']
+
+    # ------------------------------------------------------------------ #
+    # 5. Identification des colonnes clés                                  #
+    # ------------------------------------------------------------------ #
+    col_map: dict[str, str] = {}
+
+    ACCOUNT_KEYS  = ["compte", "account", "numéro", "numero", "code"]
+    LABEL_KEYS    = ["libellé", "intitulé", "label", "description", "libelle", "intitule"]
+    # Prefer solde columns over mouvement columns
+    DEBIT_KEYS    = ["solde_debit", "solde débit", "sd", "débit", "debit"]
+    CREDIT_KEYS   = ["solde_credit", "solde crédit", "sc", "crédit", "credit"]
+    BALANCE_KEYS  = ["solde", "balance"]
 
     for col in df.columns:
-        if any(x in col for x in possible_account) and 'account' not in col_map: col_map['account'] = col
-        if any(x in col for x in possible_label) and 'label' not in col_map: col_map['label'] = col
-        if any(x in col for x in possible_debit) and 'debit' not in col_map: col_map['debit'] = col
-        if any(x in col for x in possible_credit) and 'credit' not in col_map: col_map['credit'] = col
-        if any(x in col for x in possible_balance) and 'balance' not in col_map: col_map['balance'] = col
+        col_l = col.lower()
+        if not col_map.get("account") and any(k in col_l for k in ACCOUNT_KEYS):
+            col_map["account"] = col
+        if not col_map.get("label") and any(k in col_l for k in LABEL_KEYS):
+            col_map["label"] = col
+        if not col_map.get("debit") and any(k in col_l for k in DEBIT_KEYS):
+            col_map["debit"] = col
+        if not col_map.get("credit") and any(k in col_l for k in CREDIT_KEYS):
+            col_map["credit"] = col
+        if not col_map.get("balance") and any(k in col_l for k in BALANCE_KEYS):
+            col_map["balance"] = col
 
-    if 'account' not in col_map:
-        raise HTTPException(status_code=400, detail="Colonne 'Compte' introuvable.")
-
-    # Prepare for Entry Creation
-    # Ensure Default Journal Exists (ID 1)
-    default_journal = db.query(models.Journal).filter(models.Journal.id == 1).first()
-    if not default_journal:
-        # Create default journal "Opérations Diverses" if missing
-        default_journal = models.Journal(
-            id=1,
-            code="OD", 
-            name="Opérations Diverses", 
-            company_id=company_id
+    if "account" not in col_map:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Impossible de trouver la colonne 'Compte' dans le fichier. "
+                "Vérifiez que votre fichier contient bien les colonnes : "
+                "Compte | Libellé | Débit | Crédit (ou Solde Débiteur | Solde Créditeur)."
+            )
         )
-        db.add(default_journal)
+
+    # ------------------------------------------------------------------ #
+    # 6. Journal OD propre à la société                                    #
+    # ------------------------------------------------------------------ #
+    od_journal = (
+        db.query(models.Journal)
+        .filter(models.Journal.company_id == company_id, models.Journal.code == "OD")
+        .first()
+    )
+    if not od_journal:
+        od_journal = models.Journal(code="OD", name="Opérations Diverses", company_id=company_id)
+        db.add(od_journal)
         db.commit()
-    
-    entry_lines = []
-    
-    # existing accounts cache
+        db.refresh(od_journal)
+
+    # ------------------------------------------------------------------ #
+    # 7. Parsing ligne par ligne                                           #
+    # ------------------------------------------------------------------ #
     existing_accounts = {acc.code: acc for acc in crud.get_accounts(db, company_id, limit=5000)}
-    
+    entry_lines: list[schemas.EntryLineCreate] = []
+    skipped_rows = 0
+    accounts_created = 0
+
+    def _to_float(val) -> float:
+        if val is None or (isinstance(val, float) and math.isnan(val)):
+            return 0.0
+        try:
+            return float(str(val).replace(" ", "").replace("\xa0", "").replace(",", "."))
+        except (ValueError, TypeError):
+            return 0.0
+
     for _, row in df.iterrows():
-        # Get raw values
-        code_raw = str(row[col_map['account']]).split('.')[0].strip() # Remove decimals if any
-        if not code_raw or code_raw == 'nan': continue
-        
-        label = row[col_map['label']] if 'label' in col_map else "Solde Initial"
-        if pd.isna(label): label = "Solde Initial"
-        
-        # Calculate amount
-        debit = 0.0
-        credit = 0.0
-        
-        if 'debit' in col_map and 'credit' in col_map:
-            d_val = row[col_map['debit']]
-            c_val = row[col_map['credit']]
-            debit = float(d_val) if pd.notnull(d_val) else 0.0
-            credit = float(c_val) if pd.notnull(c_val) else 0.0
-        elif 'balance' in col_map:
-            bal = float(row[col_map['balance']]) if pd.notnull(row[col_map['balance']]) else 0.0
-            if bal > 0:
-                debit = bal
-            else:
-                credit = abs(bal)
-        
-        if debit == 0 and credit == 0:
+        code_raw = str(row.get(col_map["account"], "")).split(".")[0].strip().lstrip("0")
+        # Keep leading structure: don't strip all zeros (e.g. "101" not "11")
+        code_raw = str(row.get(col_map["account"], "")).strip()
+        # Remove trailing decimals e.g. "411.0" → "411"
+        code_raw = code_raw.split(".")[0].strip()
+
+        if not code_raw or code_raw.lower() in {"nan", "", "total", "totaux"}:
+            skipped_rows += 1
             continue
 
-        # Find or Create Account
+        # Skip non-numeric account codes (subtotals lines, etc.)
+        if not re.match(r"^\d{2,}", code_raw):
+            skipped_rows += 1
+            continue
+
+        label_raw = str(row.get(col_map.get("label", ""), "Solde Initial")).strip()
+        if not label_raw or label_raw.lower() == "nan":
+            label_raw = f"Compte {code_raw}"
+
+        # Read debit/credit
+        if "debit" in col_map and "credit" in col_map:
+            debit  = _to_float(row.get(col_map["debit"]))
+            credit = _to_float(row.get(col_map["credit"]))
+        elif "balance" in col_map:
+            bal = _to_float(row.get(col_map["balance"]))
+            debit  = bal if bal > 0 else 0.0
+            credit = abs(bal) if bal < 0 else 0.0
+        else:
+            skipped_rows += 1
+            continue
+
+        if debit == 0.0 and credit == 0.0:
+            skipped_rows += 1
+            continue
+
+        # Find or create account
         if code_raw not in existing_accounts:
-            # Create on the fly
             try:
                 class_code = int(code_raw[0])
-            except:
+            except (ValueError, IndexError):
                 class_code = 0
-                
-            new_acc = schemas.AccountCreate(code=code_raw, name=str(label)[:100], class_code=class_code)
+
+            new_acc = schemas.AccountCreate(
+                code=code_raw,
+                name=label_raw[:120],
+                class_code=class_code,
+            )
             db_acc = crud.create_account(db, new_acc, company_id)
             existing_accounts[code_raw] = db_acc
-        
+            accounts_created += 1
+
         account_id = existing_accounts[code_raw].id
-        
         entry_lines.append(schemas.EntryLineCreate(
             account_id=account_id,
-            debit=debit,
-            credit=credit,
-            label=str(label)[:100]
+            debit=round(debit, 2),
+            credit=round(credit, 2),
+            label=label_raw[:120],
         ))
 
     if not entry_lines:
-        raise HTTPException(status_code=400, detail="Aucune donnée comptable valide trouvée.")
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Aucune ligne comptable valide trouvée ({skipped_rows} lignes ignorées). "
+                "Vérifiez le format du fichier et que les colonnes Compte / Débit / Crédit sont présentes."
+            )
+        )
 
-    # Create the Entry
-    # We might need to split into chunks if too large, but for MVP one big entry is fine.
-    
-    # Calculate Balance
-    total_d = sum(l.debit for l in entry_lines)
-    total_c = sum(l.credit for l in entry_lines)
-    
-    # Auto-balance if needed (e.g., Resultat) - Optional, for now we let it fail or warn.
-    # User requested "Import Balance", usually these are balanced.
-    
+    # ------------------------------------------------------------------ #
+    # 8. Équilibrage automatique via compte d'attente 479                  #
+    # ------------------------------------------------------------------ #
+    total_d = round(sum(l.debit for l in entry_lines), 2)
+    total_c = round(sum(l.credit for l in entry_lines), 2)
+    gap      = round(total_d - total_c, 2)
+    gap_note = None
+
+    SUSPENSE_CODE = "4799"
+    if abs(gap) > 0.01:
+        # Create / re-use compte d'attente 4799
+        if SUSPENSE_CODE not in existing_accounts:
+            susp_acc = schemas.AccountCreate(code=SUSPENSE_CODE, name="Compte d'attente — Écart de balance", class_code=4)
+            db_susp  = crud.create_account(db, susp_acc, company_id)
+            existing_accounts[SUSPENSE_CODE] = db_susp
+            accounts_created += 1
+
+        susp_id = existing_accounts[SUSPENSE_CODE].id
+        if gap > 0:
+            # Debit > Credit → add credit line to balance
+            entry_lines.append(schemas.EntryLineCreate(
+                account_id=susp_id, debit=0.0, credit=gap,
+                label=f"Équilibrage automatique — Écart {gap:,.2f}"
+            ))
+        else:
+            # Credit > Debit → add debit line to balance
+            entry_lines.append(schemas.EntryLineCreate(
+                account_id=susp_id, debit=abs(gap), credit=0.0,
+                label=f"Équilibrage automatique — Écart {abs(gap):,.2f}"
+            ))
+
+        gap_note = (
+            f"⚠ La balance importée présentait un écart de {abs(gap):,.2f} FCFA "
+            f"({'Débit > Crédit' if gap > 0 else 'Crédit > Débit'}). "
+            f"Il a été passé automatiquement en compte d'attente {SUSPENSE_CODE}. "
+            "Vérifiez et corrigez si nécessaire avant de générer la liasse."
+        )
+
+    # ------------------------------------------------------------------ #
+    # 9. Création de l'écriture                                            #
+    # ------------------------------------------------------------------ #
     entry_data = schemas.EntryCreate(
         company_id=company_id,
-        journal_id=1, # Default Journal
-        date=datetime.now(), # Use current date or file date
-        reference="IMPORT-BAL",
-        label=f"Import Balance Excel - {file.filename}",
+        journal_id=od_journal.id,
+        date=datetime(fiscal_year, 12, 31),   # Close of fiscal year
+        reference=f"BG-{fiscal_year}",
+        label=f"Balance Générale {fiscal_year} — {file.filename}",
         document_id=db_doc.id,
-        lines=entry_lines
+        lines=entry_lines,
     )
-    
+
     try:
-        if abs(total_d - total_c) > 0.05:
-            # Create a balancing line? No, better to warn.
-            # But usually we import 'Errors' to a waiting account (471)
-            pass 
-            
         new_entry = crud.create_entry(db, entry_data)
-        return {"message": "Success", "entries_count": len(entry_lines), "total_debit": total_d}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Erreur création d'écriture : {str(exc)}")
+
+    return {
+        "status": "success",
+        "document_id": db_doc.id,
+        "entries_count": len(entry_lines),
+        "accounts_created": accounts_created,
+        "accounts_matched": len(entry_lines) - accounts_created,
+        "skipped_rows": skipped_rows,
+        "fiscal_year": fiscal_year,
+        "total_debit": round(total_d, 2),
+        "total_credit": round(total_c, 2),
+        "gap": round(gap, 2),
+        "gap_note": gap_note,
+    }
+
+

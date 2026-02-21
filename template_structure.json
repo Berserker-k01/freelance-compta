@@ -1,0 +1,1030 @@
+{
+  "BILAN ACTIF": {
+    "col_summary": {
+      "A": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "B": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 35
+        }
+      },
+      "C": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 30
+        }
+      },
+      "D": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 3,
+          "number": 0,
+          "text": 0
+        }
+      },
+      "E": {
+        "dominant": "number",
+        "counts": {
+          "formula": 0,
+          "number": 13,
+          "text": 1
+        }
+      },
+      "F": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 9,
+          "number": 0,
+          "text": 3
+        }
+      },
+      "G": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 10,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "H": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 26,
+          "number": 3,
+          "text": 2
+        }
+      },
+      "I": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 10,
+          "number": 0,
+          "text": 1
+        }
+      }
+    },
+    "numeric_values_found": [
+      {
+        "coord": "E12",
+        "col": "E",
+        "row": 12,
+        "value": 3.0
+      },
+      {
+        "coord": "E17",
+        "col": "E",
+        "row": 17,
+        "value": 3.0
+      },
+      {
+        "coord": "E23",
+        "col": "E",
+        "row": 23,
+        "value": 3.0
+      },
+      {
+        "coord": "H23",
+        "col": "H",
+        "row": 23,
+        "value": 0.0
+      },
+      {
+        "coord": "E24",
+        "col": "E",
+        "row": 24,
+        "value": 4.0
+      },
+      {
+        "coord": "E28",
+        "col": "E",
+        "row": 28,
+        "value": 5.0
+      },
+      {
+        "coord": "H28",
+        "col": "H",
+        "row": 28,
+        "value": 0.0
+      },
+      {
+        "coord": "E29",
+        "col": "E",
+        "row": 29,
+        "value": 6.0
+      },
+      {
+        "coord": "H29",
+        "col": "H",
+        "row": 29,
+        "value": 0.0
+      },
+      {
+        "coord": "E31",
+        "col": "E",
+        "row": 31,
+        "value": 17.0
+      },
+      {
+        "coord": "E32",
+        "col": "E",
+        "row": 32,
+        "value": 7.0
+      },
+      {
+        "coord": "E33",
+        "col": "E",
+        "row": 33,
+        "value": 8.0
+      },
+      {
+        "coord": "E35",
+        "col": "E",
+        "row": 35,
+        "value": 9.0
+      },
+      {
+        "coord": "E36",
+        "col": "E",
+        "row": 36,
+        "value": 10.0
+      },
+      {
+        "coord": "E37",
+        "col": "E",
+        "row": 37,
+        "value": 11.0
+      },
+      {
+        "coord": "E39",
+        "col": "E",
+        "row": 39,
+        "value": 12.0
+      }
+    ]
+  },
+  "BILAN PASSIF": {
+    "col_summary": {
+      "A": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "B": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 34
+        }
+      },
+      "C": {
+        "dominant": "text",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 29
+        }
+      },
+      "D": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 0
+        }
+      },
+      "E": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "F": {
+        "dominant": "number",
+        "counts": {
+          "formula": 1,
+          "number": 20,
+          "text": 3
+        }
+      },
+      "G": {
+        "dominant": "number",
+        "counts": {
+          "formula": 7,
+          "number": 22,
+          "text": 2
+        }
+      },
+      "H": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 9,
+          "number": 0,
+          "text": 1
+        }
+      }
+    },
+    "numeric_values_found": [
+      {
+        "coord": "F11",
+        "col": "F",
+        "row": 11,
+        "value": 13.0
+      },
+      {
+        "coord": "G11",
+        "col": "G",
+        "row": 11,
+        "value": 0.0
+      },
+      {
+        "coord": "F12",
+        "col": "F",
+        "row": 12,
+        "value": 13.0
+      },
+      {
+        "coord": "G12",
+        "col": "G",
+        "row": 12,
+        "value": 0.0
+      },
+      {
+        "coord": "F13",
+        "col": "F",
+        "row": 13,
+        "value": 14.0
+      },
+      {
+        "coord": "G13",
+        "col": "G",
+        "row": 13,
+        "value": 0.0
+      },
+      {
+        "coord": "G14",
+        "col": "G",
+        "row": 14,
+        "value": 0.0
+      },
+      {
+        "coord": "F15",
+        "col": "F",
+        "row": 15,
+        "value": 14.0
+      },
+      {
+        "coord": "G15",
+        "col": "G",
+        "row": 15,
+        "value": 0.0
+      },
+      {
+        "coord": "F16",
+        "col": "F",
+        "row": 16,
+        "value": 14.0
+      },
+      {
+        "coord": "G16",
+        "col": "G",
+        "row": 16,
+        "value": 0.0
+      },
+      {
+        "coord": "F17",
+        "col": "F",
+        "row": 17,
+        "value": 14.0
+      },
+      {
+        "coord": "G17",
+        "col": "G",
+        "row": 17,
+        "value": 0.0
+      },
+      {
+        "coord": "G18",
+        "col": "G",
+        "row": 18,
+        "value": 0.0
+      },
+      {
+        "coord": "F19",
+        "col": "F",
+        "row": 19,
+        "value": 15.0
+      },
+      {
+        "coord": "G19",
+        "col": "G",
+        "row": 19,
+        "value": 0.0
+      },
+      {
+        "coord": "F20",
+        "col": "F",
+        "row": 20,
+        "value": 15.0
+      },
+      {
+        "coord": "G20",
+        "col": "G",
+        "row": 20,
+        "value": 0.0
+      },
+      {
+        "coord": "F22",
+        "col": "F",
+        "row": 22,
+        "value": 16.0
+      },
+      {
+        "coord": "G22",
+        "col": "G",
+        "row": 22,
+        "value": 0.0
+      },
+      {
+        "coord": "F23",
+        "col": "F",
+        "row": 23,
+        "value": 16.0
+      },
+      {
+        "coord": "G23",
+        "col": "G",
+        "row": 23,
+        "value": 0.0
+      },
+      {
+        "coord": "F24",
+        "col": "F",
+        "row": 24,
+        "value": 16.0
+      },
+      {
+        "coord": "G24",
+        "col": "G",
+        "row": 24,
+        "value": 0.0
+      },
+      {
+        "coord": "F27",
+        "col": "F",
+        "row": 27,
+        "value": 5.0
+      },
+      {
+        "coord": "G27",
+        "col": "G",
+        "row": 27,
+        "value": 0.0
+      },
+      {
+        "coord": "F28",
+        "col": "F",
+        "row": 28,
+        "value": 7.0
+      },
+      {
+        "coord": "G28",
+        "col": "G",
+        "row": 28,
+        "value": 0.0
+      },
+      {
+        "coord": "F29",
+        "col": "F",
+        "row": 29,
+        "value": 17.0
+      },
+      {
+        "coord": "G29",
+        "col": "G",
+        "row": 29,
+        "value": 0.0
+      },
+      {
+        "coord": "F30",
+        "col": "F",
+        "row": 30,
+        "value": 18.0
+      },
+      {
+        "coord": "G30",
+        "col": "G",
+        "row": 30,
+        "value": 0.0
+      },
+      {
+        "coord": "F31",
+        "col": "F",
+        "row": 31,
+        "value": 19.0
+      },
+      {
+        "coord": "G31",
+        "col": "G",
+        "row": 31,
+        "value": 0.0
+      },
+      {
+        "coord": "F32",
+        "col": "F",
+        "row": 32,
+        "value": 19.0
+      },
+      {
+        "coord": "G32",
+        "col": "G",
+        "row": 32,
+        "value": 0.0
+      },
+      {
+        "coord": "F34",
+        "col": "F",
+        "row": 34,
+        "value": 20.0
+      },
+      {
+        "coord": "G34",
+        "col": "G",
+        "row": 34,
+        "value": 0.0
+      },
+      {
+        "coord": "F35",
+        "col": "F",
+        "row": 35,
+        "value": 20.0
+      },
+      {
+        "coord": "G35",
+        "col": "G",
+        "row": 35,
+        "value": 0.0
+      },
+      {
+        "coord": "F37",
+        "col": "F",
+        "row": 37,
+        "value": 12.0
+      },
+      {
+        "coord": "G37",
+        "col": "G",
+        "row": 37,
+        "value": 0.0
+      }
+    ]
+  },
+  "COMPTE DE RESULTAT": {
+    "col_summary": {
+      "A": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "B": {
+        "dominant": "text",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 47
+        }
+      },
+      "C": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 43
+        }
+      },
+      "D": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 2,
+          "number": 0,
+          "text": 0
+        }
+      },
+      "E": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "F": {
+        "dominant": "text",
+        "counts": {
+          "formula": 1,
+          "number": 0,
+          "text": 5
+        }
+      },
+      "G": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 28,
+          "number": 0,
+          "text": 3
+        }
+      },
+      "H": {
+        "dominant": "number",
+        "counts": {
+          "formula": 1,
+          "number": 28,
+          "text": 5
+        }
+      },
+      "I": {
+        "dominant": "number",
+        "counts": {
+          "formula": 10,
+          "number": 33,
+          "text": 2
+        }
+      },
+      "J": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 11,
+          "number": 0,
+          "text": 1
+        }
+      }
+    },
+    "numeric_values_found": [
+      {
+        "coord": "H10",
+        "col": "H",
+        "row": 10,
+        "value": 21.0
+      },
+      {
+        "coord": "I10",
+        "col": "I",
+        "row": 10,
+        "value": 0.0
+      },
+      {
+        "coord": "H11",
+        "col": "H",
+        "row": 11,
+        "value": 22.0
+      },
+      {
+        "coord": "I11",
+        "col": "I",
+        "row": 11,
+        "value": 0.0
+      },
+      {
+        "coord": "H12",
+        "col": "H",
+        "row": 12,
+        "value": 6.0
+      },
+      {
+        "coord": "I12",
+        "col": "I",
+        "row": 12,
+        "value": 0.0
+      },
+      {
+        "coord": "H14",
+        "col": "H",
+        "row": 14,
+        "value": 21.0
+      },
+      {
+        "coord": "I14",
+        "col": "I",
+        "row": 14,
+        "value": 0.0
+      },
+      {
+        "coord": "H15",
+        "col": "H",
+        "row": 15,
+        "value": 21.0
+      },
+      {
+        "coord": "I15",
+        "col": "I",
+        "row": 15,
+        "value": 0.0
+      },
+      {
+        "coord": "H16",
+        "col": "H",
+        "row": 16,
+        "value": 21.0
+      },
+      {
+        "coord": "I16",
+        "col": "I",
+        "row": 16,
+        "value": 0.0
+      },
+      {
+        "coord": "H18",
+        "col": "H",
+        "row": 18,
+        "value": 6.0
+      },
+      {
+        "coord": "I18",
+        "col": "I",
+        "row": 18,
+        "value": 0.0
+      },
+      {
+        "coord": "H19",
+        "col": "H",
+        "row": 19,
+        "value": 21.0
+      },
+      {
+        "coord": "I19",
+        "col": "I",
+        "row": 19,
+        "value": 0.0
+      },
+      {
+        "coord": "H20",
+        "col": "H",
+        "row": 20,
+        "value": 21.0
+      },
+      {
+        "coord": "I20",
+        "col": "I",
+        "row": 20,
+        "value": 0.0
+      },
+      {
+        "coord": "H21",
+        "col": "H",
+        "row": 21,
+        "value": 21.0
+      },
+      {
+        "coord": "I21",
+        "col": "I",
+        "row": 21,
+        "value": 0.0
+      },
+      {
+        "coord": "H22",
+        "col": "H",
+        "row": 22,
+        "value": 12.0
+      },
+      {
+        "coord": "I22",
+        "col": "I",
+        "row": 22,
+        "value": 0.0
+      },
+      {
+        "coord": "H23",
+        "col": "H",
+        "row": 23,
+        "value": 22.0
+      },
+      {
+        "coord": "I23",
+        "col": "I",
+        "row": 23,
+        "value": 0.0
+      },
+      {
+        "coord": "H24",
+        "col": "H",
+        "row": 24,
+        "value": 6.0
+      },
+      {
+        "coord": "I24",
+        "col": "I",
+        "row": 24,
+        "value": 0.0
+      },
+      {
+        "coord": "H25",
+        "col": "H",
+        "row": 25,
+        "value": 22.0
+      },
+      {
+        "coord": "I25",
+        "col": "I",
+        "row": 25,
+        "value": 0.0
+      },
+      {
+        "coord": "H26",
+        "col": "H",
+        "row": 26,
+        "value": 6.0
+      },
+      {
+        "coord": "I26",
+        "col": "I",
+        "row": 26,
+        "value": 0.0
+      },
+      {
+        "coord": "H27",
+        "col": "H",
+        "row": 27,
+        "value": 23.0
+      },
+      {
+        "coord": "I27",
+        "col": "I",
+        "row": 27,
+        "value": 0.0
+      },
+      {
+        "coord": "H28",
+        "col": "H",
+        "row": 28,
+        "value": 24.0
+      },
+      {
+        "coord": "I28",
+        "col": "I",
+        "row": 28,
+        "value": 0.0
+      },
+      {
+        "coord": "H29",
+        "col": "H",
+        "row": 29,
+        "value": 25.0
+      },
+      {
+        "coord": "I29",
+        "col": "I",
+        "row": 29,
+        "value": 0.0
+      },
+      {
+        "coord": "H30",
+        "col": "H",
+        "row": 30,
+        "value": 26.0
+      },
+      {
+        "coord": "I30",
+        "col": "I",
+        "row": 30,
+        "value": 0.0
+      },
+      {
+        "coord": "H32",
+        "col": "H",
+        "row": 32,
+        "value": 27.0
+      },
+      {
+        "coord": "I32",
+        "col": "I",
+        "row": 32,
+        "value": 0.0
+      },
+      {
+        "coord": "H34",
+        "col": "H",
+        "row": 34,
+        "value": 28.0
+      },
+      {
+        "coord": "I34",
+        "col": "I",
+        "row": 34,
+        "value": 0.0
+      },
+      {
+        "coord": "I35",
+        "col": "I",
+        "row": 35,
+        "value": 0.0
+      },
+      {
+        "coord": "H37",
+        "col": "H",
+        "row": 37,
+        "value": 29.0
+      },
+      {
+        "coord": "I37",
+        "col": "I",
+        "row": 37,
+        "value": 0.0
+      },
+      {
+        "coord": "H38",
+        "col": "H",
+        "row": 38,
+        "value": 28.0
+      },
+      {
+        "coord": "I38",
+        "col": "I",
+        "row": 38,
+        "value": 0.0
+      },
+      {
+        "coord": "H39",
+        "col": "H",
+        "row": 39,
+        "value": 12.0
+      },
+      {
+        "coord": "I39",
+        "col": "I",
+        "row": 39,
+        "value": 0.0
+      },
+      {
+        "coord": "H40",
+        "col": "H",
+        "row": 40,
+        "value": 29.0
+      }
+    ]
+  },
+  "R\u00e9sultat fiscal": {
+    "col_summary": {
+      "A": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 0,
+          "text": 1
+        }
+      },
+      "B": {
+        "dominant": "number",
+        "counts": {
+          "formula": 0,
+          "number": 17,
+          "text": 4
+        }
+      },
+      "C": {
+        "dominant": "text",
+        "counts": {
+          "formula": 0,
+          "number": 1,
+          "text": 21
+        }
+      },
+      "D": {
+        "dominant": "formula",
+        "counts": {
+          "formula": 2,
+          "number": 0,
+          "text": 0
+        }
+      }
+    },
+    "numeric_values_found": [
+      {
+        "coord": "C1",
+        "col": "C",
+        "row": 1,
+        "value": 58.0
+      },
+      {
+        "coord": "B6",
+        "col": "B",
+        "row": 6,
+        "value": 10.0
+      },
+      {
+        "coord": "B9",
+        "col": "B",
+        "row": 9,
+        "value": 11.0
+      },
+      {
+        "coord": "B10",
+        "col": "B",
+        "row": 10,
+        "value": 12.0
+      },
+      {
+        "coord": "B11",
+        "col": "B",
+        "row": 11,
+        "value": 15.0
+      },
+      {
+        "coord": "B12",
+        "col": "B",
+        "row": 12,
+        "value": 20.0
+      },
+      {
+        "coord": "B13",
+        "col": "B",
+        "row": 13,
+        "value": 25.0
+      },
+      {
+        "coord": "B14",
+        "col": "B",
+        "row": 14,
+        "value": 30.0
+      },
+      {
+        "coord": "B15",
+        "col": "B",
+        "row": 15,
+        "value": 40.0
+      },
+      {
+        "coord": "B16",
+        "col": "B",
+        "row": 16,
+        "value": 45.0
+      },
+      {
+        "coord": "B17",
+        "col": "B",
+        "row": 17,
+        "value": 50.0
+      },
+      {
+        "coord": "B18",
+        "col": "B",
+        "row": 18,
+        "value": 60.0
+      },
+      {
+        "coord": "B19",
+        "col": "B",
+        "row": 19,
+        "value": 80.0
+      },
+      {
+        "coord": "B35",
+        "col": "B",
+        "row": 35,
+        "value": 90.0
+      },
+      {
+        "coord": "B36",
+        "col": "B",
+        "row": 36,
+        "value": 95.0
+      },
+      {
+        "coord": "B37",
+        "col": "B",
+        "row": 37,
+        "value": 100.0
+      },
+      {
+        "coord": "B38",
+        "col": "B",
+        "row": 38,
+        "value": 120.0
+      },
+      {
+        "coord": "B39",
+        "col": "B",
+        "row": 39,
+        "value": 125.0
+      }
+    ]
+  }
+}

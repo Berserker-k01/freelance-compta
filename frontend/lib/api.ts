@@ -11,7 +11,7 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || "An error occurred");
+        throw new Error(errorData.detail || `Erreur API (${res.status})`);
     }
 
     return res.json();
@@ -26,8 +26,14 @@ export interface Account {
     company_id: number;
 }
 
+export interface Journal {
+    id: number;
+    code: string;
+    name: string;
+    company_id: number;
+}
+
 export async function getAccounts(companyId: number): Promise<Account[]> {
-    // Hardcoded companyId for prototype phase if needed, but endpoint expects it
     return fetchAPI(`/accounting/accounts/${companyId}`);
 }
 
@@ -35,6 +41,10 @@ export async function seedAccounts(companyId: number) {
     return fetchAPI(`/accounting/accounts/seed/${companyId}`, {
         method: "POST",
     });
+}
+
+export async function getJournals(companyId: number): Promise<Journal[]> {
+    return fetchAPI(`/accounting/journals/${companyId}`);
 }
 
 export async function importBalance(companyId: number, file: File) {
@@ -48,7 +58,7 @@ export async function importBalance(companyId: number, file: File) {
 
     if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Upload failed");
+        throw new Error(errorData.detail || "Échec de l'import");
     }
 
     return res.json();

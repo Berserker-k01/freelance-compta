@@ -9,7 +9,7 @@ def get_accounts(db: Session, company_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.Account).filter(models.Account.company_id == company_id).offset(skip).limit(limit).all()
 
 def create_account(db: Session, account: schemas.AccountCreate, company_id: int):
-    db_account = models.Account(**account.dict(), company_id=company_id)
+    db_account = models.Account(**account.model_dump(), company_id=company_id)
     db.add(db_account)
     db.commit()
     db.refresh(db_account)
