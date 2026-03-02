@@ -112,7 +112,8 @@ class ExcelInjector:
             total += component * multiplier
 
         result = abs(total) if is_abs else total
-        return round(result, 2)
+        # Arrondi à l'entier près (0 décimale) comme exigé par le canevas OTR
+        return float(round(result, 0))
 
     # ------------------------------------------------------------------
     # 3. CELL WRITING (merged-cell safe, formula-safe)
@@ -129,11 +130,11 @@ class ExcelInjector:
                 row_digits += ch
         return int(row_digits), column_index_from_string(col_letters)
 
-    def _write_cell(self, ws, cell_addr: str, value: float):
+    def inject_value(self, ws, cell_addr: str, value: float):
         """
         Write value to cell_addr in worksheet ws.
         If the cell belongs to a merged range, write to the top-left master.
-        Always replaces any existing formula (= string) with the numeric value.
+        Always replaces any existing text/formula with the numeric value for targeted input cells.
         """
         target_row, target_col = self._parse_cell_addr(cell_addr)
 
@@ -158,8 +159,47 @@ class ExcelInjector:
         )
 
     # ------------------------------------------------------------------
-    # 4. REPORT GENERATION
+    # 4. REPORT GENERATION & VALIDATION
     # ------------------------------------------------------------------
+
+    def validate_totals(self, template_path: str, output_path: str) -> list[str]:
+        """
+        Vérification post-injection : s'assure qu'aucune cellule contenant originellement
+        une formule de =SOMME (Total) n'a été écrasée par erreur.
+        """
+        wb_template = openpyxl.load_workbook(template_path, data_only=False, read_only=True)
+        wb_output = openpyxl.load_workbook(output_path, data_only=False, read_only=True)
+        
+        errors = []
+        for sheet_name in ["BILAN ACTIF", "BILAN PASSIF", "COMPTE DE RESULTAT", "Résultat fiscal"]:
+            if sheet_name not in wb_template.sheetnames:
+                continue
+                
+            ws_t = wb_template[sheet_name]
+            if sheet_name not in wb_output.sheetnames:
+                continue
+            ws_o = wb_output[sheet_name]
+            
+            for row in ws_t.iter_rows(min_row=1, max_row=60, min_col=1, max_col=15):
+                for cell in row:
+                    val = str(cell.value).strip().upper() if cell.value is not None else ""
+                    # On cherche les cellules qui contiennent =SUM ou =SOMME ou autres formules critiques
+                    if val.startswith("=SOMME") or val.startswith("=SUM") or val.startswith("=SUBTOTAL") or val.startswith("=SOUS.TOTAL"):
+                        out_val = str(ws_o[cell.coordinate].value).strip().upper() if ws_o[cell.coordinate].value is not None else ""
+                        if not (out_val.startswith("=SOMME") or out_val.startswith("=SUM") or out_val.startswith("=SUBTOTAL") or out_val.startswith("=SOUS.TOTAL")):
+                            errors.append(f"{sheet_name}!{cell.coordinate} (Formule écrasée : {out_val})")
+        
+        wb_template.close()
+        wb_output.close()
+        
+        if errors:
+            self._log.append(f"⚠️ AVERTISSEMENT VALIDATION: {len(errors)} formules de total/somme écrasees: {errors[:5]}")
+            print(f"[ExcelInjector] WARN: {len(errors)} formules de TOTAL écrasées !")
+        else:
+            self._log.append("✅ VALIDATION: Toutes les formules de total (SOMME/SUM/SOUS.TOTAL) sont intactes.")
+            print("[ExcelInjector] Validation OK : Formules intactes.")
+            
+        return errors
 
     def generate_report(
         self,
@@ -180,8 +220,8 @@ class ExcelInjector:
             )
 
         # Load template — keep_vba=False, read_only=False, data_only=False
-        # (do NOT use data_only=True — we want to replace formulas with values)
-        wb = openpyxl.load_workbook(template_path, keep_vba=False)
+        # (do NOT use data_only=True — we want to preserve formulas and macros)
+        wb = openpyxl.load_workbook(template_path, keep_vba=False, data_only=False)
 
         injected = 0
         skipped_sheet = []
@@ -201,8 +241,8 @@ class ExcelInjector:
             ws = wb[sheet_name]
             try:
                 value = self._get_value_for_mapping(rule)
-                # Write ALL values including 0 (so template zeros aren't kept as formulas)
-                self._write_cell(ws, cell_addr, value)
+                # Write ALL mapped values including 0 (so template input zeros aren't kept as formulas)
+                self.inject_value(ws, cell_addr, value)
                 if value != 0:
                     injected += 1
             except Exception as exc:
@@ -215,13 +255,16 @@ class ExcelInjector:
             print(msg)
 
         print(f"[ExcelInjector] {injected} non-zero values injected into '{output_path}'")
-        print(f"[ExcelInjector] {len(skipped_sheet)} cells skipped (sheet not found)")
-        print(f"[ExcelInjector] {len(skipped_zero)} cells skipped (zero value)")
-
+        
         wb.save(output_path)
+        
+        # Validation Post-injection
+        self.validate_totals(template_path, output_path)
+        
         return output_path
 
     @property
     def log(self) -> list[str]:
         return self._log
+
 

@@ -559,8 +559,9 @@ async def generate_liasse(
 
     injector = ExcelInjector(db, company_id, document_id=document_id)
 
-    safe_name = (company.tax_id or str(company_id)).replace("/", "-")
-    output_filename = f"Liasse_OTR_{safe_name}_{datetime.now().strftime('%Y%m%d%H%M')}.xlsx"
+    safe_name = company.name.replace(" ", "_").replace("/", "-")
+    exercice = datetime.now().year
+    output_filename = f"Liasse_Fiscale_{safe_name}_{exercice}.xlsx"
     output_path = os.path.join(OUTPUT_DIR, output_filename)
 
     try:
