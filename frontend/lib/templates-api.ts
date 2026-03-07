@@ -32,8 +32,12 @@ export async function validatePrerequisites(
 }
 
 /** Download the full OTR Liasse Fiscale as an Excel file */
-export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx", documentId?: number): Promise<void> {
-    const url = `${API_BASE_URL}/templates/generate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
+export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx", documentId?: number, templateId?: number): Promise<void> {
+    const params = new URLSearchParams();
+    if (documentId) params.append("document_id", documentId.toString());
+    if (templateId) params.append("template_id", templateId.toString());
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const url = `${API_BASE_URL}/templates/generate/${companyId}${queryString}`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -52,26 +56,29 @@ export async function generateLiasse(companyId: number, filename: string = "lias
     document.body.removeChild(a);
 }
 
-/** Download the SMT (Système Minimal de Trésorerie) report */
-export async function generateSMT(companyId: number, filename: string = "liasse_smt.xlsx", documentId?: number): Promise<void> {
-    const url = `${API_BASE_URL}/templates/generate-smt/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
-    const response = await fetch(url);
+/** Upload a dynamic template */
+export async function uploadTemplate(file: File, name: string, year: number): Promise<Template> {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("name", name);
+    formData.append("year", year.toString());
+
+    // Using fetch directly as this is multipart/form-data
+    const response = await fetch(`${API_BASE_URL}/templates/upload`, {
+        method: "POST",
+        body: formData,
+    });
 
     if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.detail || "Erreur lors de la génération du SMT");
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.detail || "Erreur lors de l'upload du modèle");
     }
 
-    const blob = await response.blob();
-    const urlBlob = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = urlBlob;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(urlBlob);
-    document.body.removeChild(a);
+    const data = await response.json();
+    return data.template;
 }
+
+
 
 /** Fetch all report templates from backend */
 export async function getTemplates(): Promise<Template[]> {

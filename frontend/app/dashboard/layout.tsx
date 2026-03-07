@@ -47,6 +47,7 @@ function SidebarContent() {
             title: "États & Sorties",
             items: [
                 { name: "Liasses Fiscales", href: "/dashboard/templates", icon: FileSpreadsheet },
+                { name: "Annexes & Fiscalité", href: "/dashboard/annexes", icon: FileText },
                 { name: "Audit & IA", href: "/dashboard/audit", icon: ShieldCheck },
             ]
         },

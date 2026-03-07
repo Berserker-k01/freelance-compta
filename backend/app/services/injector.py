@@ -162,6 +162,35 @@ class ExcelInjector:
     # 4. REPORT GENERATION & VALIDATION
     # ------------------------------------------------------------------
 
+    def pre_flight_check(self) -> dict:
+        """
+        Vérification SQL en amont (Pre-flight Check) :
+        1. Équilibre Bilan : SUM(Débit) = SUM(Crédit)
+        2. Statistiques et identification du Compte 13 (Résultat Net)
+        """
+        self._fetch_balances()
+
+        total_debit = sum(val[0] for val in self.raw.values())
+        total_credit = sum(val[1] for val in self.raw.values())
+        
+        # Le résultat net se lit généralement sur le compte 13
+        resultat_net = None
+        for code, bal in self.balances.items():
+            if code.startswith('13'):
+                resultat_net = bal
+
+        is_balanced = abs(total_debit - total_credit) < 1.0
+
+        return {
+            "total_debit": round(total_debit, 2),
+            "total_credit": round(total_credit, 2),
+            "difference": round(abs(total_debit - total_credit), 2),
+            "is_balanced": is_balanced,
+            "compte_13_present": resultat_net is not None,
+            "resultat_net_13": round(resultat_net, 2) if resultat_net is not None else 0.0,
+            "nb_comptes": len(self.balances)
+        }
+
     def validate_totals(self, template_path: str, output_path: str) -> list[str]:
         """
         Vérification post-injection : s'assure qu'aucune cellule contenant originellement
