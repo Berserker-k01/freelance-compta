@@ -49,14 +49,14 @@ def read_companies(skip: int = 0, limit: int = 100, db: Session = Depends(get_db
     return db.query(models.Company).offset(skip).limit(limit).all()
 
 @router.get("/{company_id}", response_model=schemas.Company)
-def read_company(company_id: int, db: Session = Depends(get_db)):
+def read_company(company_id: str, db: Session = Depends(get_db)):
     db_company = db.query(models.Company).filter(models.Company.id == company_id).first()
     if db_company is None:
         raise HTTPException(status_code=404, detail="Dossier introuvable")
     return db_company
 
 @router.put("/{company_id}", response_model=schemas.Company)
-def update_company(company_id: int, company_update: schemas.CompanyCreate, db: Session = Depends(get_db)):
+def update_company(company_id: str, company_update: schemas.CompanyCreate, db: Session = Depends(get_db)):
     db_company = db.query(models.Company).filter(models.Company.id == company_id).first()
     if not db_company:
         raise HTTPException(status_code=404, detail="Dossier introuvable")
@@ -69,7 +69,7 @@ def update_company(company_id: int, company_update: schemas.CompanyCreate, db: S
     return db_company
 
 @router.delete("/{company_id}")
-def delete_company(company_id: int, db: Session = Depends(get_db)):
+def delete_company(company_id: str, db: Session = Depends(get_db)):
     db_company = db.query(models.Company).filter(models.Company.id == company_id).first()
     if not db_company:
         raise HTTPException(status_code=404, detail="Dossier introuvable")
@@ -77,3 +77,43 @@ def delete_company(company_id: int, db: Session = Depends(get_db)):
     db.delete(db_company)
     db.commit()
     return {"status": "deleted", "message": f"Dossier '{db_company.name}' supprimé."}
+
+# --- ANNEXES DA/TA (EXTRA-ACCOUNTING) ---
+
+@router.get("/{company_id}/annexes")
+def get_company_annexes(company_id: str, db: Session = Depends(get_db)):
+    """Retrieve extra-accounting data (Annexes) for a company."""
+    db_company = db.query(models.Company).filter(models.Company.id == company_id).first()
+    if not db_company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
+    annexe = db.query(models.AnnexeData).filter(models.AnnexeData.company_id == company_id).first()
+    import json
+    if not annexe:
+        return {}
+    try:
+        return json.loads(annexe.data)
+    except:
+        return {}
+
+from pydantic import BaseModel
+class AnnexePayload(BaseModel):
+    data: dict
+
+@router.put("/{company_id}/annexes")
+def update_company_annexes(company_id: str, payload: AnnexePayload, db: Session = Depends(get_db)):
+    """Update or create extra-accounting data (Annexes) for a company."""
+    import json
+    db_company = db.query(models.Company).filter(models.Company.id == company_id).first()
+    if not db_company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
+    annexe = db.query(models.AnnexeData).filter(models.AnnexeData.company_id == company_id).first()
+    if not annexe:
+        annexe = models.AnnexeData(company_id=company_id, data=json.dumps(payload.data))
+        db.add(annexe)
+    else:
+        annexe.data = json.dumps(payload.data)
+
+    db.commit()
+    return {"message": "Données extra-comptables mises à jour avec succès"}

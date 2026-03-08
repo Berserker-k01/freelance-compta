@@ -2,13 +2,13 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 # --- ACCOUNTS ---
-def get_account(db: Session, account_id: int):
+def get_account(db: Session, account_id: str):
     return db.query(models.Account).filter(models.Account.id == account_id).first()
 
-def get_accounts(db: Session, company_id: int, skip: int = 0, limit: int = 100):
+def get_accounts(db: Session, company_id: str, skip: int = 0, limit: int = 100):
     return db.query(models.Account).filter(models.Account.company_id == company_id).offset(skip).limit(limit).all()
 
-def create_account(db: Session, account: schemas.AccountCreate, company_id: int):
+def create_account(db: Session, account: schemas.AccountCreate, company_id: str):
     db_account = models.Account(**account.model_dump(), company_id=company_id)
     db.add(db_account)
     db.commit()
@@ -45,7 +45,7 @@ def create_entry(db: Session, entry: schemas.EntryCreate):
     db.refresh(db_entry)
     return db_entry
 
-def get_entries(db: Session, journal_id: int = None, skip: int = 0, limit: int = 100):
+def get_entries(db: Session, journal_id: str = None, skip: int = 0, limit: int = 100):
     query = db.query(models.Entry)
     if journal_id:
         query = query.filter(models.Entry.journal_id == journal_id)

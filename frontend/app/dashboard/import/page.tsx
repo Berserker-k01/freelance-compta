@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 
 interface ImportResult {
     status: string;
-    document_id: number;
+    document_id: string;
     entries_count: number;
     accounts_created: number;
     accounts_matched: number;

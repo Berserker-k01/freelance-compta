@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getCompanyAnnexes, updateCompanyAnnexes } from "@/lib/companies-api";
 
 export default function AnnexesPage() {
     const { activeCompany } = useCompany();
@@ -29,11 +30,15 @@ export default function AnnexesPage() {
 
     useEffect(() => {
         if (activeCompany) {
-            // Dans une vraie app, on fetcherait `GET /annexes/${activeCompany.id}`
-            setData(prev => ({
-                ...prev,
-                nif: activeCompany.tax_id || "",
-            }));
+            getCompanyAnnexes(activeCompany.id).then(annexe => {
+                setData(prev => ({
+                    ...prev,
+                    nif: activeCompany.tax_id || "",
+                    ...annexe,
+                }));
+            }).catch(e => {
+                console.error("Failed to load annexes", e);
+            });
         }
     }, [activeCompany]);
 
@@ -43,12 +48,11 @@ export default function AnnexesPage() {
     };
 
     const handleSave = async () => {
+        if (!activeCompany) return;
         setSaving(true);
         setMessage("");
         try {
-            // Simulation API Call
-            await new Promise(r => setTimeout(r, 800));
-            // Dans l'avenir: await fetchAPI(`/annexes/${activeCompany.id}`, { method: 'POST', body: JSON.stringify(data) })
+            await updateCompanyAnnexes(activeCompany.id, data);
             setMessage("Données enregistrées avec succès. Elles seront incluses dans la liasse fiscale.");
         } catch (error) {
             setMessage("Erreur lors de l'enregistrement.");

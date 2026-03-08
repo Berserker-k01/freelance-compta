@@ -13,8 +13,8 @@ class AccountCreate(AccountBase):
     pass
 
 class Account(AccountBase):
-    id: int
-    company_id: int
+    id: str
+    company_id: str
     
     class Config:
         from_attributes = True
@@ -36,7 +36,7 @@ class LicenseActivationCreate(LicenseActivationBase):
     key: str # License key to activate against
 
 class LicenseActivationOut(LicenseActivationBase):
-    id: int
+    id: str
     activated_at: datetime
     ip_address: Optional[str] = None
     
@@ -44,7 +44,7 @@ class LicenseActivationOut(LicenseActivationBase):
         from_attributes = True
 
 class LicenseOut(BaseModel):
-    id: int
+    id: str
     key: str
     client_name: str
     max_workstations: int
@@ -72,15 +72,15 @@ class JournalCreate(JournalBase):
     pass
 
 class Journal(JournalBase):
-    id: int
-    company_id: int
+    id: str
+    company_id: str
 
     class Config:
         from_attributes = True
 
 # --- ENTRY SCHEMAS ---
 class EntryLineBase(BaseModel):
-    account_id: int
+    account_id: str
     debit: float = 0.0
     credit: float = 0.0
     label: Optional[str] = None
@@ -89,8 +89,8 @@ class EntryLineCreate(EntryLineBase):
     pass
 
 class EntryLine(EntryLineBase):
-    id: int
-    entry_id: int
+    id: str
+    entry_id: str
 
     class Config:
         from_attributes = True
@@ -99,15 +99,15 @@ class EntryBase(BaseModel):
     date: datetime
     reference: str
     label: str
-    journal_id: int
-    document_id: Optional[int] = None
+    journal_id: str
+    document_id: Optional[str] = None
 
 class EntryCreate(EntryBase):
-    company_id: Optional[int] = None  # Sent from frontend, resolved via journal
+    company_id: Optional[str] = None  # Sent from frontend, resolved via journal
     lines: List[EntryLineCreate]
 
 class Entry(EntryBase):
-    id: int
+    id: str
     validated: bool
     created_at: datetime
     lines: List[EntryLine] = []
@@ -124,7 +124,7 @@ class UserCreate(UserBase):
     password: str
 
 class UserOut(UserBase):
-    id: int
+    id: str
     is_active: bool
     created_at: datetime
     
@@ -144,7 +144,7 @@ class TemplateCreate(TemplateBase):
     pass
 
 class Template(TemplateBase):
-    id: int
+    id: str
     file_path: str
     created_at: datetime
     
@@ -165,7 +165,7 @@ class CompanyCreate(CompanyBase):
     pass
 
 class Company(CompanyBase):
-    id: int
+    id: str
     created_at: datetime
     
     class Config:
@@ -180,12 +180,11 @@ class DocumentCreate(DocumentBase):
     pass
 
 class Document(DocumentBase):
-    id: int
+    id: str
     filename: str
     file_path: str
     created_at: datetime
-    company_id: int
+    company_id: str
     
     class Config:
         from_attributes = True
-

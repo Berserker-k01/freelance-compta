@@ -18,7 +18,7 @@ class ExcelInjector:
         "601*, -603*"   → sum multiple patterns (achats + variation de stocks)
     """
 
-    def __init__(self, db: Session, company_id: int, document_id: int = None):
+    def __init__(self, db: Session, company_id: str, document_id: str = None):
         self.db = db
         self.company_id = company_id
         self.document_id = document_id
@@ -26,6 +26,7 @@ class ExcelInjector:
         self.raw: dict[str, tuple[float, float]] = {}
         # { account_code: net_balance (debit - credit) }
         self.balances: dict[str, float] = {}
+        self.annexe_data: dict[str, str] = {}
         self._log: list[str] = []
 
     # ------------------------------------------------------------------
@@ -64,9 +65,18 @@ class ExcelInjector:
             self.raw[row.code] = (d, c)
             self.balances[row.code] = d - c
 
+        # Récupération des données extra-comptables (Annexes)
+        import json
+        annexe_record = self.db.query(models.AnnexeData).filter(models.AnnexeData.company_id == self.company_id).first()
+        if annexe_record and annexe_record.data:
+            try:
+                self.annexe_data = json.loads(annexe_record.data)
+            except:
+                pass
+
         self._log.append(
-            f"_fetch_balances: {len(self.balances)} accounts loaded "
-            f"(document_id={self.document_id})"
+            f"_fetch_balances: {len(self.balances)} accounts loaded, "
+            f"{len(self.annexe_data)} annexe variables loaded."
         )
 
     # ------------------------------------------------------------------
@@ -76,14 +86,22 @@ class ExcelInjector:
     def _get_value_for_mapping(self, rule: str) -> float:
         """
         Parse a mapping rule string and compute the value.
-
-        Examples:
-            "241*"         → Σ net balance for all 241xx accounts
-            "-101*"        → negate net (credit-heavy passif → positive output)
-            "ABS(284*)"    → absolute value (amortissements stored as negative net)
-            "601*, -603*"  → multi-pattern: achats + variation stocks
+        Supports variables extra-comptables via # (ex: "#nif", "#dirigeant_nom").
         """
         rule = rule.strip()
+
+        # Handle extra-accounting variable
+        if rule.startswith("#"):
+            var_name = rule[1:]
+            val = self.annexe_data.get(var_name, "")
+            # Try to cast to float if it looks like a number
+            try:
+                # Basic check for number format
+                if str(val).replace('.', '', 1).isdigit():
+                    return float(val)
+            except:
+                pass
+            return val
 
         # Handle ABS() wrapper
         is_abs = False
@@ -130,7 +148,7 @@ class ExcelInjector:
                 row_digits += ch
         return int(row_digits), column_index_from_string(col_letters)
 
-    def inject_value(self, ws, cell_addr: str, value: float):
+    def inject_value(self, ws, cell_addr: str, value):
         """
         Write value to cell_addr in worksheet ws.
         If the cell belongs to a merged range, write to the top-left master.

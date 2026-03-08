@@ -125,7 +125,7 @@ def get_license_info(key: str, db: Session = Depends(get_db)):
     return license
 
 @router.delete("/revoke/{activation_id}")
-def revoke_activation(activation_id: int, db: Session = Depends(get_db)):
+def revoke_activation(activation_id: str, db: Session = Depends(get_db)):
     """
     Revoke a specific activation (release a seat).
     """

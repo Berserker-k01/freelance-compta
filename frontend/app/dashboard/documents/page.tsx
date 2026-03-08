@@ -11,7 +11,7 @@ import { API_BASE_URL } from "@/lib/api";
 import Link from "next/link";
 
 interface Document {
-    id: number;
+    id: string;
     name: string;
     filename: string;
     file_type: string;
@@ -45,12 +45,12 @@ export default function DocumentsPage() {
         }
     };
 
-    const handleDownload = (docId: number, filename: string) => {
+    const handleDownload = (docId: string, filename: string) => {
         // Direct download link
         window.open(`${API_BASE_URL}/documents/download/${docId}`, "_blank");
     };
 
-    const handleDelete = async (docId: number) => {
+    const handleDelete = async (docId: string) => {
         if (!confirm("Voulez-vous vraiment supprimer ce document ?")) return;
 
         try {

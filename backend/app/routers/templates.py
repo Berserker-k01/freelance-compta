@@ -50,30 +50,113 @@ async def upload_dynamic_template(file: UploadFile = File(...), name: str = "Nou
     wb = openpyxl.load_workbook(file_path, read_only=True, data_only=True)
     mapping = {}
     
-    # Simple predefined knowledge base
+    # Auto-mapping Expert : Base de Connaissances exhaustive SYSCOHADA/OTR
+    # Format: "mot clé unique": ("règle de mapping", décalage_colonne)
+    # décalage_colonne = 1 (juste à droite pour N), 2 (Souvent N-1 ou Amortissements)
     KNOWLEDGE_BASE = {
-        "ventes de marchandises": "-701*",
-        "achats de marchandises": "601*",
-        "transports": "61*",
-        "assurances": "626*",
-        "impôt sur les bénéfices": "89*",
-        "clients et comptes rattachés": "411*",
-        "fournisseurs et comptes rattachés": "-401*",
-        "banques": "52*",
-        "caisses": "57*"
+        # --- ACTIF ---
+        "immobilisations incorporelles": ("20*", 1),
+        "terrains": ("22*", 1),
+        "amortissements des terrains": ("ABS(282*)", 2),
+        "bâtiments": ("23*", 1),
+        "amortissements des bâtiments": ("ABS(283*)", 2),
+        "aménagements, agencements et installations": ("232*, 233*, 241*, 242*", 1),
+        "amortissements des aménagements": ("ABS(283*, 284*)", 2),
+        "matériel, mobilier et actifs biologiques": ("24*", 1),
+        "amortissements du matériel": ("ABS(284*)", 2),
+        "matériel de transport": ("25*", 1),
+        "amortissements du matériel de transport": ("ABS(285*)", 2),
+        "avances et acomptes versés sur immobilisations": ("26*", 1),
+        "titres de participation": ("27*", 1),
+        "autres immobilisations financières": ("27*", 1),
+        
+        # --- ACTIF CIRCULANT ---
+        "marchandises": ("31*", 1),
+        "matières premières et fournitures liées": ("32*", 1),
+        "autres approvisionnements": ("33*", 1),
+        "produits en cours": ("34*", 1),
+        "services en cours": ("35*", 1),
+        "produits finis": ("36*", 1),
+        "produits intermédiaires": ("37*", 1),
+        "provisions pour dépréciation des stocks": ("ABS(39*)", 2),
+        "clients et comptes rattachés": ("41*", 1),
+        "provisions pour dépréciation des créances": ("ABS(49*)", 2),
+        "autres créances": ("409*, 44*, 45*, 46*, 47*, 48*", 1),
+        
+        # --- TRESORERIE ACTIVE ---
+        "titres de placement": ("50*", 1),
+        "valeurs à encaisser": ("51*", 1),
+        "banques, chèques postaux, caisses": ("52*, 53*, 57*", 1),
+        "banques": ("52*, 53*, 57*", 1),
+        
+        # --- PASSIF ---
+        "capital": ("-101*, -102*", 1),
+        "primes liées au capital social": ("-105*", 1),
+        "réserves indisponibles": ("-111*, -112*", 1),
+        "réserves libres": ("-118*", 1),
+        "report à nouveau": ("-12*", 1),
+        "résultat net de l'exercice": ("-13*", 1),
+        "subventions d'investissement": ("-14*", 1),
+        "provisions réglementées": ("-15*", 1),
+        "emprunts et dettes financières diverses": ("-16*, -17*", 1),
+        "fournisseurs et comptes rattachés": ("-401*, -402*, -408*", 1),
+        "avances et acomptes reçus": ("-419*", 1),
+        "dettes fiscales et sociales": ("-42*, -43*, -44*", 1),
+        "autres dettes": ("-45*, -46*, -47*, -48*", 1),
+        "banques, découverts": ("-56*", 1),
+        
+        # --- COMPTE DE RÉSULTAT ---
+        "ventes de marchandises": ("-701*", 1),
+        "ventes de produits fabriqués": ("-702*, -703*, -704*", 1),
+        "travaux, services vendus": ("-705*, -706*", 1),
+        "chiffre d'affaires": ("-70*", 1),
+        "produits accessoires": ("-707*", 1),
+        "subventions d'exploitation": ("-74*", 1),
+        "autres produits": ("-75*", 1),
+        "transferts de charges d'exploitation": ("-781*", 1),
+        
+        "achats de marchandises": ("601*", 1),
+        "variation de stocks de marchandises": ("6031*", 1),
+        "achats de matières premières": ("602*", 1),
+        "variation de stocks de matières premières": ("6032*", 1),
+        "autres achats": ("604*, 605*, 608*", 1),
+        "transports": ("61*", 1),
+        "services extérieurs": ("62*, 63*", 1),
+        "impôts et taxes": ("64*", 1),
+        "autres charges": ("65*", 1),
+        "frais de personnel": ("66*", 1),
+        
+        "produits financiers": ("-77*", 1),
+        "charges financières": ("67*", 1),
+        "dotations aux amortissements": ("68*", 1),
+        "reprises de provisions": ("-78*", 1),
+        
+        "produits h.a.o": ("-82*, -84*, -86*, -88*", 1),
+        "charges h.a.o": ("81*, 83*, 85*, 87*", 1),
+        "participation des travailleurs": ("87*", 1),
+        "impôt sur le résultat": ("89*", 1),
+        
+        # --- INTELLIGENCE EXTRA-COMPTABLE (Variables Modèle 4 & Dirigeants) ---
+        "numéro d'identification fiscale": ("#nif", 1),
+        "nif": ("#nif", 1),
+        "nom du dirigeant": ("#dirigeant_nom", 1),
+        "effectif total brut": ("#effectif_hommes", 1),  # Approximation (généralement on a besoin de plus de logique, mais c'est un point de départ)
+        "amendes et pénalités": ("657*", 1),
+        "charges non justifiées": ("658*", 1),
+        "dons et libéralités": ("6234*", 1)
     }
     
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         try:
-            for row in ws.iter_rows(min_row=1, max_row=100, min_col=1, max_col=10):
+            for row in ws.iter_rows(min_row=1, max_row=150, min_col=1, max_col=10):
                 for cell in row:
                     val = str(cell.value).strip().lower() if cell.value else ""
-                    if len(val) > 4:
-                        for keyword, account_rule in KNOWLEDGE_BASE.items():
+                    if len(val) > 3:
+                        for keyword, (account_rule, col_offset) in KNOWLEDGE_BASE.items():
+                            # Vérification stricte du mot (pour éviter des correspondances hasardeuses)
                             if keyword in val:
-                                # Heuristic: injection target is usually 1 or 2 columns to the right
-                                target_col_idx = cell.column + 1
+                                target_col_idx = cell.column + col_offset
                                 cell_addr = f"{sheet_name}!{get_column_letter(target_col_idx)}{cell.row}"
                                 mapping[cell_addr] = account_rule
         except Exception:
@@ -109,7 +192,7 @@ REQUIRED_ACCOUNT_CLASSES = {
 
 
 @router.get("/validate/{company_id}")
-def validate_prerequisites(company_id: int, document_id: Optional[int] = None, db: Session = Depends(get_db)):
+def validate_prerequisites(company_id: str, document_id: Optional[str] = None, db: Session = Depends(get_db)):
     """
     Vérifie tous les prérequis avant de générer la liasse.
     Retourne :
@@ -271,7 +354,7 @@ def validate_prerequisites(company_id: int, document_id: Optional[int] = None, d
 # ---------------------------------------------------------------------------
 
 @router.get("/preflight/{company_id}")
-def preflight_check(company_id: int, document_id: Optional[int] = None, db: Session = Depends(get_db)):
+def preflight_check(company_id: str, document_id: Optional[str] = None, db: Session = Depends(get_db)):
     """
     Simule l'état Bilan/Résultat pour identifier un déséquilibre avant génération (Module 6).
     """
@@ -286,8 +369,8 @@ def preflight_check(company_id: int, document_id: Optional[int] = None, db: Sess
 
 @router.get("/generate/{company_id}")
 async def generate_liasse(
-    company_id: int,
-    document_id: Optional[int] = None,
+    company_id: str,
+    document_id: Optional[str] = None,
     template_id: Optional[int] = None,
     db: Session = Depends(get_db)
 ):
@@ -342,7 +425,7 @@ async def generate_liasse(
 # ---------------------------------------------------------------------------
 
 @router.get("/{template_id}")
-def get_template_by_id(template_id: int, db: Session = Depends(get_db)):
+def get_template_by_id(template_id: str, db: Session = Depends(get_db)):
     """Get a single template by ID."""
     tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
     if not tmpl:
@@ -351,7 +434,7 @@ def get_template_by_id(template_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{template_id}/mapping")
-def update_template_mapping(template_id: int, payload: dict, db: Session = Depends(get_db)):
+def update_template_mapping(template_id: str, payload: dict, db: Session = Depends(get_db)):
     """Update the mapping configuration of a template."""
     tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
     if not tmpl:

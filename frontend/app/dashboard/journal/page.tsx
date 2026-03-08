@@ -28,9 +28,9 @@ const entrySchema = z.object({
     date: z.date(),
     reference: z.string().min(2, "Référence requise"),
     label: z.string().min(2, "Libellé requis"),
-    journal_id: z.coerce.number().min(1, "Journal requis"),
+    journal_id: z.string().min(1, "Journal requis"),
     lines: z.array(z.object({
-        account_id: z.coerce.number().min(1, "Compte requis"),
+        account_id: z.string().min(1, "Compte requis"),
         debit: z.coerce.number().min(0).default(0),
         credit: z.coerce.number().min(0).default(0),
         label: z.string().optional(),
@@ -45,7 +45,7 @@ const entrySchema = z.object({
 type EntryFormValues = z.infer<typeof entrySchema>;
 
 interface EntryLine {
-    id?: number;
+    id?: string;
     account_code?: string;
     account_name?: string;
     label: string;
@@ -54,12 +54,12 @@ interface EntryLine {
 }
 
 interface JournalEntry {
-    id: number;
+    id: string;
     date: string;
     reference: string;
     label: string;
-    journal_id: number;
-    document_id?: number;
+    journal_id: string;
+    document_id?: string;
     lines: EntryLine[];
 }
 
@@ -81,10 +81,10 @@ export default function JournalPage() {
             date: new Date(),
             reference: "",
             label: "",
-            journal_id: 1,
+            journal_id: "",
             lines: [
-                { account_id: 0, debit: 0, credit: 0, label: "" },
-                { account_id: 0, debit: 0, credit: 0, label: "" }
+                { account_id: "", debit: 0, credit: 0, label: "" },
+                { account_id: "", debit: 0, credit: 0, label: "" }
             ]
         }
     });
@@ -166,10 +166,10 @@ export default function JournalPage() {
                 date: new Date(),
                 reference: "",
                 label: "",
-                journal_id: 1,
+                journal_id: journals.length > 0 ? journals[0].id : "",
                 lines: [
-                    { account_id: 0, debit: 0, credit: 0 },
-                    { account_id: 0, debit: 0, credit: 0 }
+                    { account_id: "", debit: 0, credit: 0 },
+                    { account_id: "", debit: 0, credit: 0 }
                 ]
             });
             setTimeout(() => setSuccess(null), 3000);
@@ -294,7 +294,7 @@ export default function JournalPage() {
                                                             control={form.control}
                                                             name={`lines.${index}.account_id`}
                                                             render={({ field }) => (
-                                                                <Select onValueChange={(val) => field.onChange(Number(val))} value={field.value?.toString()}>
+                                                                <Select onValueChange={field.onChange} value={field.value}>
                                                                     <FormControl>
                                                                         <SelectTrigger>
                                                                             <SelectValue placeholder="Compte" />
@@ -302,7 +302,7 @@ export default function JournalPage() {
                                                                     </FormControl>
                                                                     <SelectContent>
                                                                         {accounts.map(acc => (
-                                                                            <SelectItem key={acc.id} value={acc.id.toString()}>
+                                                                            <SelectItem key={acc.id} value={acc.id}>
                                                                                 {acc.code} - {acc.name}
                                                                             </SelectItem>
                                                                         ))}

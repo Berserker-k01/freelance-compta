@@ -7,7 +7,7 @@ import uuid
 UPLOAD_DIR = Path("uploads/safe")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
-def save_upload_file(upload_file: UploadFile, company_id: int) -> str:
+def save_upload_file(upload_file: UploadFile, company_id: str) -> str:
     """Save an uploaded file to the digital safe and return its path."""
     # Create company specific folder
     company_dir = UPLOAD_DIR / str(company_id)
@@ -23,5 +23,5 @@ def save_upload_file(upload_file: UploadFile, company_id: int) -> str:
         
     return str(file_path)
 
-def get_file_path(filename: str, company_id: int) -> Path:
+def get_file_path(filename: str, company_id: str) -> Path:
     return UPLOAD_DIR / str(company_id) / filename

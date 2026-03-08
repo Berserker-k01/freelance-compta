@@ -13,8 +13,9 @@ import { useEffect, useState, useRef } from "react";
 import {
     generateLiasse,
     validatePrerequisites, ValidationResult, PrerequisiteCheck,
-    getTemplates, Template, uploadTemplate
+    getTemplates, Template, uploadTemplate, updateTemplateMapping
 } from "@/lib/templates-api";
+import { Textarea } from "@/components/ui/textarea";
 import { getDocuments, Document } from "@/lib/documents-api";
 import {
     Dialog,
@@ -79,6 +80,12 @@ export default function TemplatesPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadName, setUploadName] = useState("Modèle Personnalisé");
+
+    // Mapping Editor states
+    const [isMappingDialogOpen, setIsMappingDialogOpen] = useState(false);
+    const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+    const [mappingValue, setMappingValue] = useState("");
+    const [savingMapping, setSavingMapping] = useState(false);
 
     useEffect(() => {
         if (activeCompany) {
@@ -176,6 +183,27 @@ export default function TemplatesPage() {
             setUploading(false);
         }
     }
+
+    const handleEditMappingClick = (t: Template) => {
+        setEditingTemplate(t);
+        setMappingValue(t.mapping_config || "{\n\n}");
+        setIsMappingDialogOpen(true);
+    };
+
+    const handleSaveMapping = async () => {
+        if (!editingTemplate) return;
+        setSavingMapping(true);
+        try {
+            JSON.parse(mappingValue); // Validate JSON format
+            await updateTemplateMapping(editingTemplate.id, mappingValue);
+            await loadTemplates();
+            setIsMappingDialogOpen(false);
+        } catch (error: any) {
+            alert("Erreur JSON invalide ou sauvegarde échouée : " + error.message);
+        } finally {
+            setSavingMapping(false);
+        }
+    };
 
     if (!activeCompany) return (
         <div className="p-10 text-muted-foreground">Veuillez sélectionner un dossier.</div>
@@ -368,7 +396,65 @@ export default function TemplatesPage() {
                         </Button>
                     </CardContent>
                 </Card>
+
+                {/* TEMPLATE LIST MANAGER */}
+                <Card className="md:col-span-2 lg:col-span-3 border-l-4 border-l-orange-500 shadow-md">
+                    <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                            <Settings className="h-5 w-5 text-orange-500" /> Gestion des Mappages (Le "Cerveau")
+                        </CardTitle>
+                        <CardDescription>Éditez l'intelligence d'injection pour personnaliser ou relier les correspondances de l'Auto-Mapping. Structure : <code>{"{'BILAN ACTIF!E14': '22*'}"}</code></CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {templates.length === 0 ? (
+                            <p className="text-sm text-center text-muted-foreground p-4">Aucun modèle importé pour le moment.</p>
+                        ) : (
+                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {templates.map(t => (
+                                    <div key={t.id} className="border p-4 rounded-lg flex flex-col gap-3">
+                                        <div className="font-semibold text-sm leading-tight">{t.name}</div>
+                                        <div className="text-xs text-muted-foreground">Année: {t.year}</div>
+                                        <Button size="sm" variant="secondary" onClick={() => handleEditMappingClick(t)}>
+                                            {t.mapping_config && t.mapping_config !== "{}" ? (
+                                                <><CheckCircle className="h-4 w-4 mr-1 text-emerald-500" /> Éditer le Mappage</>
+                                            ) : (
+                                                <><Settings className="h-4 w-4 mr-1" /> Configurer le Mappage</>
+                                            )}
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
+
+            {/* ---- MAPPING DIALOG ---- */}
+            <Dialog open={isMappingDialogOpen} onOpenChange={setIsMappingDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle>Éditeur de Configuration</DialogTitle>
+                        <DialogDescription>
+                            Modèle : <span className="font-semibold">{editingTemplate?.name}</span>. Entrez un JSON valide.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 min-h-[400px] overflow-hidden rounded-md border">
+                        <Textarea
+                            className="font-mono text-sm h-full w-full border-none focus-visible:ring-0 p-4 resize-none"
+                            value={mappingValue}
+                            onChange={e => setMappingValue(e.target.value)}
+                            spellCheck={false}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsMappingDialogOpen(false)}>Annuler</Button>
+                        <Button onClick={handleSaveMapping} disabled={savingMapping}>
+                            {savingMapping && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                            Sauvegarder les règles
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
         </div>
     );

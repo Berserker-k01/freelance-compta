@@ -20,27 +20,27 @@ router = APIRouter(
 
 # --- ACCOUNTS ---
 @router.post("/accounts/", response_model=schemas.Account)
-def create_account(account: schemas.AccountCreate, company_id: int, db: Session = Depends(get_db)):
+def create_account(account: schemas.AccountCreate, company_id: str, db: Session = Depends(get_db)):
     return crud.create_account(db=db, account=account, company_id=company_id)
 
 @router.get("/accounts/{company_id}", response_model=List[schemas.Account])
-def read_accounts(company_id: int, skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
+def read_accounts(company_id: str, skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
     # Increased limit for full plan
     accounts = crud.get_accounts(db, company_id=company_id, skip=skip, limit=limit)
     return accounts
 
 @router.post("/accounts/seed/{company_id}")
-def seed_default_plan(company_id: int, db: Session = Depends(get_db)):
+def seed_default_plan(company_id: str, db: Session = Depends(get_db)):
     """Initialize SYSCOHADA plan for a company"""
     return seed_syscohada(db, company_id)
 
 # --- JOURNALS ---
 @router.get("/journals/{company_id}", response_model=List[schemas.Journal])
-def read_journals(company_id: int, db: Session = Depends(get_db)):
+def read_journals(company_id: str, db: Session = Depends(get_db)):
     return db.query(models.Journal).filter(models.Journal.company_id == company_id).all()
 
 @router.post("/journals/", response_model=schemas.Journal)
-def create_journal(journal: schemas.JournalCreate, company_id: int, db: Session = Depends(get_db)):
+def create_journal(journal: schemas.JournalCreate, company_id: str, db: Session = Depends(get_db)):
     db_journal = models.Journal(**journal.model_dump(), company_id=company_id)
     db.add(db_journal)
     db.commit()
@@ -60,7 +60,7 @@ def create_entry_transaction(entry: schemas.EntryCreate, db: Session = Depends(g
     return crud.create_entry(db=db, entry=entry)
 
 @router.get("/entries/", response_model=List[schemas.Entry])
-def read_entries(company_id: int = None, journal_id: int = None, skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
+def read_entries(company_id: str = None, journal_id: str = None, skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
     query = db.query(models.Entry)
     if journal_id:
         query = query.filter(models.Entry.journal_id == journal_id)
@@ -71,7 +71,7 @@ def read_entries(company_id: int = None, journal_id: int = None, skip: int = 0, 
 
 # --- IMPORT BALANCE ---
 @router.post("/import-balance/{company_id}")
-async def import_balance(company_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def import_balance(company_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
     """
     Importe une Balance Générale (Excel ou CSV) au format SYSCOHADA Révisé.
 

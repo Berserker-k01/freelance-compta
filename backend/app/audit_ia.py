@@ -3,7 +3,7 @@ from sqlalchemy import func
 from . import models
 from typing import List, Dict
 
-def analyze_entries(db: Session, company_id: int) -> Dict:
+def analyze_entries(db: Session, company_id: str) -> Dict:
     """
     AuditIA: Performs a full certification check.
     Returns: {

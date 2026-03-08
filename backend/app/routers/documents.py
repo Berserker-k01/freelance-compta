@@ -22,7 +22,7 @@ if not os.path.exists(BASE_UPLOAD_DIR):
 
 @router.post("/upload/{company_id}", response_model=schemas.Document)
 async def upload_document(
-    company_id: int, 
+    company_id: str, 
     file: UploadFile = File(...), 
     name: str = None, # Optional display name
     file_type: str = "other",
@@ -57,11 +57,11 @@ async def upload_document(
     return db_doc
 
 @router.get("/list/{company_id}", response_model=List[schemas.Document])
-def list_documents(company_id: int, db: Session = Depends(get_db)):
+def list_documents(company_id: str, db: Session = Depends(get_db)):
     return db.query(models.Document).filter(models.Document.company_id == company_id).order_by(models.Document.created_at.desc()).all()
 
 @router.get("/download/{document_id}")
-def download_document(document_id: int, db: Session = Depends(get_db)):
+def download_document(document_id: str, db: Session = Depends(get_db)):
     doc = db.query(models.Document).filter(models.Document.id == document_id).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
@@ -72,7 +72,7 @@ def download_document(document_id: int, db: Session = Depends(get_db)):
     return FileResponse(doc.file_path, filename=doc.filename)
 
 @router.delete("/{document_id}")
-def delete_document(document_id: int, db: Session = Depends(get_db)):
+def delete_document(document_id: str, db: Session = Depends(get_db)):
     doc = db.query(models.Document).filter(models.Document.id == document_id).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")

@@ -49,7 +49,7 @@ export default function CompaniesPage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (id: string) => {
         if (!confirm("Voulez-vous vraiment supprimer ce dossier ? Toutes les données seront perdues.")) return;
         try {
             await deleteCompany(id);

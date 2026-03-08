@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 @router.get("/analyze/{company_id}")
-def run_audit_analysis(company_id: int, db: Session = Depends(get_db)):
+def run_audit_analysis(company_id: str, db: Session = Depends(get_db)):
     """
     Launch AuditIA analysis on the company's ledger.
     Returns anomalies, coherence checks and a global score.
@@ -26,7 +26,7 @@ def run_audit_analysis(company_id: int, db: Session = Depends(get_db)):
 # Contrôles de cohérence conformes aux 3 règles OTR
 # ---------------------------------------------------------------------------
 
-def _get_balances(db: Session, company_id: int) -> dict[str, float]:
+def _get_balances(db: Session, company_id: str) -> dict[str, float]:
     """Return { account_code: debit - credit } for a company."""
     rows = (
         db.query(
@@ -68,7 +68,7 @@ def _check(
 
 
 @router.get("/coherence/{company_id}")
-def run_coherence_checks(company_id: int, db: Session = Depends(get_db)):
+def run_coherence_checks(company_id: str, db: Session = Depends(get_db)):
     """
     Exécute les 3 contrôles de cohérence OTR :
       1. Total Actif Net = Total Passif

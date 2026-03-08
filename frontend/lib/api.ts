@@ -18,36 +18,36 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
 }
 
 export interface Account {
-    id: number;
+    id: string;
     code: string;
     name: string;
     class_code: number;
     is_active: boolean;
-    company_id: number;
+    company_id: string;
 }
 
 export interface Journal {
-    id: number;
+    id: string;
     code: string;
     name: string;
-    company_id: number;
+    company_id: string;
 }
 
-export async function getAccounts(companyId: number): Promise<Account[]> {
+export async function getAccounts(companyId: string): Promise<Account[]> {
     return fetchAPI(`/accounting/accounts/${companyId}`);
 }
 
-export async function seedAccounts(companyId: number) {
+export async function seedAccounts(companyId: string) {
     return fetchAPI(`/accounting/accounts/seed/${companyId}`, {
         method: "POST",
     });
 }
 
-export async function getJournals(companyId: number): Promise<Journal[]> {
+export async function getJournals(companyId: string): Promise<Journal[]> {
     return fetchAPI(`/accounting/journals/${companyId}`);
 }
 
-export async function importBalance(companyId: number, file: File) {
+export async function importBalance(companyId: string, file: File) {
     const formData = new FormData();
     formData.append("file", file);
 

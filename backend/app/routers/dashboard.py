@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.get("/stats/{company_id}")
-def get_dashboard_stats(company_id: int, db: Session = Depends(get_db)):
+def get_dashboard_stats(company_id: str, db: Session = Depends(get_db)):
     """
     Get KPI and charts data for the dashboard.
     """

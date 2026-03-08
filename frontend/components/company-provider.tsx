@@ -26,7 +26,7 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
             // Restore active company from localStorage
             if (data.length > 0) {
                 const savedId = localStorage.getItem("auditia_activeCompanyId");
-                const found = savedId ? data.find(c => c.id === Number(savedId)) : null;
+                const found = savedId ? data.find(c => c.id === savedId) : null;
                 // Only auto-select if no active company is set yet
                 setActiveCompanyState(prev => {
                     if (prev) return prev; // keep existing selection

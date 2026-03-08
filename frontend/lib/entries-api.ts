@@ -1,7 +1,7 @@
 import { fetchAPI } from "./api";
 
 export interface EntryLineItem {
-    account_id: number;
+    account_id: string;
     debit: number;
     credit: number;
     label?: string;
@@ -11,8 +11,8 @@ export interface EntryCreate {
     date: string; // ISO
     reference: string;
     label: string;
-    journal_id: number;
-    company_id?: number; // Optional, used by backend to validate context
+    journal_id: string;
+    company_id?: string; // Optional, used by backend to validate context
     lines: EntryLineItem[];
 }
 
@@ -23,7 +23,7 @@ export async function createEntry(entry: EntryCreate) {
     });
 }
 
-export async function getEntries(companyId: number, documentId?: string | null) {
+export async function getEntries(companyId: string, documentId?: string | null) {
     let url = `/accounting/entries/?company_id=${companyId}&limit=100`;
     if (documentId) {
         // Backend currently ignores this unless updated, but let's pass it

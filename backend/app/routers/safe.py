@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 @router.post("/upload/{company_id}")
-def upload_document(company_id: int, file: UploadFile = File(...)):
+def upload_document(company_id: str, file: UploadFile = File(...)):
     """Upload a document to the digital safe."""
     try:
         file_path = digital_safe.save_upload_file(file, company_id)

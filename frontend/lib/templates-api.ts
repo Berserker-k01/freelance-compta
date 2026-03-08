@@ -1,7 +1,7 @@
 import { API_BASE_URL, fetchAPI } from "./api";
 
 export interface Template {
-    id: number;
+    id: string;
     name: string;
     year: string;
     file_path?: string;
@@ -24,15 +24,15 @@ export interface ValidationResult {
 
 /** Validate all prerequisites before generating the liasse */
 export async function validatePrerequisites(
-    companyId: number,
-    documentId?: number
+    companyId: string,
+    documentId?: string
 ): Promise<ValidationResult> {
     const url = `/templates/validate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
     return fetchAPI(url);
 }
 
 /** Download the full OTR Liasse Fiscale as an Excel file */
-export async function generateLiasse(companyId: number, filename: string = "liasse_fiscale.xlsx", documentId?: number, templateId?: number): Promise<void> {
+export async function generateLiasse(companyId: string, filename: string = "liasse_fiscale.xlsx", documentId?: string, templateId?: string): Promise<void> {
     const params = new URLSearchParams();
     if (documentId) params.append("document_id", documentId.toString());
     if (templateId) params.append("template_id", templateId.toString());
@@ -86,7 +86,7 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 /** Fetch a single template by ID */
-export async function getTemplate(id: number): Promise<Template | null> {
+export async function getTemplate(id: string): Promise<Template | null> {
     try {
         return await fetchAPI(`/templates/${id}`);
     } catch {
@@ -95,7 +95,7 @@ export async function getTemplate(id: number): Promise<Template | null> {
 }
 
 /** Save / update a template's mapping config */
-export async function updateTemplateMapping(id: number, mapping: string): Promise<void> {
+export async function updateTemplateMapping(id: string, mapping: string): Promise<void> {
     return fetchAPI(`/templates/${id}/mapping`, {
         method: "PUT",
         body: JSON.stringify({ mapping_config: mapping }),
