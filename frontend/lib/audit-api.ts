@@ -40,17 +40,17 @@ export interface CoherenceSummary {
 }
 
 export interface CoherenceResult {
-    company_id: number;
+    company_id: string;
     timestamp: string;
     summary: CoherenceSummary;
     checks: CoherenceCheck[];
     warning?: string;
 }
 
-export async function runAudit(companyId: number): Promise<AuditResult> {
+export async function runAudit(companyId: string): Promise<AuditResult> {
     return fetchAPI(`/audit/analyze/${companyId}`);
 }
 
-export async function runCoherenceChecks(companyId: number): Promise<CoherenceResult> {
+export async function runCoherenceChecks(companyId: string): Promise<CoherenceResult> {
     return fetchAPI(`/audit/coherence/${companyId}`);
 }

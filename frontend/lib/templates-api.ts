@@ -42,7 +42,11 @@ export async function generateLiasse(companyId: string, filename: string = "lias
 
     if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        throw new Error(err.detail || "Erreur lors de la génération de la liasse");
+        let errorMsg = "Erreur lors de la génération de la liasse";
+        if (err.detail) {
+            errorMsg = typeof err.detail === "string" ? err.detail : JSON.stringify(err.detail);
+        }
+        throw new Error(errorMsg);
     }
 
     const blob = await response.blob();

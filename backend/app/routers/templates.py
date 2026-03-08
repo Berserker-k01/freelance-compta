@@ -29,7 +29,7 @@ if not os.path.exists(OUTPUT_DIR):
 
 from .. import models
 import json
-from fastapi import UploadFile, File
+from fastapi import UploadFile, File, Form
 from openpyxl.utils import get_column_letter
 
 @router.get("/list")
@@ -39,7 +39,12 @@ def list_templates(db: Session = Depends(get_db)):
     return templates
 
 @router.post("/upload")
-async def upload_dynamic_template(file: UploadFile = File(...), name: str = "Nouveau Canevas", year: int = 2026, db: Session = Depends(get_db)):
+async def upload_dynamic_template(
+    file: UploadFile = File(...), 
+    name: str = Form("Nouveau Canevas"), 
+    year: int = Form(2026), 
+    db: Session = Depends(get_db)
+):
     """Smart Loader: Upload an Excel template and auto-map basic tags."""
     import openpyxl
     file_path = os.path.join(BASE_DIR, "templates", f"dynamic_{datetime.now().strftime('%Y%m%d%H%M%S')}_{file.filename}")

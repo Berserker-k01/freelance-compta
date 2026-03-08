@@ -19,7 +19,7 @@ interface MappingRule {
 export default function MappingPage({ params }: { params: Promise<{ id: string }> }) {
     // Correctly unwrap params using React.use()
     const { id } = use(params);
-    const templateId = Number(id);
+    const templateId = id;
 
     const [template, setTemplate] = useState<Template | null>(null);
     const [rules, setRules] = useState<MappingRule[]>([]);

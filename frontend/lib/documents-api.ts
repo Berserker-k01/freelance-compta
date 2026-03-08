@@ -6,10 +6,10 @@ export interface Document {
     filename: string;
     file_type: string;
     created_at: string;
-    company_id: number;
+    company_id: string;
 }
 
-export async function getDocuments(companyId: number): Promise<Document[]> {
+export async function getDocuments(companyId: string): Promise<Document[]> {
     return fetchAPI(`/documents/list/${companyId}`);
 }
 
