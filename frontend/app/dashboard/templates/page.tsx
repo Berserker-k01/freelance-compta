@@ -6,14 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
     FileDown, FileText, ArrowLeft, CheckCircle, XCircle,
-    AlertTriangle, Loader2, ShieldAlert, ShieldCheck, RefreshCw, Upload, FileSignature, Settings, FileSpreadsheet
+    AlertTriangle, Loader2, ShieldAlert, ShieldCheck, RefreshCw, Upload, FileSignature, Settings, FileSpreadsheet, Trash2, Save
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import {
     generateLiasse,
     validatePrerequisites, ValidationResult, PrerequisiteCheck,
-    getTemplates, Template, uploadTemplate, updateTemplateMapping
+    getTemplates, Template, uploadTemplate, updateTemplateMapping, deleteTemplate
 } from "@/lib/templates-api";
 import { Textarea } from "@/components/ui/textarea";
 import { getDocuments, Document } from "@/lib/documents-api";
@@ -189,7 +189,12 @@ export default function TemplatesPage() {
 
     const handleEditMappingClick = (t: Template) => {
         setEditingTemplate(t);
-        setMappingValue(t.mapping_config || "{\n\n}");
+        try {
+            const parsed = JSON.parse(t.mapping_config || "{}");
+            setMappingValue(JSON.stringify(parsed, null, 4));
+        } catch {
+            setMappingValue(t.mapping_config || "{\n\n}");
+        }
         setIsMappingDialogOpen(true);
     };
 
@@ -205,6 +210,16 @@ export default function TemplatesPage() {
             alert("Erreur JSON invalide ou sauvegarde échouée : " + error.message);
         } finally {
             setSavingMapping(false);
+        }
+    };
+
+    const handleDeleteTemplate = async (id: string, name: string) => {
+        if (!confirm(`Êtes-vous sûr de vouloir supprimer le modèle "${name}" ?`)) return;
+        try {
+            await deleteTemplate(id);
+            await loadTemplates();
+        } catch (error: any) {
+            alert("Erreur lors de la suppression : " + error.message);
         }
     };
 
@@ -417,13 +432,18 @@ export default function TemplatesPage() {
                                     <div key={t.id} className="border p-4 rounded-lg flex flex-col gap-3">
                                         <div className="font-semibold text-sm leading-tight">{t.name}</div>
                                         <div className="text-xs text-muted-foreground">Année: {t.year}</div>
-                                        <Button size="sm" variant="secondary" onClick={() => handleEditMappingClick(t)}>
-                                            {t.mapping_config && t.mapping_config !== "{}" ? (
-                                                <><CheckCircle className="h-4 w-4 mr-1 text-emerald-500" /> Éditer le Mappage</>
-                                            ) : (
-                                                <><Settings className="h-4 w-4 mr-1" /> Configurer le Mappage</>
-                                            )}
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button size="sm" variant="secondary" className="flex-1" onClick={() => handleEditMappingClick(t)}>
+                                                {t.mapping_config && t.mapping_config !== "{}" ? (
+                                                    <><CheckCircle className="h-4 w-4 mr-1 text-emerald-500" /> Mapper</>
+                                                ) : (
+                                                    <><Settings className="h-4 w-4 mr-1" /> Configurer</>
+                                                )}
+                                            </Button>
+                                            <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteTemplate(t.id, t.name)}>
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -432,30 +452,95 @@ export default function TemplatesPage() {
                 </Card>
             </div>
 
-            {/* ---- MAPPING DIALOG ---- */}
             <Dialog open={isMappingDialogOpen} onOpenChange={setIsMappingDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
-                    <DialogHeader>
-                        <DialogTitle>Éditeur de Configuration</DialogTitle>
-                        <DialogDescription>
-                            Modèle : <span className="font-semibold">{editingTemplate?.name}</span>. Entrez un JSON valide.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="flex-1 min-h-[400px] overflow-hidden rounded-md border">
-                        <Textarea
-                            className="font-mono text-sm h-full w-full border-none focus-visible:ring-0 p-4 resize-none"
-                            value={mappingValue}
-                            onChange={e => setMappingValue(e.target.value)}
-                            spellCheck={false}
-                        />
+                <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0 overflow-hidden border-none shadow-2xl">
+                    <div className="bg-slate-900 px-6 py-4 flex items-center justify-between border-b border-slate-800">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-orange-500/20 p-2 rounded-lg">
+                                <Settings className="h-5 w-5 text-orange-400" />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-slate-100 text-lg">Éditeur d&apos;Auto-Mapping</DialogTitle>
+                                <DialogDescription className="text-slate-400 text-xs">
+                                    Modèle : <span className="text-orange-400 font-mono">{editingTemplate?.name}</span>
+                                </DialogDescription>
+                            </div>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => setIsMappingDialogOpen(false)} className="text-slate-400 hover:text-white hover:bg-white/10">
+                            <XCircle className="h-5 w-5" />
+                        </Button>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsMappingDialogOpen(false)}>Annuler</Button>
-                        <Button onClick={handleSaveMapping} disabled={savingMapping}>
-                            {savingMapping && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+
+                    <div className="flex flex-1 overflow-hidden h-[600px]">
+                        {/* Editor Section */}
+                        <div className="flex-1 flex flex-col bg-slate-950">
+                            <div className="flex items-center gap-2 px-4 py-2 bg-slate-900/50 border-b border-white/5 text-[10px] text-slate-500 uppercase tracking-widest font-bold">
+                                <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                                config.json
+                            </div>
+                            <div className="flex-1 relative overflow-hidden group">
+                                <Textarea
+                                    className="font-mono text-sm h-full w-full border-none focus-visible:ring-0 p-6 resize-none bg-transparent text-slate-300 selection:bg-orange-500/30 leading-relaxed scrollbar-thin scrollbar-thumb-slate-800"
+                                    value={mappingValue}
+                                    onChange={e => setMappingValue(e.target.value)}
+                                    spellCheck={false}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Help / Guide Section */}
+                        <div className="w-80 bg-slate-900 border-l border-slate-800 p-6 overflow-y-auto hidden md:block">
+                            <h4 className="text-slate-200 font-semibold text-sm mb-4 flex items-center gap-2">
+                                <ShieldCheck className="h-4 w-4 text-emerald-400" /> Guide de Syntaxe
+                            </h4>
+                            <div className="space-y-6">
+                                <section>
+                                    <p className="text-[11px] text-slate-500 font-bold mb-2 uppercase tracking-wider">Structure Clé</p>
+                                    <div className="bg-slate-800/50 p-3 rounded-md border border-slate-700 font-mono text-xs text-slate-300">
+                                        "Feuille!Cellule"
+                                    </div>
+                                    <p className="text-[10px] text-slate-500 mt-1 italic">Ex: "BILAN ACTIF!C15"</p>
+                                </section>
+
+                                <section>
+                                    <p className="text-[11px] text-slate-500 font-bold mb-2 uppercase tracking-wider">Règles Comptables</p>
+                                    <ul className="space-y-2 text-[11px] text-slate-400">
+                                        <li><code className="text-orange-400 font-mono text-[12px]">"411*"</code> : Totaux des comptes 411</li>
+                                        <li><code className="text-orange-400 font-mono text-[12px]">"-70*"</code> : Inverse le signe (Produits)</li>
+                                        <li><code className="text-orange-400 font-mono text-[12px]">"ABS(28*)"</code> : Force en valeur absolue</li>
+                                        <li><code className="text-orange-400 font-mono text-[12px]">"60*, 61*"</code> : Somme de plusieurs groupes</li>
+                                    </ul>
+                                </section>
+
+                                <section>
+                                    <p className="text-[11px] text-slate-500 font-bold mb-2 uppercase tracking-wider">Variables Annexes</p>
+                                    <ul className="space-y-2 text-[11px] text-slate-400">
+                                        <li><code className="text-blue-400 font-mono text-[12px]">"#nif"</code> : NIF de la société</li>
+                                        <li><code className="text-blue-400 font-mono text-[12px]">"#dirigeant_nom"</code> : Nom du dirigeant</li>
+                                        <li><code className="text-blue-400 font-mono text-[12px]">"#effectif_total"</code> : Total salariés</li>
+                                    </ul>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-900 px-6 py-4 border-t border-slate-800 flex justify-end gap-3">
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsMappingDialogOpen(false)}
+                            className="bg-transparent border-slate-700 text-slate-400 hover:bg-slate-800 hover:text-white"
+                        >
+                            Annuler
+                        </Button>
+                        <Button
+                            onClick={handleSaveMapping}
+                            disabled={savingMapping}
+                            className="bg-orange-600 hover:bg-orange-500 text-white border-none shadow-lg shadow-orange-900/20"
+                        >
+                            {savingMapping ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
                             Sauvegarder les règles
                         </Button>
-                    </DialogFooter>
+                    </div>
                 </DialogContent>
             </Dialog>
 

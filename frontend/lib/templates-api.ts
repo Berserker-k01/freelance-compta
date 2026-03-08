@@ -105,3 +105,10 @@ export async function updateTemplateMapping(id: string, mapping: string): Promis
         body: JSON.stringify({ mapping_config: mapping }),
     });
 }
+
+/** Delete a report template */
+export async function deleteTemplate(id: string): Promise<void> {
+    return fetchAPI(`/templates/${id}`, {
+        method: "DELETE",
+    });
+}

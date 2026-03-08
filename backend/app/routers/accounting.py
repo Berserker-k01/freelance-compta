@@ -69,6 +69,77 @@ def read_entries(company_id: str = None, journal_id: str = None, skip: int = 0, 
         query = query.join(models.Journal).filter(models.Journal.company_id == company_id)
     return query.order_by(models.Entry.date.desc()).offset(skip).limit(limit).all()
 
+# --- REPAIR ENCODING ---
+@router.post("/repair-encoding/{company_id}")
+def repair_encoding(company_id: str, db: Session = Depends(get_db)):
+    """
+    Repare les caractères accentués mal encodés (ex: R‚sultat -> Résultat).
+    Ceci arrive quand un fichier CP850 est importé sans spécifier l'encodage.
+    """
+    # Mapping des caractères CP850 mal interprétés comme CP1252/UTF-8
+    REPLACEMENTS = {
+        "‚": "é",
+        "…": "à",
+        "Š": "è",
+        "ƒ": "â",
+        "“": "ô",
+        "†": "ê",
+        "Š": "è",
+        "Š": "è", # Duplicate for safety
+        "ˆ": "ê",
+        "‰": "ë",
+        "‡": "ç",
+        "Ž": "é", # Some variants
+    }
+
+    # 1. Update Accounts
+    accounts = db.query(models.Account).filter(models.Account.company_id == company_id).all()
+    acc_count = 0
+    for acc in accounts:
+        new_name = acc.name
+        for old, new in REPLACEMENTS.items():
+            new_name = new_name.replace(old, new)
+        if new_name != acc.name:
+            acc.name = new_name
+            acc_count += 1
+
+    # 2. Update Entry Lines
+    lines = db.query(models.EntryLine).join(models.Entry).join(models.Journal).filter(
+        models.Journal.company_id == company_id
+    ).all()
+    line_count = 0
+    for line in lines:
+        if line.label:
+            new_label = line.label
+            for old, new in REPLACEMENTS.items():
+                new_label = new_label.replace(old, new)
+            if new_label != line.label:
+                line.label = new_label
+                line_count += 1
+                
+    # 3. Update Entries (Header)
+    entries = db.query(models.Entry).join(models.Journal).filter(
+        models.Journal.company_id == company_id
+    ).all()
+    entry_count = 0
+    for entry in entries:
+        if entry.label:
+            new_label = entry.label
+            for old, new in REPLACEMENTS.items():
+                new_label = new_label.replace(old, new)
+            if new_label != entry.label:
+                entry.label = new_label
+                entry_count += 1
+
+    db.commit()
+    return {
+        "status": "success",
+        "message": "Réparation terminée",
+        "accounts_repaired": acc_count,
+        "entry_lines_repaired": line_count,
+        "entries_repaired": entry_count
+    }
+
 # --- IMPORT BALANCE ---
 @router.post("/import-balance/{company_id}")
 async def import_balance(company_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
@@ -123,13 +194,33 @@ async def import_balance(company_id: str, file: UploadFile = File(...), db: Sess
     # ------------------------------------------------------------------ #
     try:
         if file.filename.lower().endswith(".csv"):
-            # Try semicolon first (French locale), then comma
-            try:
-                df_raw = pd.read_csv(io.BytesIO(contents), sep=";", header=None, dtype=str)
-                if df_raw.shape[1] < 3:
-                    df_raw = pd.read_csv(io.BytesIO(contents), sep=",", header=None, dtype=str)
-            except Exception:
-                df_raw = pd.read_csv(io.BytesIO(contents), header=None, dtype=str)
+            # Liste des encodages à tester (Fréquents dans les exports comptables)
+            # utf-8, latin-1, cp1252, cp850 (DOS)
+            encodings = ["utf-8", "latin-1", "cp1252", "cp850"]
+            df_raw = None
+            last_error = None
+
+            for enc in encodings:
+                try:
+                    # Reset buffer for each attempt
+                    io_buf = io.BytesIO(contents)
+                    # Try semicolon first (French locale)
+                    df_raw = pd.read_csv(io_buf, sep=";", header=None, dtype=str, encoding=enc)
+                    
+                    # If only 1 column, maybe it's comma or tab
+                    if df_raw.shape[1] < 2:
+                        io_buf.seek(0)
+                        df_raw = pd.read_csv(io_buf, sep=",", header=None, dtype=str, encoding=enc)
+                    
+                    if df_raw.shape[1] >= 2:
+                        print(f"[Import] Succès avec l'encodage {enc}")
+                        break
+                except Exception as e:
+                    last_error = e
+                    continue
+
+            if df_raw is None:
+                raise last_error or Exception("Échec de lecture CSV avec tous les encodages usuels.")
         else:
             df_raw = pd.read_excel(io.BytesIO(contents), header=None, dtype=str)
     except Exception as exc:

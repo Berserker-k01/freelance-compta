@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, Plus, Trash2, Save, ArrowLeft, FileSpreadsheet, ListFilter } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, Trash2, Save, ArrowLeft, FileSpreadsheet, ListFilter, RefreshCw, Wand2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
@@ -21,7 +21,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { createEntry, getEntries } from "@/lib/entries-api";
-import { getAccounts, Account, getJournals, Journal } from "@/lib/api";
+import { getAccounts, Account, getJournals, Journal, repairEncoding } from "@/lib/api";
 import { useCompany } from "@/components/company-provider";
 
 // --- SCHEMA & TYPES ---
@@ -75,6 +75,7 @@ export default function JournalPage() {
 
     const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [loadingEntries, setLoadingEntries] = useState(false);
+    const [repairing, setRepairing] = useState(false);
 
     // Form setup
     const form = useForm<EntryFormValues>({
@@ -192,6 +193,21 @@ export default function JournalPage() {
             alert("Erreur: " + error);
         }
     }
+
+    const handleRepairEncoding = async () => {
+        if (!activeCompany) return;
+        setRepairing(true);
+        try {
+            const res = await repairEncoding(activeCompany.id);
+            alert(`Réparation terminée !\nComptes réparés: ${res.accounts_repaired}\nLignes réparées: ${res.entry_lines_repaired}`);
+            loadAccounts();
+            loadEntries();
+        } catch (error: any) {
+            alert("Erreur: " + (error.message || error));
+        } finally {
+            setRepairing(false);
+        }
+    };
 
     if (!activeCompany) {
         return <div className="p-10">Veuillez sélectionner un dossier.</div>;
@@ -392,9 +408,22 @@ export default function JournalPage() {
                     <Card className="border-0 ring-1 ring-slate-200 shadow-lg bg-white overflow-hidden">
                         <CardHeader className="border-b bg-slate-50/50 flex flex-row items-center justify-between py-4">
                             <CardTitle className="text-slate-800">Grand Livre des Écritures</CardTitle>
-                            <Badge variant="outline" className="text-slate-500 font-normal">
-                                {entries.reduce((acc, e) => acc + e.lines.length, 0)} Ligne(s) trouvée(s)
-                            </Badge>
+                            <div className="flex items-center gap-4">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                                    onClick={handleRepairEncoding}
+                                    disabled={repairing}
+                                    title="Corriger les accents (é, à, è...) si l'import initial était mal encodé"
+                                >
+                                    {repairing ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Wand2 className="h-4 w-4 mr-2" />}
+                                    Réparer les accents (é/à)
+                                </Button>
+                                <Badge variant="outline" className="text-slate-500 font-normal">
+                                    {entries.reduce((acc, e) => acc + e.lines.length, 0)} Ligne(s) trouvée(s)
+                                </Badge>
+                            </div>
                         </CardHeader>
                         <CardContent className="p-0 max-h-[60vh] overflow-auto">
                             {loadingEntries ? (

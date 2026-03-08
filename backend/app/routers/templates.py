@@ -376,7 +376,7 @@ def preflight_check(company_id: str, document_id: Optional[str] = None, db: Sess
 async def generate_liasse(
     company_id: str,
     document_id: Optional[str] = None,
-    template_id: Optional[int] = None,
+    template_id: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
     """Generate the fiscal liasse (OTR/SYSCOHADA) by injecting account balances into the template."""
@@ -448,3 +448,21 @@ def update_template_mapping(template_id: str, payload: dict, db: Session = Depen
     db.commit()
     db.refresh(tmpl)
     return tmpl
+
+@router.delete("/{template_id}")
+def delete_template(template_id: str, db: Session = Depends(get_db)):
+    """Delete a report template and its associated file."""
+    tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    if not tmpl:
+        raise HTTPException(status_code=404, detail="Modèle introuvable")
+    
+    # Delete file if exists
+    if tmpl.file_path and os.path.exists(tmpl.file_path):
+        try:
+            os.remove(tmpl.file_path)
+        except Exception as e:
+            print(f"Error deleting file {tmpl.file_path}: {e}")
+
+    db.delete(tmpl)
+    db.commit()
+    return {"message": "Modèle supprimé avec succès"}

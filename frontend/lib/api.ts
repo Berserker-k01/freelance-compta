@@ -63,3 +63,8 @@ export async function importBalance(companyId: string, file: File) {
 
     return res.json();
 }
+export async function repairEncoding(companyId: string) {
+    return fetchAPI(`/accounting/repair-encoding/${companyId}`, {
+        method: "POST",
+    });
+}
