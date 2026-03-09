@@ -21,17 +21,17 @@ import { cn } from "@/lib/utils";
 // --------------------------------------------------------------------------
 function StatusBadge({ status }: { status: "OK" | "WARNING" | "KO" }) {
     if (status === "OK")
-        return <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white">✓ OK</Badge>;
+        return <Badge className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/50">✓ OK</Badge>;
     if (status === "WARNING")
-        return <Badge className="bg-amber-500 hover:bg-amber-600 text-white">⚠ Attention</Badge>;
-    return <Badge variant="destructive">✗ Erreur</Badge>;
+        return <Badge className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/50">⚠ Attention</Badge>;
+    return <Badge variant="destructive" className="bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/50">✗ Erreur</Badge>;
 }
 
 function SeverityBadge({ severity }: { severity: string }) {
     const map: Record<string, string> = {
-        HIGH: "bg-red-100 text-red-800 border-red-200",
-        MEDIUM: "bg-amber-100 text-amber-800 border-amber-200",
-        LOW: "bg-blue-100 text-blue-800 border-blue-200",
+        HIGH: "bg-red-900/40 text-red-400 border-red-800/50",
+        MEDIUM: "bg-amber-900/40 text-amber-400 border-amber-800/50",
+        LOW: "bg-blue-900/40 text-blue-400 border-blue-800/50",
     };
     return (
         <span className={cn("text-xs font-bold px-2 py-0.5 rounded-full border", map[severity] ?? map.LOW)}>
@@ -42,36 +42,36 @@ function SeverityBadge({ severity }: { severity: string }) {
 
 function CoherenceCard({ check }: { check: CoherenceCheck }) {
     const icon = check.status === "OK"
-        ? <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
+        ? <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0" />
         : check.status === "WARNING"
-            ? <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
-            : <XCircle className="h-5 w-5 text-red-600 shrink-0" />;
+            ? <AlertTriangle className="h-5 w-5 text-amber-400 shrink-0" />
+            : <XCircle className="h-5 w-5 text-red-400 shrink-0" />;
 
     const border = check.status === "OK"
-        ? "border-l-emerald-500"
+        ? "border-l-emerald-500/70"
         : check.status === "WARNING"
-            ? "border-l-amber-400"
-            : "border-l-red-500";
+            ? "border-l-amber-400/70"
+            : "border-l-red-500/70";
 
     const values = check.values ?? {};
     const valueKeys = Object.keys(values);
 
     return (
-        <div className={cn("border-l-4 pl-4 py-3 rounded-r-lg bg-gray-50 space-y-1", border)}>
+        <div className={cn("border-l-4 pl-4 py-3 rounded-r-lg bg-slate-900/40 border-y border-r border-slate-700/50 space-y-1 transition-colors hover:bg-slate-800/40", border)}>
             <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                     {icon}
-                    <span className="font-semibold text-sm">{check.name}</span>
+                    <span className="font-semibold text-sm text-white">{check.name}</span>
                 </div>
                 <StatusBadge status={check.status} />
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{check.message}</p>
+            <p className="text-sm text-slate-400 leading-relaxed">{check.message}</p>
             {valueKeys.length > 0 && (
                 <div className="flex flex-wrap gap-3 pt-1">
                     {valueKeys.map(k => (
-                        <div key={k} className="text-xs bg-white border rounded px-2 py-1">
-                            <span className="text-muted-foreground">{k.replace(/_/g, " ")} : </span>
-                            <span className="font-mono font-bold">
+                        <div key={k} className="text-xs bg-slate-800/60 border border-slate-700/50 rounded px-2 py-1">
+                            <span className="text-slate-400">{k.replace(/_/g, " ")} : </span>
+                            <span className="font-mono font-bold text-slate-200">
                                 {(values[k] as number).toLocaleString("fr-FR", { maximumFractionDigits: 0 })} FCFA
                             </span>
                         </div>
@@ -127,12 +127,12 @@ export default function AuditPage() {
     };
 
     const scoreColor = auditResult
-        ? auditResult.score > 80 ? "text-emerald-600" : auditResult.score > 50 ? "text-amber-500" : "text-red-600"
+        ? auditResult.score > 80 ? "text-emerald-400 text-shadow-glow" : auditResult.score > 50 ? "text-amber-400" : "text-red-400"
         : "";
 
     const topBorder = auditResult
-        ? auditResult.status === "GREEN" ? "border-t-emerald-500" : auditResult.status === "ORANGE" ? "border-t-amber-500" : "border-t-red-600"
-        : "";
+        ? auditResult.status === "GREEN" ? "border-t-emerald-500/70" : auditResult.status === "ORANGE" ? "border-t-amber-500/70" : "border-t-red-500/70"
+        : "border-t-transparent";
 
     const hasResults = auditResult !== null || coherenceResult !== null;
 
@@ -141,25 +141,25 @@ export default function AuditPage() {
             {/* Header */}
             <div>
                 <Link href="/dashboard">
-                    <Button variant="ghost" size="sm" className="pl-0 mb-2 text-muted-foreground">
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Retour
+                    <Button variant="ghost" size="sm" className="pl-0 mb-4 hover:bg-transparent text-slate-400 hover:text-white transition-colors group">
+                        <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" /> Retour
                     </Button>
                 </Link>
                 <div className="flex items-start justify-between flex-wrap gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-blue-900 flex items-center gap-3">
-                            <ShieldCheck className="h-8 w-8" /> Audit &amp; Certification OTR
+                        <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+                            <ShieldCheck className="h-8 w-8 text-blue-400" /> Audit &amp; Certification OTR
                         </h1>
-                        <p className="text-muted-foreground mt-1">
+                        <p className="text-slate-400 mt-1">
                             Contrôle de cohérence + Détection d'anomalies avant dépôt de la liasse
-                            {activeCompany && <span className="font-medium text-blue-700"> — {activeCompany.name}</span>}
+                            {activeCompany && <span className="font-medium text-blue-400"> — {activeCompany.name}</span>}
                         </p>
                     </div>
                     <Button
                         size="lg"
                         onClick={handleRunAll}
                         disabled={analyzing || !activeCompany}
-                        className="bg-blue-700 hover:bg-blue-800 text-white shadow-md"
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500/50 transition-all transform hover:-translate-y-0.5"
                     >
                         {analyzing
                             ? <><RefreshCw className="mr-2 h-4 w-4 animate-spin" /> Analyse en cours...</>
@@ -174,26 +174,26 @@ export default function AuditPage() {
             {/* Progress */}
             {analyzing && (
                 <div className="space-y-2">
-                    <div className="flex justify-between text-sm text-muted-foreground">
+                    <div className="flex justify-between text-sm text-slate-400">
                         <span>Analyse des {progress < 50 ? "écritures" : progress < 80 ? "soldes" : "contrôles"}...</span>
                         <span>{progress}%</span>
                     </div>
-                    <Progress value={progress} className="h-2" />
+                    <Progress value={progress} className="h-2 bg-slate-800" />
                 </div>
             )}
 
             {/* Error */}
             {error && (
-                <Alert variant="destructive">
-                    <XCircle className="h-4 w-4" />
-                    <AlertTitle>Erreur d'analyse</AlertTitle>
-                    <AlertDescription>{error}</AlertDescription>
+                <Alert variant="destructive" className="bg-red-900/20 border-red-800/50 text-red-200">
+                    <XCircle className="h-4 w-4 text-red-400" />
+                    <AlertTitle className="text-red-400">Erreur d'analyse</AlertTitle>
+                    <AlertDescription className="text-red-300/80">{error}</AlertDescription>
                 </Alert>
             )}
 
             {/* No company */}
             {!activeCompany && (
-                <div className="text-center py-20 text-muted-foreground">
+                <div className="text-center py-20 text-slate-400">
                     Sélectionnez un dossier pour lancer l'audit.
                 </div>
             )}
@@ -204,22 +204,22 @@ export default function AuditPage() {
 
                     {/* ---- SCORE CARD ---- */}
                     {auditResult && (
-                        <Card className={cn("border-t-8 shadow-lg", topBorder)}>
+                        <Card className={cn("bg-slate-900/60 backdrop-blur-xl border-x border-b border-slate-700/50 border-t-4 shadow-xl text-slate-200", topBorder)}>
                             <CardContent className="p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                                 <div className="space-y-2">
-                                    <h2 className="text-2xl font-bold">Diagnostic Global</h2>
-                                    <p className="text-muted-foreground">
+                                    <h2 className="text-2xl font-bold text-white">Diagnostic Global</h2>
+                                    <p className="text-slate-400">
                                         {auditResult.status === "GREEN" && "✅ Dossier sain — prêt pour la liasse fiscale."}
                                         {auditResult.status === "ORANGE" && "⚠️ Quelques points d'attention à corriger avant dépôt."}
                                         {auditResult.status === "RED" && "🚨 Anomalies bloquantes détectées — liasse non conforme."}
                                     </p>
                                 </div>
                                 <div className="text-center shrink-0">
-                                    <div className="text-xs font-semibold uppercase text-muted-foreground mb-1">Score Qualité</div>
-                                    <div className={cn("text-7xl font-black tabular-nums", scoreColor)}>
+                                    <div className="text-xs font-semibold uppercase text-slate-400 mb-1">Score Qualité</div>
+                                    <div className={cn("text-7xl font-black tabular-nums transition-colors duration-500", scoreColor)}>
                                         {auditResult.score}
                                     </div>
-                                    <div className="text-muted-foreground text-sm">/100</div>
+                                    <div className="text-slate-500 text-sm">/100</div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -228,36 +228,36 @@ export default function AuditPage() {
                     <div className="grid lg:grid-cols-2 gap-6">
                         {/* ---- CONTRÔLES DE COHÉRENCE OTR ---- */}
                         {coherenceResult && (
-                            <Card className="shadow-sm">
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Scale className="h-5 w-5 text-blue-600" />
+                            <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl text-slate-200">
+                                <CardHeader className="pb-3 border-b border-slate-800/50 bg-slate-900/40">
+                                    <CardTitle className="flex items-center gap-2 text-white">
+                                        <Scale className="h-5 w-5 text-blue-400" />
                                         Contrôles de Cohérence OTR
                                     </CardTitle>
-                                    <CardDescription>
+                                    <CardDescription className="text-slate-400">
                                         Équilibres fondamentaux requis avant dépôt
                                     </CardDescription>
                                     {coherenceResult.summary && (
                                         <div className="flex gap-3 pt-1 flex-wrap">
-                                            <span className="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+                                            <span className="text-xs px-2 py-1 bg-emerald-900/20 text-emerald-400 rounded-full border border-emerald-800/50">
                                                 ✓ {coherenceResult.summary.ok} OK
                                             </span>
                                             {coherenceResult.summary.warnings > 0 && (
-                                                <span className="text-xs px-2 py-1 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
+                                                <span className="text-xs px-2 py-1 bg-amber-900/20 text-amber-400 rounded-full border border-amber-800/50">
                                                     ⚠ {coherenceResult.summary.warnings} Attention
                                                 </span>
                                             )}
                                             {coherenceResult.summary.errors > 0 && (
-                                                <span className="text-xs px-2 py-1 bg-red-50 text-red-700 rounded-full border border-red-200">
+                                                <span className="text-xs px-2 py-1 bg-red-900/20 text-red-400 rounded-full border border-red-800/50">
                                                     ✗ {coherenceResult.summary.errors} Erreur(s)
                                                 </span>
                                             )}
                                         </div>
                                     )}
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-4 pt-6">
                                     {coherenceResult.warning && (
-                                        <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-md p-3">
+                                        <p className="text-sm text-amber-400 bg-amber-900/20 border border-amber-800/50 rounded-md p-3">
                                             {coherenceResult.warning}
                                         </p>
                                     )}
@@ -270,36 +270,36 @@ export default function AuditPage() {
 
                         {/* ---- ANOMALIES IA ---- */}
                         {auditResult && (
-                            <Card className="shadow-sm">
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="flex items-center gap-2">
-                                        <TrendingUp className="h-5 w-5 text-blue-600" />
-                                        Anomalies Détectées par l'IA
-                                        <Badge variant="outline" className="ml-1">{auditResult.anomalies.length}</Badge>
+                            <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl text-slate-200">
+                                <CardHeader className="pb-3 border-b border-slate-800/50 bg-slate-900/40">
+                                    <CardTitle className="flex items-center gap-2 text-white">
+                                        <TrendingUp className="h-5 w-5 text-blue-400" />
+                                        Anomalies Détectées
+                                        <Badge variant="outline" className="ml-1 bg-slate-800/50 border-slate-700 text-slate-300">{auditResult.anomalies.length}</Badge>
                                     </CardTitle>
-                                    <CardDescription>Écritures suspects ou non conformes</CardDescription>
+                                    <CardDescription className="text-slate-400">Écritures suspectes ou non conformes</CardDescription>
                                     {/* Audit checks from AI */}
                                     {auditResult.checks.length > 0 && (
                                         <div className="flex flex-wrap gap-2 pt-2">
                                             {auditResult.checks.map((c, i) => (
-                                                <div key={i} className="flex items-center gap-1.5 text-xs bg-gray-50 border rounded-full px-2.5 py-1">
+                                                <div key={i} className="flex items-center gap-1.5 text-xs bg-slate-800/40 border border-slate-700/50 rounded-full px-2.5 py-1">
                                                     {c.status === "OK"
-                                                        ? <CheckCircle className="h-3 w-3 text-emerald-500" />
-                                                        : <AlertTriangle className="h-3 w-3 text-amber-500" />}
-                                                    <span className="text-muted-foreground">{c.name}</span>
+                                                        ? <CheckCircle className="h-3 w-3 text-emerald-400" />
+                                                        : <AlertTriangle className="h-3 w-3 text-amber-400" />}
+                                                    <span className="text-slate-400">{c.name}</span>
                                                     <StatusBadge status={c.status} />
                                                 </div>
                                             ))}
                                         </div>
                                     )}
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="pt-6">
                                     <ScrollArea className="h-[340px] pr-3">
                                         {auditResult.anomalies.length === 0 ? (
-                                            <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-12 gap-3">
-                                                <CheckCircle className="w-12 h-12 text-emerald-500" />
-                                                <p className="font-medium">Aucune anomalie détectée !</p>
-                                                <p className="text-xs text-center">Toutes les écritures sont conformes.</p>
+                                            <div className="flex flex-col items-center justify-center h-full text-slate-400 py-12 gap-3">
+                                                <CheckCircle className="w-12 h-12 text-emerald-500/50" />
+                                                <p className="font-medium text-slate-300">Aucune anomalie détectée !</p>
+                                                <p className="text-xs text-center">Toutes les écritures sont conformes au référentiel.</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -307,17 +307,17 @@ export default function AuditPage() {
                                                     <Alert
                                                         key={i}
                                                         variant={anom.severity === "HIGH" ? "destructive" : "default"}
-                                                        className="border-l-4"
+                                                        className={cn("border-l-4", anom.severity === "HIGH" ? "bg-red-900/20 border-red-800/50 text-red-200" : "bg-slate-800/40 border-slate-700/50 text-slate-200 border-l-amber-500/50")}
                                                     >
-                                                        <AlertTriangle className="h-4 w-4" />
+                                                        <AlertTriangle className={cn("h-4 w-4", anom.severity === "HIGH" ? "text-red-400" : "text-amber-400")} />
                                                         <AlertTitle className="text-sm font-bold flex items-center gap-2 flex-wrap">
                                                             {anom.type}
                                                             <SeverityBadge severity={anom.severity} />
-                                                            <span className="font-normal text-xs opacity-60">
+                                                            <span className="font-normal text-xs opacity-60 ml-auto">
                                                                 {new Date(anom.date).toLocaleDateString("fr-FR")}
                                                             </span>
                                                         </AlertTitle>
-                                                        <AlertDescription className="text-xs mt-1 leading-relaxed">
+                                                        <AlertDescription className="text-xs mt-1 leading-relaxed opacity-90">
                                                             {anom.description}
                                                         </AlertDescription>
                                                     </Alert>
@@ -331,15 +331,15 @@ export default function AuditPage() {
                     </div>
 
                     {/* ---- CHECKLIST DÉPÔT OTR ---- */}
-                    <Card className="border-blue-200 bg-blue-50/50 shadow-sm">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-blue-800">
+                    <Card className="bg-blue-900/20 border border-blue-800/50 shadow-xl text-slate-200">
+                        <CardHeader className="pb-3 border-b border-blue-900/30">
+                            <CardTitle className="flex items-center gap-2 text-blue-400">
                                 <Landmark className="h-5 w-5" />
                                 Checklist Dépôt OTR
                             </CardTitle>
-                            <CardDescription>Points à valider avant soumission sur le portail OTR</CardDescription>
+                            <CardDescription className="text-slate-400">Points à valider avant soumission sur le portail OTR</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="pt-6">
                             <div className="grid sm:grid-cols-2 gap-3">
                                 {[
                                     {
@@ -376,19 +376,19 @@ export default function AuditPage() {
                                     <div
                                         key={i}
                                         className={cn(
-                                            "flex items-start gap-3 p-3 rounded-lg border text-sm",
+                                            "flex items-start gap-3 p-3 rounded-lg border text-sm transition-colors",
                                             item.ok
-                                                ? "bg-emerald-50 border-emerald-200"
-                                                : "bg-red-50 border-red-200"
+                                                ? "bg-emerald-900/20 border-emerald-800/50 hover:bg-emerald-900/30"
+                                                : "bg-red-900/20 border-red-800/50 hover:bg-red-900/30"
                                         )}
                                     >
                                         {item.ok
-                                            ? <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                                            : <XCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
+                                            ? <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
+                                            : <XCircle className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
                                         }
                                         <div>
-                                            <div className="font-medium">{item.label}</div>
-                                            {!item.ok && <div className="text-xs text-muted-foreground mt-0.5">{item.tip}</div>}
+                                            <div className="font-medium text-white">{item.label}</div>
+                                            {!item.ok && <div className="text-xs text-slate-400 mt-0.5">{item.tip}</div>}
                                         </div>
                                     </div>
                                 ))}

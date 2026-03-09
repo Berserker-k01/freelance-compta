@@ -1,0 +1,17 @@
+--- ACTIF ---
+[('A9', 'Réf.'), ('B9', 'ACTIF'), ('D9', 'NOTE'), ('E9', 'EXERCICE 1900'), ('H9', 'EXERCICE 1899')]
+[]
+[('E11', 'BRUT'), ('F11', 'AMORT et DEPREC'), ('G11', 'NET'), ('H11', 'NET')]
+[('A12', 'AD'), ('B12', 'IMMOBILISATIONS INCORPORELLES'), ('D12', 3)]
+[('A13', 'AE'), ('B13', 'Frais de développement et de prospection')]
+[('A14', 'AF'), ('B14', 'Brevets, licences,logiciels et droits similaires')]
+[('A15', 'AG'), ('B15', 'Fonds commercial et droit au bail')]
+--- PASSIF ---
+[('A8', 'Réf.'), ('B8', 'PASSIF'), ('E8', 'Note'), ('F8', 'EXERCICE 1900'), ('G8', 'EXERCICE 1899')]
+[]
+[('F10', 'NET'), ('G10', 'NET')]
+[('A11', 'CA'), ('B11', 'Capital'), ('E11', 13)]
+[('A12', 'CB'), ('B12', 'Apporteurs capital non appelé (-)'), ('E12', 13)]
+[('A13', 'CD'), ('B13', 'Primes liées au capital social'), ('E13', 14)]
+[('A14', 'CE'), ('B14', 'Ecarts de réévaluation'), ('E14', '3e')]
+[('A15', 'CF'), ('B15', 'Réserves indisponibles'), ('E15', 14)]

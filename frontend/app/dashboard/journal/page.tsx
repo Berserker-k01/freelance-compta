@@ -214,24 +214,24 @@ export default function JournalPage() {
     }
 
     return (
-        <div className="container mx-auto p-6 max-w-7xl animate-in fade-in">
-            <div className="mb-6 flex justify-between items-end">
+        <div className="container mx-auto p-6 max-w-7xl animate-in fade-in space-y-8">
+            <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
                 <div>
                     <Link href="/dashboard">
-                        <Button variant="ghost" size="sm" className="pl-0 mb-4 text-muted-foreground group hover:bg-transparent hover:underline">
+                        <Button variant="ghost" size="sm" className="pl-0 mb-4 hover:bg-transparent text-slate-400 hover:text-white transition-colors group">
                             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" /> Retour
                         </Button>
                     </Link>
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 blur-xl rounded-full opacity-50"></div>
-                        <h1 className="relative text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Journal des Saisies</h1>
-                        <p className="relative text-slate-500 mt-2 text-lg">
-                            {documentIdFilter ? "Modification du fichier importé" : "Gestion des écritures comptables"} - <strong className="text-slate-700">{activeCompany.name}</strong>
+                        <h1 className="relative text-3xl font-bold tracking-tight text-white">Journal des Saisies</h1>
+                        <p className="relative text-slate-400 mt-2 text-lg">
+                            {documentIdFilter ? "Modification du fichier importé" : "Gestion des écritures comptables"} - <strong className="text-blue-400">{activeCompany.name}</strong>
                         </p>
                     </div>
                 </div>
                 {documentIdFilter && (
-                    <div className="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-200 flex items-center gap-2 font-medium shadow-sm">
+                    <div className="bg-blue-900/20 text-blue-400 px-4 py-2 rounded-xl border border-blue-800/50 flex items-center gap-2 font-medium shadow-sm">
                         <FileSpreadsheet className="h-4 w-4" />
                         Mode Fichier lié (ID: {documentIdFilter})
                     </div>
@@ -239,39 +239,39 @@ export default function JournalPage() {
             </div>
 
             <Tabs defaultValue={documentIdFilter ? "grid" : "form"} className="space-y-6">
-                <TabsList className="bg-slate-100 p-1 border">
-                    <TabsTrigger value="form" className="flex items-center gap-2"><Plus className="h-4 w-4" /> Saisie Manuelle</TabsTrigger>
-                    <TabsTrigger value="grid" className="flex items-center gap-2"><ListFilter className="h-4 w-4" /> Grand Livre / Historique</TabsTrigger>
+                <TabsList className="bg-slate-900/60 p-1 border border-slate-700/50 backdrop-blur-xl">
+                    <TabsTrigger value="form" className="flex items-center gap-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><Plus className="h-4 w-4" /> Saisie Manuelle</TabsTrigger>
+                    <TabsTrigger value="grid" className="flex items-center gap-2 data-[state=active]:bg-slate-800 data-[state=active]:text-white text-slate-400 hover:text-slate-200"><ListFilter className="h-4 w-4" /> Grand Livre / Historique</TabsTrigger>
                 </TabsList>
 
                 {/* --- TAB 1: SAISIE MANUELLE --- */}
                 <TabsContent value="form">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             {/* ... Header Card ... */}
-                            <Card className="border-0 ring-1 ring-slate-200 shadow-sm bg-white">
-                                <CardHeader className="py-3 border-b bg-slate-50/50"><CardTitle className="text-base text-slate-800">En-tête de pièce</CardTitle></CardHeader>
-                                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 pb-4">
+                            <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl">
+                                <CardHeader className="py-3 border-b border-slate-800/50 bg-slate-900/40"><CardTitle className="text-base text-white">En-tête de pièce</CardTitle></CardHeader>
+                                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 pb-6">
                                     <FormField
                                         control={form.control}
                                         name="date"
                                         render={({ field }) => (
                                             <FormItem className="flex flex-col">
-                                                <FormLabel className="text-slate-600">Date</FormLabel>
+                                                <FormLabel className="text-slate-300">Date</FormLabel>
                                                 <Popover>
                                                     <PopoverTrigger asChild>
                                                         <FormControl>
-                                                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal border-slate-300", !field.value && "text-muted-foreground")}>
+                                                            <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal bg-slate-950/50 border-slate-700 text-slate-200 hover:bg-slate-900 hover:text-white", !field.value && "text-slate-500")}>
                                                                 {field.value ? format(field.value, "PPP") : <span>Choisir une date</span>}
                                                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                                             </Button>
                                                         </FormControl>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0" align="start">
+                                                    <PopoverContent className="w-auto p-0 bg-slate-900 border-slate-700 text-slate-200" align="start">
                                                         <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date: Date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                                                     </PopoverContent>
                                                 </Popover>
-                                                <FormMessage />
+                                                <FormMessage className="text-red-400" />
                                             </FormItem>
                                         )}
                                     />
@@ -280,9 +280,9 @@ export default function JournalPage() {
                                         name="reference"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-slate-600">Référence Pièce</FormLabel>
-                                                <FormControl><Input placeholder="ex: OD-2026-001" className="border-slate-300" {...field} /></FormControl>
-                                                <FormMessage />
+                                                <FormLabel className="text-slate-300">Référence Pièce</FormLabel>
+                                                <FormControl><Input placeholder="ex: OD-2026-001" className="bg-slate-950/50 border-slate-700 text-slate-200 focus-visible:ring-blue-500" {...field} /></FormControl>
+                                                <FormMessage className="text-red-400" />
                                             </FormItem>
                                         )}
                                     />
@@ -291,9 +291,9 @@ export default function JournalPage() {
                                         name="label"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel className="text-slate-600">Libellé Général</FormLabel>
-                                                <FormControl><Input placeholder="ex: Régularisation TVA" className="border-slate-300" {...field} /></FormControl>
-                                                <FormMessage />
+                                                <FormLabel className="text-slate-300">Libellé Général</FormLabel>
+                                                <FormControl><Input placeholder="ex: Régularisation TVA" className="bg-slate-950/50 border-slate-700 text-slate-200 focus-visible:ring-blue-500" {...field} /></FormControl>
+                                                <FormMessage className="text-red-400" />
                                             </FormItem>
                                         )}
                                     />
@@ -301,42 +301,42 @@ export default function JournalPage() {
                             </Card>
 
                             {/* ... Lines Card ... */}
-                            <Card className="border-0 ring-1 ring-slate-200 shadow-md bg-white">
-                                <CardHeader className="flex flex-row items-center justify-between py-4 border-b bg-slate-50/50">
-                                    <CardTitle className="text-base text-slate-800">Lignes d'écriture</CardTitle>
-                                    <Button type="button" variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50" onClick={() => append({ account_id: 0, debit: 0, credit: 0, label: "" } as any)}>
+                            <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden">
+                                <CardHeader className="flex flex-row items-center justify-between py-4 border-b border-slate-800/50 bg-slate-900/40">
+                                    <CardTitle className="text-base text-white">Lignes d'écriture</CardTitle>
+                                    <Button type="button" variant="outline" size="sm" className="text-blue-400 border-blue-900/50 bg-blue-950/30 hover:bg-blue-900/50 hover:text-blue-300 transition-colors" onClick={() => append({ account_id: 0, debit: 0, credit: 0, label: "" } as any)}>
                                         <Plus className="mr-2 h-4 w-4" /> Ajouter une ligne
                                     </Button>
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <Table>
-                                        <TableHeader className="bg-slate-50/80">
-                                            <TableRow className="hover:bg-transparent">
-                                                <TableHead className="w-[300px] font-semibold text-slate-600 pl-6">Compte</TableHead>
-                                                <TableHead className="font-semibold text-slate-600">Libellé (Optionnel)</TableHead>
-                                                <TableHead className="w-[150px] font-semibold text-slate-600 text-right">Débit</TableHead>
-                                                <TableHead className="w-[150px] font-semibold text-slate-600 text-right">Crédit</TableHead>
+                                        <TableHeader className="bg-slate-800/50">
+                                            <TableRow className="hover:bg-transparent border-slate-700/50">
+                                                <TableHead className="w-[300px] font-semibold text-slate-300 pl-6">Compte</TableHead>
+                                                <TableHead className="font-semibold text-slate-300">Libellé (Optionnel)</TableHead>
+                                                <TableHead className="w-[150px] font-semibold text-slate-300 text-right">Débit</TableHead>
+                                                <TableHead className="w-[150px] font-semibold text-slate-300 text-right">Crédit</TableHead>
                                                 <TableHead className="w-[60px] pr-6"></TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {fields.map((field, index) => (
-                                                <TableRow key={field.id} className="hover:bg-transparent">
-                                                    <TableCell className="pl-6">
+                                                <TableRow key={field.id} className="hover:bg-slate-800/30 border-slate-700/50 transition-colors">
+                                                    <TableCell className="pl-6 py-3">
                                                         <FormField
                                                             control={form.control}
                                                             name={`lines.${index}.account_id`}
                                                             render={({ field }) => (
                                                                 <Select onValueChange={field.onChange} value={field.value}>
                                                                     <FormControl>
-                                                                        <SelectTrigger className="border-slate-300 focus:ring-blue-500">
+                                                                        <SelectTrigger className="bg-slate-950/50 border-slate-700 text-slate-200 focus:ring-blue-500">
                                                                             <SelectValue placeholder="Compte" />
                                                                         </SelectTrigger>
                                                                     </FormControl>
-                                                                    <SelectContent>
+                                                                    <SelectContent className="bg-slate-900 border-slate-700 text-slate-200 max-h-60">
                                                                         {accounts.map(acc => (
-                                                                            <SelectItem key={acc.id} value={acc.id}>
-                                                                                {acc.code} - <span className="text-muted-foreground">{acc.name}</span>
+                                                                            <SelectItem key={acc.id} value={acc.id} className="focus:bg-slate-800 focus:text-white">
+                                                                                {acc.code} - <span className="text-slate-400">{acc.name}</span>
                                                                             </SelectItem>
                                                                         ))}
                                                                     </SelectContent>
@@ -344,36 +344,36 @@ export default function JournalPage() {
                                                             )}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="py-3">
                                                         <FormField
                                                             control={form.control}
                                                             name={`lines.${index}.label`}
                                                             render={({ field }) => (
-                                                                <Input {...field} placeholder="Libellé ligne" className="border-slate-300" />
+                                                                <Input {...field} placeholder="Libellé ligne" className="bg-slate-950/50 border-slate-700 text-slate-200 focus-visible:ring-blue-500" />
                                                             )}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="py-3">
                                                         <FormField
                                                             control={form.control}
                                                             name={`lines.${index}.debit`}
                                                             render={({ field }) => (
-                                                                <Input type="number" step="0.01" {...field} className="border-slate-300 text-right font-medium text-emerald-700 focus-visible:ring-emerald-500" />
+                                                                <Input type="number" step="0.01" {...field} className="bg-slate-950/50 border-slate-700 text-right font-medium text-emerald-400 focus-visible:ring-emerald-500" />
                                                             )}
                                                         />
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="py-3">
                                                         <FormField
                                                             control={form.control}
                                                             name={`lines.${index}.credit`}
                                                             render={({ field }) => (
-                                                                <Input type="number" step="0.01" {...field} className="border-slate-300 text-right font-medium text-orange-700 focus-visible:ring-orange-500" />
+                                                                <Input type="number" step="0.01" {...field} className="bg-slate-950/50 border-slate-700 text-right font-medium text-amber-400 focus-visible:ring-amber-500" />
                                                             )}
                                                         />
                                                     </TableCell>
-                                                    <TableCell className="pr-6 text-right">
-                                                        <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="hover:bg-red-50 hover:text-red-700">
-                                                            <Trash2 className="h-4 w-4 text-red-500" />
+                                                    <TableCell className="pr-6 text-right py-3">
+                                                        <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} className="hover:bg-red-900/30 hover:text-red-400 text-slate-500 transition-colors">
+                                                            <Trash2 className="h-4 w-4" />
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>
@@ -384,35 +384,35 @@ export default function JournalPage() {
                             </Card>
 
                             {/* ... Footer ... */}
-                            <div className="flex justify-end gap-8 items-center p-4 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                            <div className="flex justify-end gap-8 items-center p-6 bg-slate-900/60 border border-slate-700/50 backdrop-blur-xl rounded-xl shadow-lg">
                                 <div className="text-right">
-                                    <div className="text-sm text-muted-foreground">Total Débit</div>
-                                    <div className="text-xl font-bold">{totalDebit.toFixed(2)}</div>
+                                    <div className="text-sm text-slate-400">Total Débit</div>
+                                    <div className="text-xl font-bold text-emerald-400">{totalDebit.toFixed(2)}</div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-muted-foreground">Total Crédit</div>
-                                    <div className={cn("text-xl font-bold", !isBalanced ? "text-red-500" : "")}>{totalCredit.toFixed(2)}</div>
+                                    <div className="text-sm text-slate-400">Total Crédit</div>
+                                    <div className={cn("text-xl font-bold", !isBalanced ? "text-amber-400" : "text-amber-400")}>{totalCredit.toFixed(2)}</div>
                                 </div>
-                                <Button type="submit" size="lg" disabled={!isBalanced} className={cn("ml-4", !isBalanced ? "opacity-50" : "bg-green-600 hover:bg-green-700")}>
+                                <Button type="submit" size="lg" disabled={!isBalanced} className={cn("ml-4 shadow-lg transition-transform hover:-translate-y-0.5", !isBalanced ? "opacity-50" : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.4)] border border-emerald-500/50")}>
                                     <Save className="mr-2 h-5 w-5" /> Enregistrer
                                 </Button>
                             </div>
-                            {!isBalanced && <p className="text-red-500 text-right font-medium">L'écriture n'est pas équilibrée (Écart: {(totalDebit - totalCredit).toFixed(2)})</p>}
-                            {success && <p className="text-green-600 text-right font-bold text-lg animate-pulse">{success}</p>}
+                            {!isBalanced && <p className="text-red-400 text-right font-medium animate-pulse">L'écriture n'est pas équilibrée (Écart: {Math.abs(totalDebit - totalCredit).toFixed(2)})</p>}
+                            {success && <p className="text-emerald-400 text-right font-bold text-lg animate-pulse">{success}</p>}
                         </form>
                     </Form>
                 </TabsContent>
 
                 {/* --- TAB 2: GRAND LIVRE (GRID) --- */}
                 <TabsContent value="grid">
-                    <Card className="border-0 ring-1 ring-slate-200 shadow-lg bg-white overflow-hidden">
-                        <CardHeader className="border-b bg-slate-50/50 flex flex-row items-center justify-between py-4">
-                            <CardTitle className="text-slate-800">Grand Livre des Écritures</CardTitle>
+                    <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <CardHeader className="border-b border-slate-800/50 bg-slate-900/40 flex flex-row items-center justify-between py-4">
+                            <CardTitle className="text-white">Grand Livre des Écritures</CardTitle>
                             <div className="flex items-center gap-4">
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                                    className="text-amber-400 border-amber-900/50 bg-amber-950/30 hover:bg-amber-900/50 hover:text-amber-300 transition-colors"
                                     onClick={handleRepairEncoding}
                                     disabled={repairing}
                                     title="Corriger les accents (é, à, è...) si l'import initial était mal encodé"
@@ -420,31 +420,34 @@ export default function JournalPage() {
                                     {repairing ? <RefreshCw className="h-4 w-4 animate-spin mr-2" /> : <Wand2 className="h-4 w-4 mr-2" />}
                                     Réparer les accents (é/à)
                                 </Button>
-                                <Badge variant="outline" className="text-slate-500 font-normal">
+                                <Badge variant="outline" className="bg-slate-800/50 border-slate-700 text-slate-300 font-normal">
                                     {entries.reduce((acc, e) => acc + e.lines.length, 0)} Ligne(s) trouvée(s)
                                 </Badge>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0 max-h-[60vh] overflow-auto">
+                        <CardContent className="p-0 max-h-[60vh] overflow-auto scrollbar-thin scrollbar-thumb-slate-700">
                             {loadingEntries ? (
-                                <div className="p-8 text-center text-slate-500">Chargement des écritures...</div>
+                                <div className="p-12 flex flex-col items-center justify-center text-slate-400 gap-3">
+                                    <RefreshCw className="h-8 w-8 animate-spin text-blue-400" />
+                                    <span>Chargement des écritures...</span>
+                                </div>
                             ) : (
                                 <Table>
-                                    <TableHeader className="bg-slate-50/80 sticky top-0 z-10 shadow-sm">
-                                        <TableRow className="hover:bg-transparent">
-                                            <TableHead className="font-semibold text-slate-600 pl-6 w-[120px]">Date</TableHead>
-                                            <TableHead className="font-semibold text-slate-600 w-[100px]">Journal</TableHead>
-                                            <TableHead className="font-semibold text-slate-600 w-[120px]">Réf</TableHead>
-                                            <TableHead className="font-semibold text-slate-600 min-w-[200px]">Compte</TableHead>
-                                            <TableHead className="font-semibold text-slate-600 min-w-[250px]">Libellé</TableHead>
-                                            <TableHead className="font-semibold text-slate-600 w-[100px]">Liaison</TableHead>
-                                            <TableHead className="text-right font-semibold text-slate-600 w-[150px]">Débit</TableHead>
-                                            <TableHead className="text-right font-semibold text-slate-600 pr-6 w-[150px]">Crédit</TableHead>
+                                    <TableHeader className="bg-slate-900/80 sticky top-0 z-10 backdrop-blur-sm shadow-sm border-b border-slate-700/50">
+                                        <TableRow className="hover:bg-transparent border-slate-700/50">
+                                            <TableHead className="font-semibold text-slate-300 pl-6 w-[120px]">Date</TableHead>
+                                            <TableHead className="font-semibold text-slate-300 w-[100px]">Journal</TableHead>
+                                            <TableHead className="font-semibold text-slate-300 w-[120px]">Réf</TableHead>
+                                            <TableHead className="font-semibold text-slate-300 min-w-[200px]">Compte</TableHead>
+                                            <TableHead className="font-semibold text-slate-300 min-w-[250px]">Libellé</TableHead>
+                                            <TableHead className="font-semibold text-slate-300 w-[100px]">Liaison</TableHead>
+                                            <TableHead className="text-right font-semibold text-slate-300 w-[150px]">Débit</TableHead>
+                                            <TableHead className="text-right font-semibold text-slate-300 pr-6 w-[150px]">Crédit</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {entries.length === 0 && (
-                                            <TableRow><TableCell colSpan={8} className="text-center py-12 text-slate-500">Aucune écriture trouvée.</TableCell></TableRow>
+                                            <TableRow><TableCell colSpan={8} className="text-center py-12 text-slate-400">Aucune écriture trouvée.</TableCell></TableRow>
                                         )}
                                         {entries.map((entry) => (
                                             entry.lines.map((line, idx) => {
@@ -452,15 +455,15 @@ export default function JournalPage() {
                                                 const accountDisplay = assignedAcc ? `${assignedAcc.code} - ${assignedAcc.name}` : "Compte inconnu";
 
                                                 return (
-                                                    <TableRow key={`${entry.id}-${idx}`} className="hover:bg-blue-50/50 transition-colors even:bg-slate-50/50 group border-b border-slate-100">
-                                                        <TableCell className="text-slate-600 pl-6 text-sm">{format(new Date(entry.date), "dd/MM/yyyy")}</TableCell>
-                                                        <TableCell className="font-medium text-slate-700 text-sm">OD</TableCell>
-                                                        <TableCell className="text-slate-500 font-mono text-xs truncate" title={entry.reference}>{entry.reference}</TableCell>
-                                                        <TableCell className="font-semibold text-indigo-700 text-xs truncate max-w-[200px]" title={accountDisplay}>{accountDisplay}</TableCell>
-                                                        <TableCell className="text-slate-700 truncate max-w-[250px] text-sm" title={line.label || entry.label}>{line.label || entry.label}</TableCell>
-                                                        <TableCell>{entry.document_id ? <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200 font-normal px-1 py-0 text-[10px]">Doc Lié</Badge> : "-"}</TableCell>
-                                                        <TableCell className="text-right font-semibold text-emerald-600 text-sm">{line.debit > 0 ? line.debit.toFixed(2) : ""}</TableCell>
-                                                        <TableCell className="text-right font-semibold text-orange-600 pr-6 text-sm">{line.credit > 0 ? line.credit.toFixed(2) : ""}</TableCell>
+                                                    <TableRow key={`${entry.id}-${idx}`} className="hover:bg-blue-900/20 transition-colors even:bg-slate-800/30 group border-b border-slate-700/30 text-slate-200">
+                                                        <TableCell className="pl-6 text-sm opacity-90">{format(new Date(entry.date), "dd/MM/yyyy")}</TableCell>
+                                                        <TableCell className="font-medium text-blue-400 text-sm">OD</TableCell>
+                                                        <TableCell className="text-slate-400 font-mono text-xs truncate" title={entry.reference}>{entry.reference}</TableCell>
+                                                        <TableCell className="font-semibold text-emerald-400 text-xs truncate max-w-[200px]" title={accountDisplay}>{accountDisplay}</TableCell>
+                                                        <TableCell className="text-slate-300 truncate max-w-[250px] text-sm" title={line.label || entry.label}>{line.label || entry.label}</TableCell>
+                                                        <TableCell>{entry.document_id ? <Badge className="bg-blue-900/30 text-blue-400 border border-blue-800/50 hover:bg-blue-800/50 font-normal px-1 py-0 text-[10px]">Doc Lié</Badge> : "-"}</TableCell>
+                                                        <TableCell className="text-right font-semibold text-emerald-400 text-sm">{line.debit > 0 ? line.debit.toFixed(2) : ""}</TableCell>
+                                                        <TableCell className="text-right font-semibold text-amber-400 pr-6 text-sm">{line.credit > 0 ? line.credit.toFixed(2) : ""}</TableCell>
                                                     </TableRow>
                                                 );
                                             })

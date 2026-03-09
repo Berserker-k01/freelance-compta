@@ -47,13 +47,21 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-slate-50 dark:bg-slate-900">
-            <Card className="w-[400px]">
-                <CardHeader>
-                    <CardTitle className="text-2xl text-center text-blue-900 dark:text-blue-400">Auditia</CardTitle>
-                    <CardDescription className="text-center">Connectez-vous à votre espace sécurisé</CardDescription>
+        <div className="relative flex items-center justify-center min-h-screen bg-[#1a2332] selection:bg-purple-500/30 overflow-hidden">
+            {/* Background effects */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <Card className="relative z-10 w-[400px] border-0 shadow-2xl rounded-2xl bg-[#232d3f]/80 backdrop-blur-xl ring-1 ring-white/10">
+                <CardHeader className="pt-8 pb-4">
+                    <CardTitle className="text-3xl font-bold tracking-tight text-center text-white">
+                        Financial <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Cloud</span>
+                    </CardTitle>
+                    <CardDescription className="text-center text-slate-400 text-sm mt-2">
+                        Connectez-vous à votre espace financier sécurisé
+                    </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pb-8">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -61,11 +69,15 @@ export default function LoginPage() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel className="text-slate-300">Email professionnel</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="comptable@auditia.com" {...field} />
+                                            <Input
+                                                placeholder="expert@entreprise.com"
+                                                className="bg-slate-950/50 border-slate-700 text-slate-200 focus-visible:ring-emerald-500 h-11"
+                                                {...field}
+                                            />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-400" />
                                     </FormItem>
                                 )}
                             />
@@ -74,16 +86,24 @@ export default function LoginPage() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Mot de passe</FormLabel>
+                                        <div className="flex items-center justify-between">
+                                            <FormLabel className="text-slate-300">Mot de passe</FormLabel>
+                                            <a href="#" className="text-xs text-emerald-400 hover:text-emerald-300 hover:underline">Mot de passe oublié ?</a>
+                                        </div>
                                         <FormControl>
-                                            <Input type="password" placeholder="******" {...field} />
+                                            <Input
+                                                type="password"
+                                                placeholder="••••••••"
+                                                className="bg-slate-950/50 border-slate-700 text-slate-200 focus-visible:ring-emerald-500 h-11"
+                                                {...field}
+                                            />
                                         </FormControl>
-                                        <FormMessage />
+                                        <FormMessage className="text-red-400" />
                                     </FormItem>
                                 )}
                             />
-                            {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-                            <Button type="submit" className="w-full bg-blue-700 hover:bg-blue-800">
+                            {error && <p className="text-sm font-medium text-red-400 bg-red-950/30 border border-red-900/50 p-2.5 rounded-md text-center animate-in fade-in">{error}</p>}
+                            <Button type="submit" className="w-full h-11 text-base font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)] border border-emerald-500/50 transition-all hover:-translate-y-0.5 mt-2">
                                 Se connecter
                             </Button>
                         </form>

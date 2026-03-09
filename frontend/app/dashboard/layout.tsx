@@ -61,9 +61,9 @@ function SidebarContent() {
     ];
 
     return (
-        <aside className="w-64 bg-white border-r shadow-sm flex-shrink-0 hidden md:flex flex-col h-screen">
-            <div className="p-6 border-b">
-                <h1 className="text-2xl font-bold text-blue-900 mb-4 tracking-tight">Auditia</h1>
+        <aside className="w-64 bg-[#111823] border-r border-slate-800 shadow-sm flex-shrink-0 hidden md:flex flex-col h-screen text-slate-200">
+            <div className="p-6 border-b border-slate-800">
+                <h1 className="text-2xl font-bold text-white mb-4 tracking-tight">Auditia</h1>
 
                 {/* COMPANY SWITCHER */}
                 {mounted ? (
@@ -73,7 +73,7 @@ function SidebarContent() {
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className="w-full justify-between bg-slate-50 border-slate-200 text-slate-900"
+                                className="w-full justify-between bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800 hover:text-white"
                             >
                                 {activeCompany ? (
                                     <span className="truncate font-bold">{activeCompany.name}</span>
@@ -83,18 +83,18 @@ function SidebarContent() {
                                 <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[200px] p-2">
+                        <PopoverContent className="w-[200px] p-2 bg-slate-900 border-slate-700 text-slate-200">
                             <div className="flex flex-col gap-2">
                                 <div className="max-h-[300px] overflow-y-auto flex flex-col gap-1">
-                                    {companies.length === 0 && <p className="text-sm text-center text-muted-foreground py-4">Aucun dossier.</p>}
+                                    {companies.length === 0 && <p className="text-sm text-center text-slate-400 py-4">Aucun dossier.</p>}
                                     {companies.map((company) => (
                                         <Button
                                             key={company.id}
                                             variant="ghost"
                                             size="sm"
                                             className={cn(
-                                                "justify-start font-normal px-2 text-left w-full truncate",
-                                                activeCompany?.id === company.id && "bg-blue-50 text-blue-700 font-medium"
+                                                "justify-start font-normal px-2 text-left w-full truncate hover:bg-slate-800 hover:text-white",
+                                                activeCompany?.id === company.id && "bg-blue-600/20 text-blue-400 font-medium hover:bg-blue-600/30"
                                             )}
                                             onClick={() => {
                                                 setActiveCompany(company);
@@ -111,9 +111,9 @@ function SidebarContent() {
                                         </Button>
                                     ))}
                                 </div>
-                                <div className="border-t pt-2">
+                                <div className="border-t border-slate-700 pt-2">
                                     <Link href="/dashboard/companies" onClick={() => setOpen(false)}>
-                                        <Button size="sm" variant="ghost" className="w-full justify-start text-blue-600 px-2">
+                                        <Button size="sm" variant="ghost" className="w-full justify-start text-blue-400 hover:text-blue-300 hover:bg-slate-800 px-2">
                                             <PlusCircle className="mr-2 h-4 w-4" /> Nouveau Dossier
                                         </Button>
                                     </Link>
@@ -122,7 +122,7 @@ function SidebarContent() {
                         </PopoverContent>
                     </Popover>
                 ) : (
-                    <Button variant="outline" className="w-full justify-between opacity-50 cursor-not-allowed">
+                    <Button variant="outline" className="w-full justify-between opacity-50 cursor-not-allowed bg-slate-900 border-slate-700 text-slate-400">
                         Chargement...
                         <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -145,13 +145,13 @@ function SidebarContent() {
                                             key={item.href}
                                             href={item.href}
                                             className={cn(
-                                                "flex items-center space-x-3 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                                                "flex items-center space-x-3 px-4 py-2 rounded-md text-sm font-medium transition-colors group",
                                                 isActive
-                                                    ? "bg-blue-50 text-blue-700"
-                                                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                                    ? "bg-blue-600/20 text-blue-400"
+                                                    : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
                                             )}
                                         >
-                                            <Icon className={cn("h-4 w-4", isActive ? "text-blue-600" : "text-slate-400 group-hover:text-slate-500")} />
+                                            <Icon className={cn("h-4 w-4", isActive ? "text-blue-400" : "text-slate-500 group-hover:text-slate-400")} />
                                             <span>{item.name}</span>
                                         </Link>
                                     );
@@ -160,17 +160,17 @@ function SidebarContent() {
                         </div>
                     ))
                 ) : (
-                    <div className="text-center p-4 text-gray-500 text-sm">
+                    <div className="text-center p-4 text-slate-500 text-sm">
                         Veuillez sélectionner ou créer un dossier pour accéder au menu.
-                        <Link href="/dashboard/companies" className="block mt-4 text-blue-600 underline">Gérer les dossiers</Link>
+                        <Link href="/dashboard/companies" className="block mt-4 text-blue-400 hover:text-blue-300 underline">Gérer les dossiers</Link>
                     </div>
                 )}
             </nav>
 
-            <div className="p-4 mt-auto border-t">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-xs font-semibold text-blue-800">Support Auditia</p>
-                    <p className="text-xs text-blue-600 mt-1">contact@auditia.com</p>
+            <div className="p-4 mt-auto border-t border-slate-800">
+                <div className="bg-blue-900/20 border border-blue-900/40 p-4 rounded-xl">
+                    <p className="text-xs font-semibold text-blue-400">Support Auditia</p>
+                    <p className="text-xs text-blue-300 mt-1">contact@auditia.com</p>
                 </div>
             </div>
         </aside>
@@ -184,12 +184,12 @@ export default function DashboardLayout({
 }) {
     return (
         <CompanyProvider>
-            <div className="flex h-screen bg-gray-100">
+            <div className="flex h-screen bg-[#1a2332] text-slate-200 selection:bg-purple-500/30">
                 <SidebarContent />
 
                 {/* Mobile Header (Simplified) */}
-                <div className="md:hidden fixed top-0 w-full z-10 bg-white border-b px-4 py-3 flex items-center justify-between">
-                    <span className="font-bold text-lg">Auditia</span>
+                <div className="md:hidden fixed top-0 w-full z-10 bg-[#111823] border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+                    <span className="font-bold text-lg text-white">Auditia</span>
                 </div>
 
                 {/* Main Content */}

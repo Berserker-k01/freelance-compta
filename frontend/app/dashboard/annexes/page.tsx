@@ -62,7 +62,7 @@ export default function AnnexesPage() {
     };
 
     if (!activeCompany) return (
-        <div className="p-10 text-muted-foreground">Veuillez sélectionner un dossier.</div>
+        <div className="p-10 text-slate-400 text-center mt-20">Veuillez sélectionner un dossier client pour modifier les annexes.</div>
     );
 
     return (
@@ -71,15 +71,15 @@ export default function AnnexesPage() {
             {/* ---- PAGE HEADER ---- */}
             <div className="flex flex-col gap-4 mb-8">
                 <Link href="/dashboard">
-                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:underline text-muted-foreground">
+                    <Button variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:underline text-slate-400 hover:text-white">
                         <ArrowLeft className="mr-2 h-4 w-4" /> Retour au Dashboard
                     </Button>
                 </Link>
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-blue-900 border-b pb-2">
+                    <h1 className="text-3xl font-bold tracking-tight text-white border-b border-slate-800 pb-2">
                         Données Extra-Comptables & Fiscales
                     </h1>
-                    <p className="text-muted-foreground mt-2">
+                    <p className="text-slate-400 mt-2">
                         Complétez les informations "Hors-Balance" (Dirigeants, Effectifs, Réintégrations) qui seront injectées dans les annexes de la Liasse SYSCOHADA.
                     </p>
                 </div>
@@ -88,76 +88,96 @@ export default function AnnexesPage() {
             <div className="grid gap-6 md:grid-cols-2">
 
                 {/* PAGE DE GARDE */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Building className="h-5 w-5 text-blue-600" /> Page de Garde & Dirigeants</CardTitle>
-                        <CardDescription>Informations administratives de l'entité.</CardDescription>
+                <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden text-slate-200">
+                    <CardHeader className="border-b border-slate-800/50 pb-4 bg-slate-900/40">
+                        <CardTitle className="flex items-center gap-3 text-white">
+                            <div className="p-2 bg-blue-900/20 rounded-lg border border-blue-800/30">
+                                <Building className="h-5 w-5 text-blue-400" />
+                            </div>
+                            Page de Garde & Dirigeants
+                        </CardTitle>
+                        <CardDescription className="text-slate-400">Informations administratives de l'entité.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 pt-6">
                         <div className="space-y-2">
-                            <Label htmlFor="nif">NIF (Numéro d'Identification Fiscale)</Label>
-                            <Input id="nif" name="nif" value={data.nif} onChange={handleChange} />
+                            <Label htmlFor="nif" className="text-slate-300">NIF (Numéro d'Identification Fiscale)</Label>
+                            <Input id="nif" name="nif" value={data.nif} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-blue-500" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="dirigeant_nom">Nom du Dirigeant Principal</Label>
-                            <Input id="dirigeant_nom" name="dirigeant_nom" placeholder="Ex: Jean DUPONT" value={data.dirigeant_nom} onChange={handleChange} />
+                            <Label htmlFor="dirigeant_nom" className="text-slate-300">Nom du Dirigeant Principal</Label>
+                            <Input id="dirigeant_nom" name="dirigeant_nom" placeholder="Ex: Jean DUPONT" value={data.dirigeant_nom} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-blue-500" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="dirigeant_titre">Titre (Fonction)</Label>
-                            <Input id="dirigeant_titre" name="dirigeant_titre" placeholder="Ex: Gérant, PDG" value={data.dirigeant_titre} onChange={handleChange} />
+                            <Label htmlFor="dirigeant_titre" className="text-slate-300">Titre (Fonction)</Label>
+                            <Input id="dirigeant_titre" name="dirigeant_titre" placeholder="Ex: Gérant, PDG" value={data.dirigeant_titre} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-blue-500" />
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* EFFECTIFS */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Users className="h-5 w-5 text-purple-600" /> Effectifs (Note 27B)</CardTitle>
-                        <CardDescription>Répartition du personnel en fin d'exercice.</CardDescription>
+                <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden text-slate-200">
+                    <CardHeader className="border-b border-slate-800/50 pb-4 bg-slate-900/40">
+                        <CardTitle className="flex items-center gap-3 text-white">
+                            <div className="p-2 bg-purple-900/20 rounded-lg border border-purple-800/30">
+                                <Users className="h-5 w-5 text-purple-400" />
+                            </div>
+                            Effectifs (Note 27B)
+                        </CardTitle>
+                        <CardDescription className="text-slate-400">Répartition du personnel en fin d'exercice.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 pt-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="effectif_hommes">Hommes</Label>
-                                <Input id="effectif_hommes" name="effectif_hommes" type="number" value={data.effectif_hommes} onChange={handleChange} />
+                                <Label htmlFor="effectif_hommes" className="text-slate-300">Hommes</Label>
+                                <Input id="effectif_hommes" name="effectif_hommes" type="number" value={data.effectif_hommes} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-purple-500" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="effectif_femmes">Femmes</Label>
-                                <Input id="effectif_femmes" name="effectif_femmes" type="number" value={data.effectif_femmes} onChange={handleChange} />
+                                <Label htmlFor="effectif_femmes" className="text-slate-300">Femmes</Label>
+                                <Input id="effectif_femmes" name="effectif_femmes" type="number" value={data.effectif_femmes} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-purple-500" />
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* INTELLIGENCE FISCALE */}
-                <Card className="border-emerald-200 bg-emerald-50/30">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Receipt className="h-5 w-5 text-emerald-600" /> Intelligence Fiscale (Tableau 4)</CardTitle>
-                        <CardDescription>Saisie extra-comptable pour la détermination du résultat fiscal.</CardDescription>
+                <Card className="bg-emerald-900/10 backdrop-blur-xl border border-emerald-800/30 shadow-xl overflow-hidden text-slate-200">
+                    <CardHeader className="border-b border-emerald-900/30 pb-4 bg-emerald-900/20">
+                        <CardTitle className="flex items-center gap-3 text-white">
+                            <div className="p-2 bg-emerald-900/30 rounded-lg border border-emerald-800/50">
+                                <Receipt className="h-5 w-5 text-emerald-400" />
+                            </div>
+                            Intelligence Fiscale (Tableau 4)
+                        </CardTitle>
+                        <CardDescription className="text-emerald-200/60">Saisie extra-comptable pour la détermination du résultat fiscal.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 pt-6">
                         <div className="space-y-2">
-                            <Label htmlFor="charges_non_deductibles">Charges non déductibles (Réintégrations diverses) (FCFA)</Label>
-                            <Input id="charges_non_deductibles" name="charges_non_deductibles" type="number" value={data.charges_non_deductibles} onChange={handleChange} />
-                            <p className="text-xs text-muted-foreground">Ex: Amendes non comptabilisées dans 657, frais non liés à l'exploitation.</p>
+                            <Label htmlFor="charges_non_deductibles" className="text-slate-300">Charges non déductibles (Réintégrations diverses) (FCFA)</Label>
+                            <Input id="charges_non_deductibles" name="charges_non_deductibles" type="number" value={data.charges_non_deductibles} onChange={handleChange} className="bg-slate-800/50 border-emerald-800/50 text-white placeholder-slate-500 focus-visible:ring-emerald-500" />
+                            <p className="text-xs text-slate-500">Ex: Amendes non comptabilisées dans 657, frais non liés à l'exploitation.</p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="plus_values_exonerees">Produits non imposables (Déductions) (FCFA)</Label>
-                            <Input id="plus_values_exonerees" name="plus_values_exonerees" type="number" value={data.plus_values_exonerees} onChange={handleChange} />
+                            <Label htmlFor="plus_values_exonerees" className="text-slate-300">Produits non imposables (Déductions) (FCFA)</Label>
+                            <Input id="plus_values_exonerees" name="plus_values_exonerees" type="number" value={data.plus_values_exonerees} onChange={handleChange} className="bg-slate-800/50 border-emerald-800/50 text-white placeholder-slate-500 focus-visible:ring-emerald-500" />
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* VÉHICULES */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Car className="h-5 w-5 text-orange-600" /> Véhicules (Note 85)</CardTitle>
-                        <CardDescription>Liste des flottes de véhicules de fonction.</CardDescription>
+                <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden text-slate-200">
+                    <CardHeader className="border-b border-slate-800/50 pb-4 bg-slate-900/40">
+                        <CardTitle className="flex items-center gap-3 text-white">
+                            <div className="p-2 bg-orange-900/20 rounded-lg border border-orange-800/30">
+                                <Car className="h-5 w-5 text-orange-400" />
+                            </div>
+                            Véhicules (Note 85)
+                        </CardTitle>
+                        <CardDescription className="text-slate-400">Liste des flottes de véhicules de fonction.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 pt-6">
                         <div className="space-y-2">
-                            <Label htmlFor="vehicules_immat">Plaques d'immatriculation</Label>
-                            <Textarea id="vehicules_immat" name="vehicules_immat" placeholder="Ex: TG-1234-A, TG-5678-B..." value={data.vehicules_immat} onChange={handleChange} />
+                            <Label htmlFor="vehicules_immat" className="text-slate-300">Plaques d'immatriculation</Label>
+                            <Textarea id="vehicules_immat" name="vehicules_immat" placeholder="Ex: TG-1234-A, TG-5678-B..." value={data.vehicules_immat} onChange={handleChange} className="bg-slate-800/50 border-slate-700 text-white placeholder-slate-500 focus-visible:ring-orange-500 min-h-[100px]" />
                         </div>
                     </CardContent>
                 </Card>
@@ -165,11 +185,11 @@ export default function AnnexesPage() {
             </div>
 
             {/* SAVE BUTTON */}
-            <div className="mt-8 flex items-center gap-4 border-t pt-6">
-                <Button onClick={handleSave} disabled={saving} className="bg-blue-600 hover:bg-blue-700 w-48">
+            <div className="mt-8 flex items-center gap-4 border-t border-slate-800/80 pt-6">
+                <Button onClick={handleSave} disabled={saving} className="bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-all hover:scale-105 border border-blue-500/50 w-48 font-medium">
                     {saving ? "Sauvegarde..." : <><Save className="h-4 w-4 mr-2" /> Sauvegarder</>}
                 </Button>
-                {message && <span className="text-sm font-medium text-emerald-600">{message}</span>}
+                {message && <span className="text-sm font-medium text-emerald-400 bg-emerald-900/20 px-3 py-1.5 rounded-md border border-emerald-800/30">{message}</span>}
             </div>
 
         </div>

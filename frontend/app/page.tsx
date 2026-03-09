@@ -16,7 +16,7 @@ export default function Home() {
             <Link href="/dashboard">Accéder au Dashboard</Link>
           </Button>
           <Button variant="outline" size="lg">
-             Documentation
+            Documentation
           </Button>
         </div>
       </main>

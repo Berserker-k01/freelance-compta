@@ -24,7 +24,7 @@ export async function createEntry(entry: EntryCreate) {
 }
 
 export async function getEntries(companyId: string, documentId?: string | null) {
-    let url = `/accounting/entries/?company_id=${companyId}&limit=100`;
+    const url = `/accounting/entries/?company_id=${companyId}&limit=100`;
     if (documentId) {
         // Backend currently ignores this unless updated, but let's pass it
         // url += `&document_id=${documentId}`; 

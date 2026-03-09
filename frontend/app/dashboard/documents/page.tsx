@@ -83,88 +83,88 @@ export default function DocumentsPage() {
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <Link href="/dashboard">
-                        <Button variant="ghost" size="sm" className="pl-0 mb-4 hover:bg-transparent hover:underline text-muted-foreground group">
+                        <Button variant="ghost" size="sm" className="pl-0 mb-4 hover:bg-transparent hover:underline text-slate-400 hover:text-white group">
                             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" /> Retour au Dashboard
                         </Button>
                     </Link>
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 blur-xl rounded-full opacity-50"></div>
-                        <h1 className="relative text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Espace Documentaire</h1>
-                        <p className="relative text-slate-500 mt-2 text-lg">
-                            Gérez les fichiers du dossier <strong className="text-slate-700">{activeCompany.name}</strong>.
+                        <h1 className="relative text-3xl font-bold tracking-tight text-white">Espace Documentaire</h1>
+                        <p className="relative text-slate-400 mt-2 text-lg">
+                            Gérez les fichiers du dossier <strong className="text-white">{activeCompany.name}</strong>.
                         </p>
                     </div>
                 </div>
                 <Link href="/dashboard/import">
-                    <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md transition-all rounded-xl font-medium px-4 h-11 transform hover:-translate-y-0.5">
+                    <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500/50 transition-all rounded-xl font-medium px-4 h-11 transform hover:-translate-y-0.5">
                         <Upload className="mr-2 h-4 w-4" /> Importer une Balance
                     </Button>
                 </Link>
             </div>
 
-            <Card className="border-0 ring-1 ring-slate-200 shadow-lg bg-white overflow-hidden">
-                <CardHeader className="border-b bg-slate-50/50">
-                    <CardTitle className="text-slate-800">Documents Stockés</CardTitle>
-                    <CardDescription className="text-slate-500">
+            <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden text-slate-200">
+                <CardHeader className="border-b border-slate-800/50 bg-slate-900/40">
+                    <CardTitle className="text-white">Documents Stockés</CardTitle>
+                    <CardDescription className="text-slate-400">
                         Historique des imports et fichiers liés.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
-                        <TableHeader className="bg-slate-50/80">
-                            <TableRow className="hover:bg-transparent">
-                                <TableHead className="font-semibold text-slate-600 pl-6">Nom du Fichier</TableHead>
-                                <TableHead className="font-semibold text-slate-600">Type</TableHead>
-                                <TableHead className="font-semibold text-slate-600">Date d'ajout</TableHead>
-                                <TableHead className="text-right font-semibold text-slate-600 pr-6">Actions</TableHead>
+                        <TableHeader className="bg-slate-900/50 hover:bg-slate-900/50">
+                            <TableRow className="border-b border-slate-800">
+                                <TableHead className="font-semibold text-slate-400 pl-6 h-12">Nom du Fichier</TableHead>
+                                <TableHead className="font-semibold text-slate-400 h-12">Type</TableHead>
+                                <TableHead className="font-semibold text-slate-400 h-12">Date d'ajout</TableHead>
+                                <TableHead className="text-right font-semibold text-slate-400 pr-6 h-12">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {loading ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-12 text-slate-500">Chargement des documents...</TableCell>
+                                <TableRow className="border-b border-slate-800 hover:bg-transparent">
+                                    <TableCell colSpan={4} className="text-center py-12 text-slate-400">Chargement des documents...</TableCell>
                                 </TableRow>
                             ) : documents.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-16 text-slate-500">
+                                <TableRow className="border-b border-slate-800 hover:bg-transparent">
+                                    <TableCell colSpan={4} className="text-center py-16 text-slate-400">
                                         <div className="flex flex-col items-center justify-center gap-3">
-                                            <FileText className="h-10 w-10 text-slate-300" />
+                                            <FileText className="h-10 w-10 text-slate-500" />
                                             <p>Aucun document trouvé.</p>
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 documents.map((doc) => (
-                                    <TableRow key={doc.id} className="hover:bg-slate-50/50 transition-colors group">
-                                        <TableCell className="font-medium text-slate-700 pl-6">
+                                    <TableRow key={doc.id} className="hover:bg-slate-800/40 border-b border-slate-800/50 transition-colors group">
+                                        <TableCell className="font-medium text-white pl-6">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn("p-2 rounded-lg", doc.file_type === 'balance' ? "bg-emerald-100 text-emerald-600" : "bg-blue-100 text-blue-600")}>
+                                                <div className={cn("p-2 rounded-lg border", doc.file_type === 'balance' ? "bg-emerald-900/40 border-emerald-800/50 text-emerald-400" : "bg-blue-900/40 border-blue-800/50 text-blue-400")}>
                                                     {doc.file_type === 'balance' ? <FileSpreadsheet className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <span>{doc.name}</span>
-                                                    <span className="text-xs text-slate-500 font-normal">{doc.filename}</span>
+                                                    <span className="text-xs text-slate-400 font-normal">{doc.filename}</span>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium border", doc.file_type === 'balance' ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-slate-100 text-slate-700 border-slate-200")}>
+                                            <span className={cn("px-2.5 py-1 rounded-full text-xs font-medium border", doc.file_type === 'balance' ? "bg-emerald-900/20 text-emerald-400 border-emerald-800/50" : "bg-slate-800/50 text-slate-400 border-slate-700")}>
                                                 {doc.file_type === 'balance' ? 'Balance Générale' : 'Autre Document'}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="text-slate-600">
+                                        <TableCell className="text-slate-300">
                                             {format(new Date(doc.created_at), "dd/MM/yyyy à HH:mm")}
                                         </TableCell>
                                         <TableCell className="text-right pr-6">
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-900 hover:bg-slate-200">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-800/80">
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-56">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                    <DropdownMenuSeparator />
+                                                <DropdownMenuContent align="end" className="w-56 bg-slate-900/95 backdrop-blur-xl border-slate-700/50 text-slate-200 shadow-2xl">
+                                                    <DropdownMenuLabel className="text-slate-300">Actions</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator className="bg-slate-800/50" />
                                                     {doc.file_type === 'balance' && (
                                                         <>
                                                             <DropdownMenuItem asChild>
@@ -179,14 +179,14 @@ export default function DocumentsPage() {
                                                                     Générer Liasse Fiscale
                                                                 </Link>
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuSeparator className="bg-slate-800/50" />
                                                         </>
                                                     )}
-                                                    <DropdownMenuItem onClick={() => handleDownload(doc.id, doc.filename)} className="cursor-pointer">
-                                                        <Download className="mr-2 h-4 w-4 text-slate-500" />
+                                                    <DropdownMenuItem onClick={() => handleDownload(doc.id, doc.filename)} className="cursor-pointer hover:bg-slate-800 focus:bg-slate-800">
+                                                        <Download className="mr-2 h-4 w-4 text-slate-400" />
                                                         Télécharger l'original
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => handleDelete(doc.id)} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                                                    <DropdownMenuItem onClick={() => handleDelete(doc.id)} className="cursor-pointer text-red-400 focus:text-red-300 focus:bg-red-500/20 hover:bg-red-500/20 transition-colors">
                                                         <Trash2 className="mr-2 h-4 w-4" />
                                                         Supprimer le document
                                                     </DropdownMenuItem>

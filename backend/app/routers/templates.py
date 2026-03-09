@@ -56,99 +56,80 @@ async def upload_dynamic_template(
     mapping = {}
     
     # Auto-mapping Expert : Base de Connaissances exhaustive SYSCOHADA/OTR
-    # Format: "mot clé unique": ("règle de mapping", décalage_colonne)
-    # décalage_colonne = 1 (juste à droite pour N), 2 (Souvent N-1 ou Amortissements)
+    # Format: "mot clé le plus long d'abord": [(décalage_col, "règle")]
+    # En SYSCOHADA, le Bilan Actif place souvent ses titres en B, BRUT en E (+3), AMORT en F (+4).
+    # Le Bilan Passif place ses titres en B, NET en F (+4).
+    # L'ordre du dictionnaire est respecté: le plus long match et on sort de la boucle !
     KNOWLEDGE_BASE = {
-        # --- ACTIF ---
-        "immobilisations incorporelles": ("20*", 1),
-        "terrains": ("22*", 1),
-        "amortissements des terrains": ("ABS(282*)", 2),
-        "bâtiments": ("23*", 1),
-        "amortissements des bâtiments": ("ABS(283*)", 2),
-        "aménagements, agencements et installations": ("232*, 233*, 241*, 242*", 1),
-        "amortissements des aménagements": ("ABS(283*, 284*)", 2),
-        "matériel, mobilier et actifs biologiques": ("24*", 1),
-        "amortissements du matériel": ("ABS(284*)", 2),
-        "matériel de transport": ("25*", 1),
-        "amortissements du matériel de transport": ("ABS(285*)", 2),
-        "avances et acomptes versés sur immobilisations": ("26*", 1),
-        "titres de participation": ("27*", 1),
-        "autres immobilisations financières": ("27*", 1),
-        
-        # --- ACTIF CIRCULANT ---
-        "marchandises": ("31*", 1),
-        "matières premières et fournitures liées": ("32*", 1),
-        "autres approvisionnements": ("33*", 1),
-        "produits en cours": ("34*", 1),
-        "services en cours": ("35*", 1),
-        "produits finis": ("36*", 1),
-        "produits intermédiaires": ("37*", 1),
-        "provisions pour dépréciation des stocks": ("ABS(39*)", 2),
-        "clients et comptes rattachés": ("41*", 1),
-        "provisions pour dépréciation des créances": ("ABS(49*)", 2),
-        "autres créances": ("409*, 44*, 45*, 46*, 47*, 48*", 1),
-        
-        # --- TRESORERIE ACTIVE ---
-        "titres de placement": ("50*", 1),
-        "valeurs à encaisser": ("51*", 1),
-        "banques, chèques postaux, caisses": ("52*, 53*, 57*", 1),
-        "banques": ("52*, 53*, 57*", 1),
-        
-        # --- PASSIF ---
-        "capital": ("-101*, -102*", 1),
-        "primes liées au capital social": ("-105*", 1),
-        "réserves indisponibles": ("-111*, -112*", 1),
-        "réserves libres": ("-118*", 1),
-        "report à nouveau": ("-12*", 1),
-        "résultat net de l'exercice": ("-13*", 1),
-        "subventions d'investissement": ("-14*", 1),
-        "provisions réglementées": ("-15*", 1),
-        "emprunts et dettes financières diverses": ("-16*, -17*", 1),
-        "fournisseurs et comptes rattachés": ("-401*, -402*, -408*", 1),
-        "avances et acomptes reçus": ("-419*", 1),
-        "dettes fiscales et sociales": ("-42*, -43*, -44*", 1),
-        "autres dettes": ("-45*, -46*, -47*, -48*", 1),
-        "banques, découverts": ("-56*", 1),
-        
-        # --- COMPTE DE RÉSULTAT ---
-        "ventes de marchandises": ("-701*", 1),
-        "ventes de produits fabriqués": ("-702*, -703*, -704*", 1),
-        "travaux, services vendus": ("-705*, -706*", 1),
-        "chiffre d'affaires": ("-70*", 1),
-        "produits accessoires": ("-707*", 1),
-        "subventions d'exploitation": ("-74*", 1),
-        "autres produits": ("-75*", 1),
-        "transferts de charges d'exploitation": ("-781*", 1),
-        
-        "achats de marchandises": ("601*", 1),
-        "variation de stocks de marchandises": ("6031*", 1),
-        "achats de matières premières": ("602*", 1),
-        "variation de stocks de matières premières": ("6032*", 1),
-        "autres achats": ("604*, 605*, 608*", 1),
-        "transports": ("61*", 1),
-        "services extérieurs": ("62*, 63*", 1),
-        "impôts et taxes": ("64*", 1),
-        "autres charges": ("65*", 1),
-        "frais de personnel": ("66*", 1),
-        
-        "produits financiers": ("-77*", 1),
-        "charges financières": ("67*", 1),
-        "dotations aux amortissements": ("68*", 1),
-        "reprises de provisions": ("-78*", 1),
-        
-        "produits h.a.o": ("-82*, -84*, -86*, -88*", 1),
-        "charges h.a.o": ("81*, 83*, 85*, 87*", 1),
-        "participation des travailleurs": ("87*", 1),
-        "impôt sur le résultat": ("89*", 1),
-        
-        # --- INTELLIGENCE EXTRA-COMPTABLE (Variables Modèle 4 & Dirigeants) ---
-        "numéro d'identification fiscale": ("#nif", 1),
-        "nif": ("#nif", 1),
-        "nom du dirigeant": ("#dirigeant_nom", 1),
-        "effectif total brut": ("#effectif_hommes", 1),  # Approximation (généralement on a besoin de plus de logique, mais c'est un point de départ)
-        "amendes et pénalités": ("657*", 1),
-        "charges non justifiées": ("658*", 1),
-        "dons et libéralités": ("6234*", 1)
+        "brevets, licences,logiciels et droits similaires": [(3, "20*"), (4, "ABS(280*)")],
+        "banques, chèques postaux, caisse et assimilés": [(3, "52*, 53*, 57*")],
+        "aménagements, agencements et installations": [(3, "232*, 233*, 241*, 242*"), (4, "ABS(283*, 284*)")],
+        "matériel, mobilier et actifs biologiques": [(3, "24*"), (4, "ABS(284*)")],
+        "frais de développement et de prospection": [(3, "20*"), (4, "ABS(280*)")],
+        "avances et acomptes versés sur immobilisations": [(3, "26*")],
+        "matières premières et fournitures liées": [(3, "32*"), (4, "ABS(39*)")],
+        "emprunts et dettes financières diverses": [(4, "-16*, -17*")],
+        "fournisseurs et comptes rattachés": [(4, "-401*, -402*, -408*")],
+        "variation de stocks de matières premières": [(1, "6032*")],
+        "fonds commercial et droit au bail": [(3, "20*"), (4, "ABS(280*)")],
+        "provisions pour dépréciation des stocks": [(4, "ABS(39*)")],
+        "variation de stocks de marchandises": [(1, "6031*")],
+        "numéro d'identification fiscale": [(1, "#nif")],
+        "titres de participation": [(3, "27*")],
+        "autres immobilisations financières": [(3, "27*")],
+        "produits intermédiaires": [(3, "37*"), (4, "ABS(39*)")],
+        "clients et comptes rattachés": [(3, "41*"), (4, "ABS(49*)")],
+        "primes liées au capital social": [(4, "-105*")],
+        "subventions d'investissement": [(4, "-14*")],
+        "résultat net de l'exercice": [(4, "-13*")],
+        "dettes fiscales et sociales": [(4, "-42*, -43*, -44*")],
+        "transferts de charges d'exploitation": [(1, "-781*")],
+        "ventes de produits fabriqués": [(1, "-702*, -703*, -704*")],
+        "dotations aux amortissements": [(1, "68*")],
+        "participation des travailleurs": [(1, "87*")],
+        "autres approvisionnements": [(3, "33*"), (4, "ABS(39*)")],
+        "valeurs à encaisser": [(3, "51*")],
+        "avances et acomptes reçus": [(4, "-419*")],
+        "provisions réglementées": [(4, "-15*")],
+        "réserves indisponibles": [(4, "-111*, -112*")],
+        "banques, découverts": [(4, "-56*")],
+        "ventes de marchandises": [(1, "-701*")],
+        "travaux, services vendus": [(1, "-705*, -706*")],
+        "subventions d'exploitation": [(1, "-74*")],
+        "achats de matières premières": [(1, "602*")],
+        "charges non justifiées": [(1, "658*")],
+        "apporteurs capital non appelé": [(4, "109*")],
+        "produits en cours": [(3, "34*"), (4, "ABS(39*)")],
+        "services en cours": [(3, "35*"), (4, "ABS(39*)")],
+        "produits accessoires": [(1, "-707*")],
+        "achats de marchandises": [(1, "601*")],
+        "reprises de provisions": [(1, "-78*")],
+        "impôt sur le résultat": [(1, "89*")],
+        "amendes et pénalités": [(1, "657*")],
+        "dons et libéralités": [(1, "6234*")],
+        "produits finis": [(3, "36*"), (4, "ABS(39*)")],
+        "immobilisations corporelles": [(3, "21*, 22*, 23*, 24*"), (4, "ABS(281*, 282*, 283*, 284*)")],
+        "immobilisations incorporelles": [(3, "20*"), (4, "ABS(280*)")],
+        "autres créances": [(3, "409*, 44*, 45*, 46*, 47*, 48*")],
+        "autres dettes": [(4, "-45*, -46*, -47*, -48*")],
+        "report à nouveau": [(4, "-12*")],
+        "réserves libres": [(4, "-118*")],
+        "chiffre d'affaires": [(1, "-70*")],
+        "autres produits": [(1, "-75*")],
+        "services extérieurs": [(1, "62*, 63*")],
+        "frais de personnel": [(1, "66*")],
+        "produits financiers": [(1, "-77*")],
+        "charges financières": [(1, "67*")],
+        "nom du dirigeant": [(1, "#dirigeant_nom")],
+        "effectif total brut": [(1, "#effectif_hommes")],
+        "marchandises": [(3, "31*"), (4, "ABS(39*)")],
+        "bâtiments": [(3, "23*"), (4, "ABS(283*)")],
+        "impôts et taxes": [(1, "64*")],
+        "autres charges": [(1, "65*")],
+        "terrains": [(3, "22*"), (4, "ABS(282*)")],
+        "banques": [(3, "52*, 53*, 57*")],
+        "capital": [(4, "-101*, -102*")],
+        "nif": [(1, "#nif")]
     }
     
     for sheet_name in wb.sheetnames:
@@ -158,12 +139,13 @@ async def upload_dynamic_template(
                 for cell in row:
                     val = str(cell.value).strip().lower() if cell.value else ""
                     if len(val) > 3:
-                        for keyword, (account_rule, col_offset) in KNOWLEDGE_BASE.items():
-                            # Vérification stricte du mot (pour éviter des correspondances hasardeuses)
+                        for keyword, rules in KNOWLEDGE_BASE.items():
                             if keyword in val:
-                                target_col_idx = cell.column + col_offset
-                                cell_addr = f"{sheet_name}!{get_column_letter(target_col_idx)}{cell.row}"
-                                mapping[cell_addr] = account_rule
+                                for col_offset, account_rule in rules:
+                                    target_col_idx = cell.column + col_offset
+                                    cell_addr = f"{sheet_name}!{get_column_letter(target_col_idx)}{cell.row}"
+                                    mapping[cell_addr] = account_rule
+                                break # Match trouvé => on ne cherche plus d'autres mots pour cette cellule
         except Exception:
             continue
     wb.close()

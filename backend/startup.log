@@ -1,0 +1,392 @@
+﻿python : Traceback 
+(most recent call 
+last):
+Au caractère Ligne:1 : 
+1
++ python -c 'from app 
+import main' *>&1 | 
+Out-File -FilePath 
+startup.lo ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Traceback (mo   
+ st recent call las    
+t)::String) [], Re    
+moteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 143, in 
+__init__
+    
+self._dbapi_connection 
+= 
+engine.raw_connection()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 3309, in 
+raw_connection
+    return 
+self.pool.connect()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 447, in 
+connect
+    return _ConnectionF
+airy._checkout(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 1264, in 
+_checkout
+    fairy = _Connection
+Record.checkout(pool)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 711, in 
+checkout
+    rec = 
+pool._do_get()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\imp
+l.py", line 178, in 
+_do_get
+    
+self._dec_overflow()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\util\lan
+ghelpers.py", line 
+224, in __exit__
+    raise exc_value.wit
+h_traceback(exc_tb)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\imp
+l.py", line 175, in 
+_do_get
+    return self._create
+_connection()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 388, in 
+_create_connection
+    return 
+_ConnectionRecord(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 673, in 
+__init__
+    self.__connect()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 900, in 
+__connect
+    pool.logger.debug("
+Error on connect(): 
+%s", e)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\util\lan
+ghelpers.py", line 
+224, in __exit__
+    raise exc_value.wit
+h_traceback(exc_tb)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 895, in 
+__connect
+    
+self.dbapi_connection 
+= connection = pool._in
+voke_creator(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\c
+reate.py", line 661, 
+in connect
+    return dialect.conn
+ect(*cargs, **cparams)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\d
+efault.py", line 630, 
+in connect
+    return self.loaded_
+dbapi.connect(*cargs, 
+**cparams)  # type: 
+ignore[no-any-return]  
+# NOQA: E501
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\psycopg2\__init__.p
+y", line 154, in 
+connect
+    conn = 
+_connect(dsn, connectio
+n_factory=connection_fa
+ctory, **kwasync)
+psycopg2.OperationalErr
+or
+
+The above exception 
+was the direct cause 
+of the following 
+exception:
+
+Traceback (most recent 
+call last):
+  File "<string>", 
+line 1, in <module>
+  File "C:\Users\PC VIC
+TUS\Downloads\elitistes
+2\freelance-compta#\bac
+kend\app\main.py", 
+line 17, in <module>
+    from .routers 
+import accounting, 
+audit, auth, safe, 
+dashboard, templates, 
+companies, documents, 
+licenses
+  File "C:\Users\PC VIC
+TUS\Downloads\elitistes
+2\freelance-compta#\bac
+kend\app\routers\auth.p
+y", line 11, in 
+<module>
+    models_user.Base.me
+tadata.create_all(bind=
+engine)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\sql\sche
+ma.py", line 5928, in 
+create_all
+    
+bind._run_ddl_visitor(
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 3259, in 
+_run_ddl_visitor
+    with self.begin() 
+as conn:
+  File "C:\Program 
+Files (x86)\Microsoft 
+Visual Studio\Shared\Py
+thon39_64\lib\contextli
+b.py", line 119, in 
+__enter__
+    return 
+next(self.gen)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 3249, in 
+begin
+    with 
+self.connect() as conn:
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 3285, in 
+connect
+    return self._connec
+tion_cls(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 145, in 
+__init__
+    Connection._handle_
+dbapi_exception_noconne
+ction(
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 2448, in 
+_handle_dbapi_exception
+_noconnection
+    raise sqlalchemy_ex
+ception.with_traceback(
+exc_info[2]) from e
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 143, in 
+__init__
+    
+self._dbapi_connection 
+= 
+engine.raw_connection()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\b
+ase.py", line 3309, in 
+raw_connection
+    return 
+self.pool.connect()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 447, in 
+connect
+    return _ConnectionF
+airy._checkout(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 1264, in 
+_checkout
+    fairy = _Connection
+Record.checkout(pool)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 711, in 
+checkout
+    rec = 
+pool._do_get()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\imp
+l.py", line 178, in 
+_do_get
+    
+self._dec_overflow()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\util\lan
+ghelpers.py", line 
+224, in __exit__
+    raise exc_value.wit
+h_traceback(exc_tb)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\imp
+l.py", line 175, in 
+_do_get
+    return self._create
+_connection()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 388, in 
+_create_connection
+    return 
+_ConnectionRecord(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 673, in 
+__init__
+    self.__connect()
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 900, in 
+__connect
+    pool.logger.debug("
+Error on connect(): 
+%s", e)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\util\lan
+ghelpers.py", line 
+224, in __exit__
+    raise exc_value.wit
+h_traceback(exc_tb)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\pool\bas
+e.py", line 895, in 
+__connect
+    
+self.dbapi_connection 
+= connection = pool._in
+voke_creator(self)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\c
+reate.py", line 661, 
+in connect
+    return dialect.conn
+ect(*cargs, **cparams)
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\sqlalchemy\engine\d
+efault.py", line 630, 
+in connect
+    return self.loaded_
+dbapi.connect(*cargs, 
+**cparams)  # type: 
+ignore[no-any-return]  
+# NOQA: E501
+  File "C:\Users\PC VIC
+TUS\AppData\Roaming\Pyt
+hon\Python39\site-packa
+ges\psycopg2\__init__.p
+y", line 154, in 
+connect
+    conn = 
+_connect(dsn, connectio
+n_factory=connection_fa
+ctory, **kwasync)
+sqlalchemy.exc.Operatio
+nalError: (psycopg2.Ope
+rationalError) 
+(Background on this 
+error at: https://sqlal
+che.me/e/20/e3q8)
