@@ -22,12 +22,31 @@ export interface ValidationResult {
     checks: PrerequisiteCheck[];
 }
 
+export interface PreflightResult {
+    total_debit: number;
+    total_credit: number;
+    difference: number;
+    is_balanced: boolean;
+    compte_13_present: boolean;
+    resultat_net_13: number;
+    nb_comptes: number;
+}
+
 /** Validate all prerequisites before generating the liasse */
 export async function validatePrerequisites(
     companyId: string,
     documentId?: string
 ): Promise<ValidationResult> {
     const url = `/templates/validate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
+    return fetchAPI(url);
+}
+
+/** Pre-flight check before generating */
+export async function getPreflightCheck(
+    companyId: string,
+    documentId?: string
+): Promise<PreflightResult> {
+    const url = `/templates/preflight/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
     return fetchAPI(url);
 }
 

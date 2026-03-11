@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from "react";
 import {
     generateLiasse,
     validatePrerequisites, ValidationResult, PrerequisiteCheck,
+    getPreflightCheck, PreflightResult,
     getTemplates, Template, uploadTemplate, updateTemplateMapping, deleteTemplate
 } from "@/lib/templates-api";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,6 +75,7 @@ export default function TemplatesPage() {
     // Validation state
     const [validating, setValidating] = useState(false);
     const [validation, setValidation] = useState<ValidationResult | null>(null);
+    const [preflight, setPreflight] = useState<PreflightResult | null>(null);
     const [generateError, setGenerateError] = useState<string | null>(null);
 
     // Upload state
@@ -117,11 +119,16 @@ export default function TemplatesPage() {
         if (!activeCompany) return;
         setValidating(true);
         setValidation(null);
+        setPreflight(null);
         setGenerateError(null);
         try {
             const docId = selectedDocId === "all" ? undefined : selectedDocId;
-            const result = await validatePrerequisites(activeCompany.id, docId);
-            setValidation(result);
+            const [valResult, prefResult] = await Promise.all([
+                validatePrerequisites(activeCompany.id, docId),
+                getPreflightCheck(activeCompany.id, docId).catch(() => null)
+            ]);
+            setValidation(valResult);
+            setPreflight(prefResult);
         } catch {
             setValidation({
                 ready: false,
@@ -139,6 +146,7 @@ export default function TemplatesPage() {
     const handleOpenDialog = (mode: "normal" | "smt" | "custom" = "custom") => {
         setTargetMode(mode);
         setValidation(null);
+        setPreflight(null);
         setGenerateError(null);
         setSelectedDocId(documents.length > 0 ? documents[0].id.toString() : "all");
         if (templates.length > 0) {
@@ -369,6 +377,33 @@ export default function TemplatesPage() {
                         {generateError && (
                             <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-400 font-medium">
                                 Erreur: {generateError}
+                            </div>
+                        )}
+
+                        {/* PREFLIGHT VISUAL BALANCE CHUNKS */}
+                        {preflight && validation && validation.ready && (
+                            <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-3 mt-2 grid grid-cols-2 gap-3">
+                                <div>
+                                    <h4 className="text-[10px] font-bold uppercase text-slate-500 mb-1">Total Débit</h4>
+                                    <p className="text-sm font-mono text-slate-300">{preflight.total_debit.toLocaleString("fr-FR")} <span className="text-xs text-slate-500">FCFA</span></p>
+                                </div>
+                                <div>
+                                    <h4 className="text-[10px] font-bold uppercase text-slate-500 mb-1">Total Crédit</h4>
+                                    <p className="text-sm font-mono text-slate-300">{preflight.total_credit.toLocaleString("fr-FR")} <span className="text-xs text-slate-500">FCFA</span></p>
+                                </div>
+
+                                {preflight.compte_13_present && (
+                                    <div className="col-span-2 pt-2 mt-1 border-t border-slate-800/50 flex justify-between items-center">
+                                        <div>
+                                            <h4 className="text-[10px] font-bold uppercase text-slate-500 mb-0.5">Résultat Net (Compte 13)</h4>
+                                            <p className={cn("text-sm font-medium", preflight.resultat_net_13 < 0 ? "text-emerald-400" : "text-amber-400")}>
+                                                {preflight.resultat_net_13 < 0 ? "Bénéfice de " : "Perte de "}
+                                                {Math.abs(preflight.resultat_net_13).toLocaleString("fr-FR")} FCFA
+                                            </p>
+                                        </div>
+                                        <Badge className="bg-slate-800 text-slate-300 pointer-events-none">{preflight.nb_comptes} comptes</Badge>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

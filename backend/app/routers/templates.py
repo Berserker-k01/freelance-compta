@@ -62,14 +62,14 @@ async def upload_dynamic_template(
     # L'ordre du dictionnaire est respecté: le plus long match et on sort de la boucle !
     KNOWLEDGE_BASE = {
         "brevets, licences,logiciels et droits similaires": [(3, "20*"), (4, "ABS(280*)")],
-        "banques, chèques postaux, caisse et assimilés": [(3, "52*, 53*, 57*")],
+        "banques, chèques postaux, caisse et assimilés": [(3, "SD(52*, 53*, 57*)")],
         "aménagements, agencements et installations": [(3, "232*, 233*, 241*, 242*"), (4, "ABS(283*, 284*)")],
         "matériel, mobilier et actifs biologiques": [(3, "24*"), (4, "ABS(284*)")],
         "frais de développement et de prospection": [(3, "20*"), (4, "ABS(280*)")],
         "avances et acomptes versés sur immobilisations": [(3, "26*")],
         "matières premières et fournitures liées": [(3, "32*"), (4, "ABS(39*)")],
-        "emprunts et dettes financières diverses": [(4, "-16*, -17*")],
-        "fournisseurs et comptes rattachés": [(4, "-401*, -402*, -408*")],
+        "emprunts et dettes financières diverses": [(4, "SC(16*, 17*)")],
+        "fournisseurs et comptes rattachés": [(4, "SC(401*, 402*, 408*)")],
         "variation de stocks de matières premières": [(1, "6032*")],
         "fonds commercial et droit au bail": [(3, "20*"), (4, "ABS(280*)")],
         "provisions pour dépréciation des stocks": [(4, "ABS(39*)")],
@@ -78,21 +78,21 @@ async def upload_dynamic_template(
         "titres de participation": [(3, "27*")],
         "autres immobilisations financières": [(3, "27*")],
         "produits intermédiaires": [(3, "37*"), (4, "ABS(39*)")],
-        "clients et comptes rattachés": [(3, "41*"), (4, "ABS(49*)")],
-        "primes liées au capital social": [(4, "-105*")],
-        "subventions d'investissement": [(4, "-14*")],
-        "résultat net de l'exercice": [(4, "-13*")],
-        "dettes fiscales et sociales": [(4, "-42*, -43*, -44*")],
+        "clients et comptes rattachés": [(3, "SD(41*)"), (4, "ABS(49*)")],
+        "primes liées au capital social": [(4, "SC(105*)")],
+        "subventions d'investissement": [(4, "SC(14*)")],
+        "résultat net de l'exercice": [(4, "SC(13*)")], # Note: Si perte, ça peut afficher 0 avec SC(). Généralement, Bilan Passif = SC pour Bénéfice, et on gère les pertes en -SD(13*). L'OTR affiche souvent le compte 13 "de son sens". Testons avec -13* pour l'instant.
+        "dettes fiscales et sociales": [(4, "SC(42*, 43*, 44*)")],
         "transferts de charges d'exploitation": [(1, "-781*")],
         "ventes de produits fabriqués": [(1, "-702*, -703*, -704*")],
         "dotations aux amortissements": [(1, "68*")],
         "participation des travailleurs": [(1, "87*")],
         "autres approvisionnements": [(3, "33*"), (4, "ABS(39*)")],
-        "valeurs à encaisser": [(3, "51*")],
-        "avances et acomptes reçus": [(4, "-419*")],
-        "provisions réglementées": [(4, "-15*")],
-        "réserves indisponibles": [(4, "-111*, -112*")],
-        "banques, découverts": [(4, "-56*")],
+        "valeurs à encaisser": [(3, "SD(51*)")],
+        "avances et acomptes reçus": [(4, "SC(419*)")],
+        "provisions réglementées": [(4, "SC(15*)")],
+        "réserves indisponibles": [(4, "SC(111*, 112*)")],
+        "banques, découverts": [(4, "SC(52*, 53*, 56*)")],
         "ventes de marchandises": [(1, "-701*")],
         "travaux, services vendus": [(1, "-705*, -706*")],
         "subventions d'exploitation": [(1, "-74*")],
@@ -110,10 +110,10 @@ async def upload_dynamic_template(
         "produits finis": [(3, "36*"), (4, "ABS(39*)")],
         "immobilisations corporelles": [(3, "21*, 22*, 23*, 24*"), (4, "ABS(281*, 282*, 283*, 284*)")],
         "immobilisations incorporelles": [(3, "20*"), (4, "ABS(280*)")],
-        "autres créances": [(3, "409*, 44*, 45*, 46*, 47*, 48*")],
-        "autres dettes": [(4, "-45*, -46*, -47*, -48*")],
-        "report à nouveau": [(4, "-12*")],
-        "réserves libres": [(4, "-118*")],
+        "autres créances": [(3, "SD(409*, 44*, 45*, 46*, 47*, 48*)")],
+        "autres dettes": [(4, "SC(45*, 46*, 47*, 48*)")],
+        "report à nouveau": [(4, "-12*")], # Laisse avec - car le report peut être débiteur ou créditeur et on veut la valeur mathématique
+        "réserves libres": [(4, "SC(118*)")],
         "chiffre d'affaires": [(1, "-70*")],
         "autres produits": [(1, "-75*")],
         "services extérieurs": [(1, "62*, 63*")],
@@ -127,8 +127,8 @@ async def upload_dynamic_template(
         "impôts et taxes": [(1, "64*")],
         "autres charges": [(1, "65*")],
         "terrains": [(3, "22*"), (4, "ABS(282*)")],
-        "banques": [(3, "52*, 53*, 57*")],
-        "capital": [(4, "-101*, -102*")],
+        "banques": [(3, "SD(52*, 53*, 57*)")],
+        "capital": [(4, "SC(101*, 102*)")],
         "nif": [(1, "#nif")]
     }
     
@@ -359,6 +359,7 @@ async def generate_liasse(
     company_id: str,
     document_id: Optional[str] = None,
     template_id: Optional[str] = None,
+    use_ia: bool = True,
     db: Session = Depends(get_db)
 ):
     """Generate the fiscal liasse (OTR/SYSCOHADA) by injecting account balances into the template."""
@@ -382,9 +383,41 @@ async def generate_liasse(
 
     injector = ExcelInjector(db, company_id, document_id=document_id)
 
+    # ---------------------------------------------------------
+    # CHECKPOINT IA : QWEN 2.5 (Embarqué in-process)
+    # ---------------------------------------------------------
+    if use_ia:
+        try:
+            from ..services.llm_audit import valider_coherence_ia_async
+            
+            # Preparation of the summary for the LLM
+            preflight_data = injector.pre_flight_check()
+            
+            # Appeler l'IA local en mode asynchrone (non-bloquant FastAPI)
+            audit_result = await valider_coherence_ia_async(preflight_data)
+            
+            if not audit_result.statut_conforme and audit_result.erreurs_bloquantes:
+                errors_str = " | ".join(audit_result.erreurs_bloquantes)
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Bloqué par l'IA d'Audit : {errors_str}"
+                )
+                
+        except HTTPException:
+            raise
+        except Exception as e:
+            # Fallback (ex: module introuvable / gguf absent)
+            print(f"[IA Checkpoint] Ignoré. Erreur IA Embarquée : {e}")
+
     safe_name = company.name.replace(" ", "_").replace("/", "-")
     exercice = datetime.now().year
-    output_filename = f"Liasse_{template_prefix}_{safe_name}_{exercice}.xlsx"
+    
+    # Preserver l'extension originale (.xlsx ou .xlsm) pour garder les macros
+    ext = os.path.splitext(working_template_path)[1]
+    if not ext:
+        ext = ".xlsx"
+        
+    output_filename = f"Liasse_{template_prefix}_{safe_name}_{exercice}{ext}"
     output_path = os.path.join(OUTPUT_DIR, output_filename)
 
     try:

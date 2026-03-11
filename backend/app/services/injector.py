@@ -87,27 +87,41 @@ class ExcelInjector:
         """
         Parse a mapping rule string and compute the value.
         Supports variables extra-comptables via # (ex: "#nif", "#dirigeant_nom").
+        Wrappers supported:
+        - ABS() : Valeur absolue totale
+        - SD()  : Solde Débiteur stricte (ignore les soldes créditeurs, renvoie positif)
+        - SC()  : Solde Créditeur stricte (ignore les soldes débiteurs, renvoie positif)
         """
         rule = rule.strip()
+        if not rule:
+            return 0.0
 
         # Handle extra-accounting variable
-        if rule.startswith("#"):
+        if rule.startswith("#") and "," not in rule:
             var_name = rule[1:]
             val = self.annexe_data.get(var_name, "")
-            # Try to cast to float if it looks like a number
             try:
-                # Basic check for number format
                 if str(val).replace('.', '', 1).isdigit():
                     return float(val)
             except:
                 pass
             return val
 
-        # Handle ABS() wrapper
+        # Handle Wrappers
         is_abs = False
-        if rule.upper().startswith("ABS(") and rule.endswith(")"):
+        is_sd = False
+        is_sc = False
+
+        rule_upper = rule.upper()
+        if rule_upper.startswith("ABS(") and rule_upper.endswith(")"):
             is_abs = True
             rule = rule[4:-1]
+        elif rule_upper.startswith("SD(") and rule_upper.endswith(")"):
+            is_sd = True
+            rule = rule[3:-1]
+        elif rule_upper.startswith("SC(") and rule_upper.endswith(")"):
+            is_sc = True
+            rule = rule[3:-1]
 
         total = 0.0
         patterns = [p.strip() for p in rule.split(",") if p.strip()]
@@ -123,14 +137,28 @@ class ExcelInjector:
                 prefix = pattern[:-1]
                 for code, bal in self.balances.items():
                     if code.startswith(prefix):
+                        if is_sd and bal <= 0:
+                            continue
+                        if is_sc and bal >= 0:
+                            continue
                         component += bal
             else:
-                component = self.balances.get(pattern, 0.0)
+                bal = self.balances.get(pattern, 0.0)
+                if not ((is_sd and bal <= 0) or (is_sc and bal >= 0)):
+                    component += bal
 
             total += component * multiplier
 
-        result = abs(total) if is_abs else total
-        # Arrondi à l'entier près (0 décimale) comme exigé par le canevas OTR
+        if is_sd:
+            result = max(0.0, total)
+        elif is_sc:
+            result = abs(min(0.0, total)) # SC returns positive value of credit balances
+        elif is_abs:
+            result = abs(total)
+        else:
+            result = total
+
+        # Arrondi à l'entier près (0 décimale) comme exigé par la majorité des canevas OTR
         return float(round(result, 0))
 
     # ------------------------------------------------------------------
@@ -266,9 +294,9 @@ class ExcelInjector:
                 "Veuillez d'abord importer une balance générale."
             )
 
-        # Load template — keep_vba=False, read_only=False, data_only=False
-        # (do NOT use data_only=True — we want to preserve formulas and macros)
-        wb = openpyxl.load_workbook(template_path, keep_vba=False, data_only=False)
+        # (do NOT use data_only=True — we want to preserve formulas)
+        # We MUST use keep_vba=True so that official .xlsm templates keep their macros!
+        wb = openpyxl.load_workbook(template_path, keep_vba=True, data_only=False)
 
         injected = 0
         skipped_sheet = []
