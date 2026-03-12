@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, BookOpen, FileText, Settings, ShieldCheck, FileSpreadsheet, Building2, ChevronDown, PlusCircle, Upload, Folder } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, BookOpen, FileText, Settings, ShieldCheck, FileSpreadsheet, Building2, ChevronDown, PlusCircle, Upload, Folder, LogOut } from "lucide-react";
 import { CompanyProvider, useCompany } from "@/components/company-provider";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 
 function SidebarContent() {
     const pathname = usePathname();
+    const router = useRouter();
     const { companies, activeCompany, setActiveCompany } = useCompany();
     const [open, setOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -21,6 +22,11 @@ function SidebarContent() {
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        router.push("/login");
+    };
 
     const navSections = [
         {
@@ -55,6 +61,7 @@ function SidebarContent() {
             title: "Administration",
             items: [
                 { name: "Mes Clients", href: "/dashboard/companies", icon: Building2 },
+                { name: "Mon Abonnement", href: "/dashboard/subscription", icon: ShieldCheck },
                 { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
             ]
         }
@@ -168,10 +175,17 @@ function SidebarContent() {
             </nav>
 
             <div className="p-4 mt-auto border-t border-slate-800">
-                <div className="bg-blue-900/20 border border-blue-900/40 p-4 rounded-xl">
+                <div className="bg-blue-900/20 border border-blue-900/40 p-4 rounded-xl mb-4">
                     <p className="text-xs font-semibold text-blue-400">Support Auditia</p>
                     <p className="text-xs text-blue-300 mt-1">contact@auditia.com</p>
                 </div>
+                <Button
+                    variant="ghost"
+                    className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    onClick={handleLogout}
+                >
+                    <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+                </Button>
             </div>
         </aside>
     );

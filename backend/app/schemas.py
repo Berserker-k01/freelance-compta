@@ -126,6 +126,47 @@ class UserCreate(UserBase):
 class UserOut(UserBase):
     id: str
     is_active: bool
+    is_superuser: bool
+    plan_id: Optional[str] = None
+    plan_status: str
+    plan_expires_at: Optional[datetime] = None
+    files_processed_count: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+# --- SAAS SCHEMAS ---
+class SubscriptionPlanBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float = 0.0
+    duration_days: int = 30
+    has_ai_access: bool = False
+    file_limit: Optional[int] = None
+    payment_link: Optional[str] = None
+
+class SubscriptionPlanCreate(SubscriptionPlanBase):
+    pass
+
+class SubscriptionPlan(SubscriptionPlanBase):
+    id: str
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+class PaymentProofBase(BaseModel):
+    user_id: str
+    plan_id: str
+    status: str
+
+class PaymentProofCreate(PaymentProofBase):
+    pass
+
+class PaymentProof(PaymentProofBase):
+    id: str
+    image_path: str
     created_at: datetime
     
     class Config:

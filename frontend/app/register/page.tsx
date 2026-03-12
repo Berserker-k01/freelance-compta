@@ -6,39 +6,56 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Loader2, Lock, Mail, ShieldCheck, Zap } from "lucide-react";
+import { Loader2, Lock, Mail, ShieldCheck, Zap, User } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import Link from "next/link";
-export default function UserLoginPage() {
+
+export default function UserRegisterPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
         try {
-            const formData = new URLSearchParams();
-            formData.append("username", email);
-            formData.append("password", password);
-
-            const res = await fetch(`${API_BASE_URL}/auth/token`, {
+            const res = await fetch(`${API_BASE_URL}/auth/users/`, {
                 method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData.toString(),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    full_name: fullName,
+                }),
             });
 
             if (res.ok) {
-                const data = await res.json();
-                localStorage.setItem("access_token", data.access_token);
-                router.push("/dashboard");
+                // Connecter l'utilisateur dans la foulée
+                const formData = new URLSearchParams();
+                formData.append("username", email);
+                formData.append("password", password);
+
+                const loginRes = await fetch(`${API_BASE_URL}/auth/token`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: formData.toString(),
+                });
+
+                if (loginRes.ok) {
+                    const data = await loginRes.json();
+                    localStorage.setItem("access_token", data.access_token);
+                    router.push("/dashboard/subscription");
+                } else {
+                    router.push("/login");
+                }
             } else {
                 const err = await res.json();
-                setError(err.detail || "Identifiants incorrects.");
+                setError(err.detail || "Erreur lors de la création du compte.");
             }
         } catch (err) {
             setError("Erreur de connexion au serveur.");
@@ -64,16 +81,16 @@ export default function UserLoginPage() {
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
                         Auditia Espace Client
                     </h1>
-                    <p className="text-slate-400 mt-2">Connectez-vous pour générer vos déclarations SYSCOHADA.</p>
+                    <p className="text-slate-400 mt-2">Créez votre compte pour commencer.</p>
                 </div>
 
                 <Card className="bg-[#151c2c]/80 backdrop-blur-xl border border-white/5 shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <CardHeader>
-                        <CardTitle className="text-xl text-white">Connexion Client</CardTitle>
-                        <CardDescription className="text-slate-400">Accès sécurisé à votre espace d'audit.</CardDescription>
+                        <CardTitle className="text-xl text-white">Inscription</CardTitle>
+                        <CardDescription className="text-slate-400">Rejoignez-nous en quelques secondes.</CardDescription>
                     </CardHeader>
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleRegister}>
                         <CardContent className="space-y-4">
                             {error && (
                                 <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg text-sm text-center">
@@ -81,7 +98,22 @@ export default function UserLoginPage() {
                                 </div>
                             )}
                             <div className="space-y-2 relative">
-                                <Label htmlFor="email" className="text-slate-300">Email</Label>
+                                <Label htmlFor="fullname" className="text-slate-300">Nom complet</Label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                                    <Input
+                                        id="fullname"
+                                        type="text"
+                                        placeholder="Jean Dubois"
+                                        className="pl-9 bg-slate-900 border-slate-700 text-slate-200 focus-visible:ring-blue-500 placeholder:text-slate-600"
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2 relative">
+                                <Label htmlFor="email" className="text-slate-300">Email professionnel</Label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                                     <Input
@@ -96,16 +128,14 @@ export default function UserLoginPage() {
                                 </div>
                             </div>
                             <div className="space-y-2 relative">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="password" className="text-slate-300">Mot de passe</Label>
-                                    <a href="#" className="text-sm font-medium text-blue-400 hover:text-blue-300 hover:underline">Oublié ?</a>
-                                </div>
+                                <Label htmlFor="password" className="text-slate-300">Mot de passe</Label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                                     <Input
                                         id="password"
                                         type="password"
-                                        className="pl-9 bg-slate-900 border-slate-700 text-slate-200 focus-visible:ring-blue-500"
+                                        placeholder="••••••••"
+                                        className="pl-9 bg-slate-900 border-slate-700 text-slate-200 focus-visible:ring-blue-500 placeholder:text-slate-600"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
@@ -119,23 +149,17 @@ export default function UserLoginPage() {
                                 className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold h-11 shadow-[0_4px_14px_0_rgb(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-0.5 transition-all duration-200"
                                 disabled={loading}
                             >
-                                {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Se Connecter"}
+                                {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Créer le compte"}
                             </Button>
 
                             <div className="text-center text-sm text-slate-400 mt-2">
-                                Pas encore de compte ? <Link href="/register" className="text-blue-400 hover:text-blue-300 font-medium hover:underline">S'inscrire</Link>
+                                Vous avez déjà un compte ? <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium hover:underline">Connectez-vous</Link>
                             </div>
                         </CardFooter>
                     </form>
                 </Card>
             </div>
 
-            {/* Link to Admin Login */}
-            <div className="absolute bottom-6 w-full text-center">
-                <a href="/admin/login" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-                    Accès Revendeurs & Administrateurs
-                </a>
-            </div>
         </div>
     );
 }

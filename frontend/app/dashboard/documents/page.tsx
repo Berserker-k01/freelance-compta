@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useCompany } from "@/components/company-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
-import { FileText, Download, Trash2, ArrowLeft, Upload, FileSpreadsheet, ArrowUpRight, MoreHorizontal, Eye } from "lucide-react";
+import { FileText, Download, Trash2, ArrowLeft, Upload, Plus, FileSpreadsheet, ArrowUpRight, MoreHorizontal, Eye, Loader2 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -31,6 +31,8 @@ export default function DocumentsPage() {
     const { activeCompany } = useCompany();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (activeCompany) {
@@ -55,8 +57,37 @@ export default function DocumentsPage() {
     };
 
     const handleDownload = (docId: string, filename: string) => {
-        // Direct download link
         window.open(`${API_BASE_URL}/documents/download/${docId}`, "_blank");
+    };
+
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file || !activeCompany) return;
+
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("name", file.name);
+            formData.append("file_type", "other"); // Define as non-balance generic document
+
+            const res = await fetch(`${API_BASE_URL}/documents/upload/${activeCompany.id}`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                fetchDocuments();
+            } else {
+                alert("Erreur lors de l'import du document.");
+            }
+        } catch (error) {
+            console.error("Error uploading document:", error);
+            alert("Erreur de connexion.");
+        } finally {
+            setUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
     };
 
     const handleDelete = async (docId: string) => {
@@ -95,11 +126,30 @@ export default function DocumentsPage() {
                         </p>
                     </div>
                 </div>
-                <Link href="/dashboard/import">
-                    <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500/50 transition-all rounded-xl font-medium px-4 h-11 transform hover:-translate-y-0.5">
-                        <Upload className="mr-2 h-4 w-4" /> Importer une Balance
+                <div className="flex gap-3">
+                    {/* Hidden input for generic document upload */}
+                    <input
+                        type="file"
+                        className="hidden"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                    />
+
+                    <Button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all rounded-xl font-medium px-4 h-11"
+                    >
+                        {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin text-slate-400" /> : <Plus className="mr-2 h-4 w-4" />}
+                        {uploading ? "Envoi..." : "Nouveau Document"}
                     </Button>
-                </Link>
+
+                    <Link href="/dashboard/import">
+                        <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.4)] border border-blue-500/50 transition-all rounded-xl font-medium px-4 h-11 transform hover:-translate-y-0.5">
+                            <Upload className="mr-2 h-4 w-4" /> Importer une Balance
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <Card className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-xl overflow-hidden text-slate-200">

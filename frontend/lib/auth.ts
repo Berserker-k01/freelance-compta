@@ -5,12 +5,12 @@ export async function login(email: string, password: string) {
     formData.append("username", email);
     formData.append("password", password);
 
-    const res = await fetch(`${API_BASE_URL}/token`, {
+    const res = await fetch(`${API_BASE_URL}/auth/token`, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: formData,
+        body: formData.toString(),
     });
 
     if (!res.ok) {
@@ -23,20 +23,20 @@ export async function login(email: string, password: string) {
 
 export function saveToken(token: string) {
     if (typeof window !== "undefined") {
-        localStorage.setItem("token", token);
+        localStorage.setItem("access_token", token);
     }
 }
 
 export function getToken() {
     if (typeof window !== "undefined") {
-        return localStorage.getItem("token");
+        return localStorage.getItem("access_token");
     }
     return null;
 }
 
 export function logout() {
     if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         window.location.href = "/login";
     }
 }

@@ -7,6 +7,7 @@ import math
 import os
 import shutil
 from datetime import datetime
+import charset_normalizer
 
 from .. import schemas, crud, models
 from ..database import get_db
@@ -194,26 +195,27 @@ async def import_balance(company_id: str, file: UploadFile = File(...), db: Sess
     # ------------------------------------------------------------------ #
     try:
         if file.filename.lower().endswith(".csv"):
-            # Liste des encodages à tester (Fréquents dans les exports comptables)
-            # utf-8, latin-1, cp1252, cp850 (DOS)
-            encodings = ["utf-8", "latin-1", "cp1252", "cp850"]
+            # Détection intelligente avec charset_normalizer
+            detected = charset_normalizer.from_bytes(contents).best()
+            detected_enc = detected.encoding if detected else "utf-8"
+            print(f"[Import] Encodage détecté : {detected_enc}")
+
+            encodings = [detected_enc, "utf-8", "cp1252", "latin-1", "cp850", "mac_roman"]
+            # Deduplicate
+            encodings = list(dict.fromkeys(encodings))
+            
             df_raw = None
             last_error = None
 
             for enc in encodings:
                 try:
-                    # Reset buffer for each attempt
                     io_buf = io.BytesIO(contents)
-                    # Try semicolon first (French locale)
                     df_raw = pd.read_csv(io_buf, sep=";", header=None, dtype=str, encoding=enc)
-                    
-                    # If only 1 column, maybe it's comma or tab
                     if df_raw.shape[1] < 2:
                         io_buf.seek(0)
                         df_raw = pd.read_csv(io_buf, sep=",", header=None, dtype=str, encoding=enc)
-                    
                     if df_raw.shape[1] >= 2:
-                        print(f"[Import] Succès avec l'encodage {enc}")
+                        print(f"[Import] Succès de parsing avec l'encodage {enc}")
                         break
                 except Exception as e:
                     last_error = e
@@ -247,7 +249,18 @@ async def import_balance(company_id: str, file: UploadFile = File(...), db: Sess
         # Generate positional column names
         num_cols = df.shape[1]
         col_names = [f"col_{i}" for i in range(num_cols)]
-        # ── Standard SYSCOHADA balance layouts ──
+        
+    df.columns = df.columns.astype(str)
+    
+    # Correction a posteriori des voyelles altérées (si l'encodage lu était erroné/latin1 pour un fichier dos/cp850)
+    REPLACEMENTS = {
+        "‚": "é", "…": "à", "Š": "è", "ƒ": "â", "“": "ô", 
+        "†": "ê", "ˆ": "ê", "‰": "ë", "‡": "ç", "Ž": "é", "": "é"
+    }
+    for old, new in REPLACEMENTS.items():
+        df = df.replace(to_replace=old, value=new, regex=True)
+
+    # ── Standard SYSCOHADA balance layouts ──
         # 4-col : Compte | Libellé | Débit | Crédit
         # 6-col : Compte | Libellé | Débit Mvt | Crédit Mvt | Solde D | Solde C
         # 8-col : Compte | Libellé | Débit Mvt | Crédit Mvt | AN D | AN C | Solde D | Solde C

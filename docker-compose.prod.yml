@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: auditia-web-prod
+    ports:
+      - "3000:3000"
+    environment:
+      # Changez cette URL par votre nom de domaine VPS :
+      - NEXT_PUBLIC_API_URL=https://api.votre-domaine.com
+    restart: always
+    networks:
+      - auditia_network
+
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: auditia-api-prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - auditia_db:/app/
+      - auditia_exports:/app/temp_exports
+      - auditia_templates:/app/templates
+    environment:
+      # Variable ultra importante en prod pour sécuriser les jetons JWT
+      - SECRET_KEY=CHANGEZ_MOI_EN_PRODUCTION_VITE_VITE
+    restart: always
+    networks:
+      - auditia_network
+    # Exposer sur le réseau docker interne, Traefik/Nginx redirigera vers 8000
+
+networks:
+  auditia_network:
+    driver: bridge
+
+volumes:
+  auditia_db:
+  auditia_exports:
+  auditia_templates:

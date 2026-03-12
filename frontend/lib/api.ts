@@ -1,12 +1,23 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
+    let token = "";
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem("access_token") || "";
+    }
+
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...((options.headers as Record<string, string>) || {}),
+    };
+
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...options.headers,
-        },
+        headers,
     });
 
     if (!res.ok) {
@@ -51,9 +62,20 @@ export async function importBalance(companyId: string, file: File) {
     const formData = new FormData();
     formData.append("file", file);
 
+    let token = "";
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem("access_token") || "";
+    }
+
+    const headers: Record<string, string> = {};
+    if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(`${API_BASE_URL}/accounting/import-balance/${companyId}`, {
         method: "POST",
         body: formData,
+        headers,
     });
 
     if (!res.ok) {

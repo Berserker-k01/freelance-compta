@@ -57,6 +57,8 @@ class Company(Base):
     email = Column(String, nullable=True)
     status = Column(String, default="active") # active, closed, archived
     
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=True) # Will be populated for data isolation
+    
     # Relations
     accounts = relationship("Account", back_populates="company", cascade="all, delete-orphan")
     journals = relationship("Journal", back_populates="company", cascade="all, delete-orphan")
@@ -147,6 +149,8 @@ class ReportTemplate(Base):
     
     # Configuration JSON: { "F14": "101,102", "G14": "131" }
     mapping_config = Column(String, default="{}") 
+    
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=True)
     
     created_at = Column(DateTime, default=datetime.utcnow)
 

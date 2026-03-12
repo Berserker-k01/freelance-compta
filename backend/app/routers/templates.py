@@ -3,7 +3,8 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from ..database import get_db
-from ..models import Company, Account, EntryLine, Entry, Journal
+from ..models import Company, Account, EntryLine, Entry, Journal, User
+from ..auth_utils import get_current_user
 from ..services.injector import ExcelInjector
 import os
 from datetime import datetime
@@ -33,9 +34,9 @@ from fastapi import UploadFile, File, Form
 from openpyxl.utils import get_column_letter
 
 @router.get("/list")
-def list_templates(db: Session = Depends(get_db)):
+def list_templates(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """List all available report templates."""
-    templates = db.query(models.ReportTemplate).all()
+    templates = db.query(models.ReportTemplate).filter(models.ReportTemplate.user_id == current_user.id).all()
     return templates
 
 @router.post("/upload")
@@ -43,7 +44,8 @@ async def upload_dynamic_template(
     file: UploadFile = File(...), 
     name: str = Form("Nouveau Canevas"), 
     year: int = Form(2026), 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """Smart Loader: Upload an Excel template and auto-map basic tags."""
     import openpyxl
@@ -154,7 +156,8 @@ async def upload_dynamic_template(
         name=name,
         year=year,
         file_path=file_path,
-        mapping_config=json.dumps(mapping)
+        mapping_config=json.dumps(mapping),
+        user_id=current_user.id
     )
     db.add(new_template)
     db.commit()
@@ -370,7 +373,10 @@ async def generate_liasse(
     if not template_id:
         raise HTTPException(status_code=400, detail="Veuillez sélectionner un modèle de déclaration.")
 
-    tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    tmpl = db.query(models.ReportTemplate).filter(
+        models.ReportTemplate.id == template_id, 
+        models.ReportTemplate.user_id == company.user_id
+    ).first()
     if not tmpl or not tmpl.file_path or not os.path.exists(tmpl.file_path):
         raise HTTPException(status_code=404, detail="Modèle introuvable ou fichier source manquant sur le serveur.")
 
@@ -445,18 +451,24 @@ async def generate_liasse(
 # ---------------------------------------------------------------------------
 
 @router.get("/{template_id}")
-def get_template_by_id(template_id: str, db: Session = Depends(get_db)):
+def get_template_by_id(template_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Get a single template by ID."""
-    tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    tmpl = db.query(models.ReportTemplate).filter(
+        models.ReportTemplate.id == template_id,
+        models.ReportTemplate.user_id == current_user.id
+    ).first()
     if not tmpl:
         raise HTTPException(status_code=404, detail="Modèle introuvable")
     return tmpl
 
 
 @router.put("/{template_id}/mapping")
-def update_template_mapping(template_id: str, payload: dict, db: Session = Depends(get_db)):
+def update_template_mapping(template_id: str, payload: dict, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Update the mapping configuration of a template."""
-    tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    tmpl = db.query(models.ReportTemplate).filter(
+        models.ReportTemplate.id == template_id,
+        models.ReportTemplate.user_id == current_user.id
+    ).first()
     if not tmpl:
         raise HTTPException(status_code=404, detail="Modèle introuvable")
     tmpl.mapping_config = payload.get("mapping_config", tmpl.mapping_config)
@@ -465,9 +477,12 @@ def update_template_mapping(template_id: str, payload: dict, db: Session = Depen
     return tmpl
 
 @router.delete("/{template_id}")
-def delete_template(template_id: str, db: Session = Depends(get_db)):
+def delete_template(template_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """Delete a report template and its associated file."""
-    tmpl = db.query(models.ReportTemplate).filter(models.ReportTemplate.id == template_id).first()
+    tmpl = db.query(models.ReportTemplate).filter(
+        models.ReportTemplate.id == template_id,
+        models.ReportTemplate.user_id == current_user.id
+    ).first()
     if not tmpl:
         raise HTTPException(status_code=404, detail="Modèle introuvable")
     

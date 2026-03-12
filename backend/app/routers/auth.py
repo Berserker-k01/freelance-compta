@@ -10,7 +10,7 @@ from ..auth_utils import verify_password, create_access_token, get_password_hash
 # Create user table
 models_user.Base.metadata.create_all(bind=engine)
 
-router = APIRouter(tags=["authentication"])
+router = APIRouter(prefix="/auth", tags=["authentication"])
 
 @router.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
