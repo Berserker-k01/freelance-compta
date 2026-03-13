@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Loader2, ShieldCheck, CheckCircle2, UploadCloud, Cpu, AlertCircle, Banknote, InfinityIcon } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
+import { cn } from "@/lib/utils";
 
 type SubscriptionPlan = {
     id: string;
@@ -32,6 +33,7 @@ export default function SubscriptionPage() {
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [selectedPlanForProof, setSelectedPlanForProof] = useState<string | null>(null);
+    const [payClicked, setPayClicked] = useState<Record<string, boolean>>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -74,7 +76,7 @@ export default function SubscriptionPage() {
             });
 
             if (res.ok) {
-                alert("Preuve de paiement envoyée ! Votre abonnement sera activé sous peu.");
+                alert("Preuve de paiement envoyée ! Votre abonnement sera activé par l'administrateur après vérification.");
                 fetchData();
             } else {
                 alert("Erreur lors de l'envoi.");
@@ -87,6 +89,11 @@ export default function SubscriptionPage() {
             setSelectedPlanForProof(null);
             if (fileInputRef.current) fileInputRef.current.value = "";
         }
+    };
+
+    const handleStartPayment = (link: string, planId: string) => {
+        window.open(link, "_blank");
+        setPayClicked(prev => ({ ...prev, [planId]: true }));
     };
 
     if (loading) return <div className="p-10 text-center text-slate-400">Chargement de votre offre...</div>;
@@ -194,26 +201,35 @@ export default function SubscriptionPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col gap-3">
                             {plan.payment_link && (
-                                <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white" onClick={() => window.open(plan.payment_link!, "_blank")}>
-                                    <Banknote className="w-4 h-4 mr-2" /> Payer en ligne
+                                <Button
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold h-11 uppercase shadow-lg shadow-blue-900/20"
+                                    onClick={() => handleStartPayment(plan.payment_link!, plan.id)}
+                                >
+                                    <Banknote className="w-5 h-5 mr-2" /> PAYER D&apos;ABORD
                                 </Button>
                             )}
-                            <Button
-                                variant="outline"
-                                className="w-full border-slate-600 text-slate-300 hover:bg-slate-800"
-                                onClick={() => {
-                                    setSelectedPlanForProof(plan.id);
-                                    fileInputRef.current?.click();
-                                }}
-                                disabled={uploading && selectedPlanForProof === plan.id}
-                            >
-                                {(uploading && selectedPlanForProof === plan.id) ? (
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                ) : (
-                                    <UploadCloud className="w-4 h-4 mr-2" />
-                                )}
-                                Envoyer Preuve Paiement
-                            </Button>
+
+                            {(!plan.payment_link || payClicked[plan.id]) && (
+                                <Button
+                                    variant={plan.payment_link ? "ghost" : "default"}
+                                    className={cn(
+                                        "w-full transition-all animate-in fade-in slide-in-from-top-1 duration-500",
+                                        !plan.payment_link ? "bg-slate-800 hover:bg-slate-700 h-11 font-bold uppercase" : "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 text-[11px] font-semibold"
+                                    )}
+                                    onClick={() => {
+                                        setSelectedPlanForProof(plan.id);
+                                        fileInputRef.current?.click();
+                                    }}
+                                    disabled={uploading && selectedPlanForProof === plan.id}
+                                >
+                                    {(uploading && selectedPlanForProof === plan.id) ? (
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    ) : (
+                                        <UploadCloud className={cn("mr-2", plan.payment_link ? "w-3 h-3" : "w-5 h-5")} />
+                                    )}
+                                    {plan.payment_link ? "J'ai déjà payé, envoyer la preuve" : "ENVOYER PREUVE PAIEMENT"}
+                                </Button>
+                            )}
                         </CardFooter>
                     </Card>
                 ))}

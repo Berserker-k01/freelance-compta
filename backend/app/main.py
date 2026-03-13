@@ -14,7 +14,7 @@ app.add_middleware(
 
 from .database import engine, Base
 from . import models, models_user  # models_user ensures users table is created
-from .routers import accounting, audit, auth, safe, dashboard, templates, companies, documents, licenses, saas
+from .routers import accounting, audit, auth, safe, dashboard, templates, companies, documents, licenses, saas, sync
 
 # Create all tables on startup
 Base.metadata.create_all(bind=engine)
@@ -29,6 +29,7 @@ app.include_router(companies.router)
 app.include_router(documents.router)
 app.include_router(licenses.router)
 app.include_router(saas.router)
+app.include_router(sync.router)
 
 @app.get("/")
 def read_root():

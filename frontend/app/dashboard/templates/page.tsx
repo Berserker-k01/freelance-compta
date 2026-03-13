@@ -463,9 +463,9 @@ export default function TemplatesPage() {
                                 </div>
 
                                 <div className="flex-1 flex flex-col h-full">
-                                    <h3 className="text-[17px] font-semibold text-white leading-tight mb-2">Liasse Fiscale Complète<br />(Normal)</h3>
+                                    <h3 className="text-[17px] font-semibold text-white leading-tight mb-2 uppercase">Liasse Fiscale Complète<br />(Régime Normal)</h3>
                                     <p className="text-[13px] text-slate-400 mb-4 leading-relaxed">
-                                        Liasse fiscale complète (normal) and fiscale fiscale normal.
+                                        Modèle officiel complet conforme aux normes de l'OTR et du SYSCOHADA révisé.
                                     </p>
 
                                     <div className="mb-6">
@@ -479,12 +479,12 @@ export default function TemplatesPage() {
                                         <Button
                                             onClick={() => handleOpenDialog("normal")}
                                             disabled={!!generating}
-                                            className="bg-white hover:bg-slate-200 text-slate-900 h-9 rounded-lg font-semibold shadow-md text-[13px] px-5"
+                                            className="bg-white hover:bg-slate-200 text-slate-900 h-9 rounded-lg font-bold shadow-md text-[12px] px-5 uppercase"
                                         >
-                                            {generating === "normal" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Generate Report"}
+                                            {generating === "normal" ? <Loader2 className="h-4 w-4 animate-spin" /> : "GÉNÉRER LA LIASSE"}
                                         </Button>
-                                        <Button variant="outline" className="border-white/10 bg-white/5 hover:bg-white/10 text-white h-9 rounded-lg text-[13px] px-5">
-                                            Review
+                                        <Button variant="outline" className="border-white/10 bg-white/5 hover:bg-white/10 text-white h-9 rounded-lg text-[12px] px-5 uppercase">
+                                            EXAMINER
                                         </Button>
                                     </div>
                                 </div>
@@ -524,19 +524,19 @@ export default function TemplatesPage() {
                                 </div>
 
                                 <div className="flex-1 flex flex-col h-full">
-                                    <h3 className="text-[17px] font-semibold text-white leading-tight mb-2">Système Minimal de<br />Trésorerie (SMT)</h3>
+                                    <h3 className="text-[17px] font-semibold text-white leading-tight mb-2 uppercase">Système Minimal de<br />Trésorerie (SMT)</h3>
                                     <p className="text-[13px] text-slate-400 mb-4 leading-relaxed">
-                                        Système minimal de reporting.
+                                        Système allégé pour les entités dont le chiffre d'affaires n'atteint pas le seuil du régime normal.
                                     </p>
 
                                     <div className="mb-6 grid grid-cols-2 gap-2 text-[11px] text-slate-300">
                                         <div className="flex flex-col gap-0.5">
-                                            <div className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-emerald-400"></span> Metrics to</div>
-                                            <div className="font-semibold text-white pl-2.5">Cash flow</div>
+                                            <div className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-emerald-400"></span> Flux de</div>
+                                            <div className="font-semibold text-white pl-2.5">Trésorerie</div>
                                         </div>
                                         <div className="flex flex-col gap-0.5">
-                                            <div className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-purple-400"></span> Report mex.</div>
-                                            <div className="font-semibold text-white pl-2.5">reporting</div>
+                                            <div className="flex items-center gap-1.5"><span className="w-1 h-1 rounded-full bg-purple-400"></span> Reporting</div>
+                                            <div className="font-semibold text-white pl-2.5">Simplifié</div>
                                         </div>
                                     </div>
 
@@ -544,12 +544,12 @@ export default function TemplatesPage() {
                                         <Button
                                             onClick={() => handleOpenDialog("smt")}
                                             disabled={!!generating}
-                                            className="bg-white hover:bg-slate-200 text-slate-900 h-9 rounded-lg font-semibold shadow-md text-[13px] px-5"
+                                            className="bg-white hover:bg-slate-200 text-slate-900 h-9 rounded-lg font-bold shadow-md text-[12px] px-5 uppercase"
                                         >
-                                            {generating === "smt" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Generate Report"}
+                                            {generating === "smt" ? <Loader2 className="h-4 w-4 animate-spin" /> : "GÉNÉRER LA LIASSE"}
                                         </Button>
-                                        <Button variant="outline" className="border-white/10 bg-white/5 hover:bg-white/10 text-white h-9 rounded-lg text-[13px] px-5">
-                                            Review
+                                        <Button variant="outline" className="border-white/10 bg-white/5 hover:bg-white/10 text-white h-9 rounded-lg text-[12px] px-5 uppercase">
+                                            EXAMINER
                                         </Button>
                                     </div>
                                 </div>
@@ -562,10 +562,10 @@ export default function TemplatesPage() {
             {/* ---- SECTION MODELES DYNAMIQUES ---- */}
             <div>
                 <div className="mb-6 shadow-[0_1px_0_0_rgba(255,255,255,0.05)] pb-1">
-                    <h2 className="text-[17px] font-semibold tracking-wide text-slate-200 mb-1">
+                    <h2 className="text-[17px] font-semibold tracking-wide text-slate-200 mb-1 uppercase">
                         Modèles Personnalisés & Auto-Mapping
                     </h2>
-                    <p className="text-[13px] text-slate-400">Upload & Map new template and configure mapping template.</p>
+                    <p className="text-[13px] text-slate-400">Importez de nouveaux canevas et configurez les règles de correspondance intelligentes.</p>
                 </div>
 
                 <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -577,10 +577,10 @@ export default function TemplatesPage() {
                                 <FileSpreadsheet className="w-16 h-16 text-slate-500 group-hover:text-emerald-500/70 transition-colors" />
                                 <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm">X</div>
                             </div>
-                            <h3 className="text-white font-medium text-[15px] mb-1">Upload & Map New</h3>
-                            <p className="text-[11px] text-slate-400 mb-6">Excel, CSV</p>
-                            <Button className="bg-white hover:bg-slate-200 text-slate-900 h-8 rounded-md font-semibold text-[12px] px-6">
-                                Choose File
+                            <h3 className="text-white font-bold text-[14px] mb-1 uppercase">IMPORTER UN MODÈLE</h3>
+                            <p className="text-[11px] text-slate-400 mb-6">Fichiers Excel (.xlsx)</p>
+                            <Button className="bg-white hover:bg-slate-200 text-slate-900 h-8 rounded-md font-bold text-[11px] px-6 uppercase shadow-lg">
+                                CHOISIR UN FICHIER
                             </Button>
                         </div>
                     </div>

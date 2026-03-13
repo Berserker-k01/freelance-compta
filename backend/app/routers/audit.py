@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Literal
 from .. import audit_ia, models
+from ..models_user import User
 from ..database import get_db
+from ..auth_utils import get_current_user
+from fastapi import HTTPException
 
 router = APIRouter(
     prefix="/audit",
@@ -13,11 +16,20 @@ router = APIRouter(
 
 
 @router.get("/analyze/{company_id}")
-def run_audit_analysis(company_id: str, db: Session = Depends(get_db)):
+def run_audit_analysis(
+    company_id: str, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
     """
     Launch AuditIA analysis on the company's ledger.
-    Returns anomalies, coherence checks and a global score.
+    Conditionné par l'accès IA de l'abonnement.
     """
+    if not (current_user.is_superuser or (current_user.plan and current_user.plan.has_ai_access)):
+        raise HTTPException(
+            status_code=403, 
+            detail="Votre abonnement actuel ne permet pas d'accéder à l'Audit Intelligent IA."
+        )
     return audit_ia.analyze_entries(db, company_id)
 
 
@@ -68,7 +80,11 @@ def _check(
 
 
 @router.get("/coherence/{company_id}")
-def run_coherence_checks(company_id: str, db: Session = Depends(get_db)):
+def run_coherence_checks(
+    company_id: str, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Exécute les 3 contrôles de cohérence OTR :
       1. Total Actif Net = Total Passif

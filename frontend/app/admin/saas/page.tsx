@@ -49,10 +49,13 @@ export default function AdminSaasDashboard() {
     const [users, setUsers] = useState<UserData[]>([]);
     const [proofs, setProofs] = useState<PaymentProof[]>([]);
 
-    // New Plan form state
+    // Plan states
     const [newPlan, setNewPlan] = useState({
         name: "", description: "", price: 0, duration_days: 30, has_ai_access: false, file_limit: "", payment_link: ""
     });
+    const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
+    const [assigningUser, setAssigningUser] = useState<UserData | null>(null);
+    const [selectedPlanId, setSelectedPlanId] = useState<string>("");
 
     useEffect(() => {
         fetchPlans();
@@ -97,6 +100,39 @@ export default function AdminSaasDashboard() {
         }
     };
 
+    const handleUpdatePlan = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingPlan) return;
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(`${API_BASE_URL}/saas/admin/plans/${editingPlan.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify(editingPlan),
+        });
+        if (res.ok) {
+            setEditingPlan(null);
+            fetchPlans();
+            alert("Forfait mis à jour !");
+        }
+    };
+
+    const handleAssignPlan = async () => {
+        if (!assigningUser || !selectedPlanId) return;
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(`${API_BASE_URL}/saas/admin/users/${assigningUser.id}/assign-plan?plan_id=${selectedPlanId}&status=active`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+            setAssigningUser(null);
+            setSelectedPlanId("");
+            fetchUsers();
+            alert("Forfait assigné avec succès !");
+        } else {
+            alert("Erreur lors de l'assignation.");
+        }
+    };
+
     const handleReviewProof = async (proofId: string, action: "approve" | "reject") => {
         if (!confirm(`Voulez-vous ${action === "approve" ? "valider" : "rejeter"} ce paiement ?`)) return;
         const token = localStorage.getItem("access_token");
@@ -132,9 +168,9 @@ export default function AdminSaasDashboard() {
                     <Button
                         variant="outline"
                         onClick={handleLogout}
-                        className="border-slate-700 text-slate-300 hover:bg-red-950/50 hover:text-red-400 hover:border-red-900/50"
+                        className="bg-slate-900 border-slate-700 text-red-500 hover:bg-red-950/30 hover:text-red-400 hover:border-red-900/50 font-bold uppercase transition-all"
                     >
-                        <LogOut className="w-4 h-4 mr-2" /> Déconnexion
+                        <LogOut className="w-4 h-4 mr-2" /> DÉCONNEXION
                     </Button>
                 </header>
 
@@ -213,7 +249,17 @@ export default function AdminSaasDashboard() {
                                                 <TableCell>{plans.find(p => p.id === u.plan_id)?.name || "Aucun"}</TableCell>
                                                 <TableCell>{u.files_processed_count}</TableCell>
                                                 <TableCell className="text-right">
-                                                    <Button variant="ghost" size="sm" className="text-orange-400 hover:bg-orange-500/10 hover:text-orange-300">Forcer le Forfait</Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            setAssigningUser(u);
+                                                            setSelectedPlanId(u.plan_id || "");
+                                                        }}
+                                                        className="text-orange-400 hover:bg-orange-500/10 hover:text-orange-300 font-bold uppercase text-[10px]"
+                                                    >
+                                                        FORCER LE FORFAIT
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -284,7 +330,14 @@ export default function AdminSaasDashboard() {
                                             </div>
                                             {p.payment_link && <p className="text-xs text-blue-400 mt-2 truncate w-64 block">Lien: {p.payment_link}</p>}
                                         </div>
-                                        <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:text-white hover:bg-slate-700">Editer</Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setEditingPlan(p)}
+                                            className="bg-slate-800 border-slate-600 text-slate-200 hover:text-white hover:bg-slate-700 font-bold uppercase text-[10px] tracking-wider px-3 h-7 transition-all"
+                                        >
+                                            EDITER
+                                        </Button>
                                     </div>
                                 ))}
                                 {plans.length === 0 && <p className="text-slate-500 text-center py-10 border border-dashed border-slate-700 rounded-xl">Aucun forfait configuré. Configurez votre offre SaaS.</p>}
@@ -293,7 +346,78 @@ export default function AdminSaasDashboard() {
                         </div>
                     </TabsContent>
                 </Tabs>
+                {/* MODAL EDIT PLAN */}
+                {editingPlan && (
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <Card className="bg-slate-900 border-slate-700 w-full max-w-md shadow-2xl">
+                            <form onSubmit={handleUpdatePlan}>
+                                <CardHeader>
+                                    <CardTitle className="text-white">Modifier le Forfait</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="space-y-1">
+                                        <Label className="text-slate-400 font-bold uppercase text-xs">Nom</Label>
+                                        <Input required value={editingPlan.name} onChange={e => setEditingPlan({ ...editingPlan, name: e.target.value })} className="bg-slate-800 border-slate-700 text-white" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <Label className="text-slate-400 font-bold uppercase text-xs">Prix (FCFA)</Label>
+                                            <Input required type="number" value={editingPlan.price} onChange={e => setEditingPlan({ ...editingPlan, price: Number(e.target.value) })} className="bg-slate-800 border-slate-700 text-white" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <Label className="text-slate-400 font-bold uppercase text-xs">Durée (j)</Label>
+                                            <Input required type="number" value={editingPlan.duration_days} onChange={e => setEditingPlan({ ...editingPlan, duration_days: Number(e.target.value) })} className="bg-slate-800 border-slate-700 text-white" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label className="text-slate-400 font-bold uppercase text-xs">Lien de Paiement</Label>
+                                        <Input value={editingPlan.payment_link || ""} onChange={e => setEditingPlan({ ...editingPlan, payment_link: e.target.value })} className="bg-slate-800 border-slate-700 text-white" />
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-indigo-500/10 p-2 rounded border border-indigo-500/20">
+                                        <input type="checkbox" id="edit-ai" checked={editingPlan.has_ai_access} onChange={e => setEditingPlan({ ...editingPlan, has_ai_access: e.target.checked })} />
+                                        <Label htmlFor="edit-ai" className="text-indigo-400 text-sm font-bold uppercase">Audit IA Inclus</Label>
+                                    </div>
+                                </CardContent>
+                                <CardFooter className="flex gap-2">
+                                    <Button type="button" variant="ghost" onClick={() => setEditingPlan(null)} className="flex-1 text-slate-400">Annuler</Button>
+                                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold uppercase">Enregistrer</Button>
+                                </CardFooter>
+                            </form>
+                        </Card>
+                    </div>
+                )}
+
+                {/* MODAL ASSIGN USER PLAN */}
+                {assigningUser && (
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <Card className="bg-slate-900 border-slate-700 w-full max-w-sm shadow-2xl text-slate-200">
+                            <CardHeader>
+                                <CardTitle className="text-white">Assigner un Forfait</CardTitle>
+                                <CardDescription>Choisir une offre pour <strong>{assigningUser.email}</strong></CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <Label className="text-slate-400 font-bold uppercase text-xs">Sélectionner l&apos;offre</Label>
+                                <select
+                                    value={selectedPlanId}
+                                    onChange={(e) => setSelectedPlanId(e.target.value)}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-md p-2 text-white outline-none focus:ring-2 focus:ring-orange-500"
+                                >
+                                    <option value="">--- Aucun Forfait ---</option>
+                                    {plans.map(p => (
+                                        <option key={p.id} value={p.id}>{p.name} ({p.price} FCFA)</option>
+                                    ))}
+                                </select>
+                            </CardContent>
+                            <CardFooter className="flex gap-2">
+                                <Button variant="ghost" onClick={() => setAssigningUser(null)} className="flex-1 text-slate-400">Annuler</Button>
+                                <Button onClick={handleAssignPlan} className="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold uppercase">Confirmer</Button>
+                            </CardFooter>
+                        </Card>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
+
+const cn = (...classes: any[]) => classes.filter(Boolean).join(" ");

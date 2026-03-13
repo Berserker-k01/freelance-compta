@@ -3,7 +3,8 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from ..database import get_db
-from ..models import Company, Account, EntryLine, Entry, Journal, User
+from ..models import Company, Account, EntryLine, Entry, Journal
+from ..models_user import User
 from ..auth_utils import get_current_user
 from ..services.injector import ExcelInjector
 import os
@@ -182,7 +183,12 @@ REQUIRED_ACCOUNT_CLASSES = {
 
 
 @router.get("/validate/{company_id}")
-def validate_prerequisites(company_id: str, document_id: Optional[str] = None, db: Session = Depends(get_db)):
+def validate_prerequisites(
+    company_id: str, 
+    document_id: Optional[str] = None, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Vérifie tous les prérequis avant de générer la liasse.
     Retourne :
@@ -200,9 +206,9 @@ def validate_prerequisites(company_id: str, document_id: Optional[str] = None, d
     warnings = []
 
     # ------------------------------------------------------------------ #
-    # 1. La société existe                                                 #
+    # 1. La société existe et appartient à l'utilisateur                 #
     # ------------------------------------------------------------------ #
-    company = db.query(Company).filter(Company.id == company_id).first()
+    company = db.query(Company).filter(Company.id == company_id, Company.user_id == current_user.id).first()
     if not company:
         return {
             "ready": False,
@@ -344,13 +350,18 @@ def validate_prerequisites(company_id: str, document_id: Optional[str] = None, d
 # ---------------------------------------------------------------------------
 
 @router.get("/preflight/{company_id}")
-def preflight_check(company_id: str, document_id: Optional[str] = None, db: Session = Depends(get_db)):
+def preflight_check(
+    company_id: str, 
+    document_id: Optional[str] = None, 
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Simule l'état Bilan/Résultat pour identifier un déséquilibre avant génération (Module 6).
     """
     from ..services.injector import ExcelInjector
 
-    company = db.query(Company).filter(Company.id == company_id).first()
+    company = db.query(Company).filter(Company.id == company_id, Company.user_id == current_user.id).first()
     if not company:
         raise HTTPException(status_code=404, detail="Société introuvable")
 
@@ -363,7 +374,8 @@ async def generate_liasse(
     document_id: Optional[str] = None,
     template_id: Optional[str] = None,
     use_ia: bool = True,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """Generate the fiscal liasse (OTR/SYSCOHADA) by injecting account balances into the template."""
     company = db.query(Company).filter(Company.id == company_id).first()
@@ -393,6 +405,13 @@ async def generate_liasse(
     # CHECKPOINT IA : QWEN 2.5 (Embarqué in-process)
     # ---------------------------------------------------------
     if use_ia:
+        # Check plan permissions
+        if not (current_user.is_superuser or (current_user.plan and current_user.plan.has_ai_access)):
+            raise HTTPException(
+                status_code=403, 
+                detail="Votre abonnement ne permet pas l'Audit IA. Veuillez passer au forfait Premium."
+            )
+        
         try:
             from ..services.llm_audit import valider_coherence_ia_async
             
