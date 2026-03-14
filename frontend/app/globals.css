@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@source "../app/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -160,3 +163,4 @@
     @apply bg-background text-foreground;
   }
 }
+

@@ -1,4 +1,5 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const LOCAL_API_URL = "http://localhost:8001"; // Port de l'EXE local
 
 export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
     let token = "";
@@ -15,17 +16,41 @@ export async function fetchAPI(endpoint: string, options: RequestInit = {}) {
         headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-    });
+    let url = `${API_BASE_URL}${endpoint}`;
+    
+    try {
+        // Tentative sur l'API principale (Cloud ou Docker port 8000)
+        const res = await fetch(url, {
+            ...options,
+            headers,
+        });
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || `Erreur API (${res.status})`);
+        if (!res.ok) {
+            // Si c'est une 404/500 mais que le serveur a répondu, on traite l'erreur normalement
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.detail || `Erreur API (${res.status})`);
+        }
+
+        return res.json();
+    } catch (error: any) {
+        // En cas d'échec de connexion (serveur injoignable), on tente le moteur local si on est dans l'EXE
+        if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+            console.warn("Serveur principal injoignable, tentative sur le moteur local...");
+            const localRes = await fetch(`${LOCAL_API_URL}${endpoint}`, {
+                ...options,
+                headers,
+            }).catch(() => {
+                throw new Error("Impossible de joindre le serveur Cloud ET le moteur Local.");
+            });
+
+            if (!localRes.ok) {
+                const errorData = await localRes.json().catch(() => ({}));
+                throw new Error(errorData.detail || `Erreur Moteur Local (${localRes.status})`);
+            }
+            return localRes.json();
+        }
+        throw error;
     }
-
-    return res.json();
 }
 
 export interface Account {
@@ -72,19 +97,27 @@ export async function importBalance(companyId: string, file: File) {
         headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const res = await fetch(`${API_BASE_URL}/accounting/import-balance/${companyId}`, {
-        method: "POST",
-        body: formData,
-        headers,
-    });
+    // Wrap the multipart fetch in a try/catch similar to fetchAPI for hybrid support
+    try {
+        const res = await fetch(`${API_BASE_URL}/accounting/import-balance/${companyId}`, {
+            method: "POST",
+            body: formData,
+            headers,
+        });
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Échec de l'import");
+        if (!res.ok) throw new Error("Erreur import");
+        return res.json();
+    } catch (e) {
+        const localRes = await fetch(`${LOCAL_API_URL}/accounting/import-balance/${companyId}`, {
+            method: "POST",
+            body: formData,
+            headers,
+        });
+        if (!localRes.ok) throw new Error("Échec de l'import (Cloud et Local)");
+        return localRes.json();
     }
-
-    return res.json();
 }
+
 export async function repairEncoding(companyId: string) {
     return fetchAPI(`/accounting/repair-encoding/${companyId}`, {
         method: "POST",

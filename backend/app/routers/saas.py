@@ -183,3 +183,20 @@ def review_payment_proof(
         
     db.commit()
     return {"message": f"Proof {action}d successfully"}
+
+@router.post("/admin/upload-exe")
+def upload_executable(
+    file: UploadFile = File(...),
+    admin: models.User = Depends(get_current_superuser)
+):
+    """Admin uploads a new version of the downloadable EXE."""
+    DOWNLOAD_DIR = "/app/public_downloads"
+    if not os.path.exists(DOWNLOAD_DIR):
+        os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+        
+    file_path = os.path.join(DOWNLOAD_DIR, "auditia-setup-1.0.0.exe") # Forcing the name for simplicity
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+        
+    return {"message": "Executable uploaded successfully", "filename": "auditia-setup-1.0.0.exe"}

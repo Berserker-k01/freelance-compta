@@ -38,6 +38,7 @@ services:
       - uploads_data:/app/uploads
       - exports_data:/app/temp_exports
       - ./backend/templates:/app/templates  # Excel templates (read-only source)
+      - ./frontend/public/downloads:/app/public_downloads
 
   frontend:
     build:
@@ -52,7 +53,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-      - /app/.next
+      - ./.next:/app/.next
     environment:
       # Browser-side: must be reachable from the USER's browser (localhost)
       NEXT_PUBLIC_API_URL: http://localhost:8000

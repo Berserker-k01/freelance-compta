@@ -41,9 +41,11 @@ export default function Home() {
           </p>
 
           <div id="download" className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-            <Button size="lg" className="h-14 px-8 text-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_30px_rgba(79,70,229,0.4)] w-full sm:w-auto overflow-hidden group">
-              <Monitor className="mr-2 w-6 h-6 group-hover:scale-110 transition-transform" />
-              Télécharger Windows (.exe)
+            <Button size="lg" asChild className="h-14 px-8 text-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_30px_rgba(79,70,229,0.4)] w-full sm:w-auto overflow-hidden group">
+              <a href="/downloads/auditia-setup-1.0.0.exe" download>
+                <Monitor className="mr-2 w-6 h-6 group-hover:scale-110 transition-transform" />
+                Télécharger Windows (.exe)
+              </a>
             </Button>
             <Button variant="outline" size="lg" asChild className="h-14 px-8 text-lg border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white w-full sm:w-auto">
               <Link href="/login">Accéder à la version Web</Link>

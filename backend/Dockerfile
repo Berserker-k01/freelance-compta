@@ -4,6 +4,13 @@ WORKDIR /app
 
 COPY requirements.txt .
 
+# Install system dependencies for compiling llama-cpp-python
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libopenblas-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
