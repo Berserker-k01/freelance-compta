@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
-import { CreditCard, CheckCircle, XCircle, Search, Users, Banknote, ShieldAlert, Cpu, Infinity as InfinityIcon, LogOut } from "lucide-react";
+import { CreditCard, CheckCircle, XCircle, Search, Users, Banknote, ShieldAlert, Cpu, Infinity as InfinityIcon, LogOut, Upload, Trash2, FileCode, Download, RefreshCw, AlertCircle, Server } from "lucide-react";
+import { useRef } from "react";
 import { API_BASE_URL } from "@/lib/api";
 
 type SubscriptionPlan = {
@@ -56,6 +57,10 @@ export default function AdminSaasDashboard() {
     const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
     const [assigningUser, setAssigningUser] = useState<UserData | null>(null);
     const [selectedPlanId, setSelectedPlanId] = useState<string>("");
+
+    // Exe states
+    const [uploadingExe, setUploadingExe] = useState(false);
+    const exeInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         fetchPlans();
@@ -151,6 +156,47 @@ export default function AdminSaasDashboard() {
         router.push("/admin/login");
     };
 
+    const handleUploadExe = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setUploadingExe(true);
+        const token = localStorage.getItem("access_token");
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch(`${API_BASE_URL}/saas/admin/upload-exe`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            if (res.ok) alert("Exécutable mis à jour !");
+            else alert("Erreur lors de l'upload.");
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setUploadingExe(false);
+            if (exeInputRef.current) exeInputRef.current.value = "";
+        }
+    };
+
+    const handleDeleteExe = async () => {
+        if (!confirm("Supprimer l'installeur actuel ?")) return;
+        const token = localStorage.getItem("access_token");
+        try {
+            const res = await fetch(`${API_BASE_URL}/saas/admin/upload-exe`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) alert("Fichier supprimé.");
+            else alert("Erreur.");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#070b14] text-slate-200 p-8">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -179,6 +225,7 @@ export default function AdminSaasDashboard() {
                         <TabsTrigger value="proofs" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white"><Banknote className="w-4 h-4 mr-2" /> Preuves de Paiement</TabsTrigger>
                         <TabsTrigger value="users" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white"><Users className="w-4 h-4 mr-2" /> Clients & Abonnements</TabsTrigger>
                         <TabsTrigger value="plans" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white"><CreditCard className="w-4 h-4 mr-2" /> Offres & Forfaits</TabsTrigger>
+                        <TabsTrigger value="exe" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white"><Server className="w-4 h-4 mr-2" /> Exécutables</TabsTrigger>
                     </TabsList>
 
                     {/* ONGLET PREUVES */}
@@ -344,6 +391,61 @@ export default function AdminSaasDashboard() {
                             </div>
 
                         </div>
+                    </TabsContent>
+                    {/* ONGLET EXE */}
+                    <TabsContent value="exe">
+                        <Card className="bg-slate-900/50 border-slate-800 backdrop-blur-sm">
+                            <CardHeader>
+                                <CardTitle className="text-white flex items-center gap-2">
+                                    <FileCode className="w-5 h-5 text-orange-400" /> Gestion de l&apos;Exécutable Windows
+                                </CardTitle>
+                                <CardDescription className="text-slate-400">Chargez la nouvelle version de l&apos;application desktop pour vos clients.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-8">
+                                <div className="p-10 border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center gap-4 bg-slate-950/20">
+                                    <div className="p-4 bg-orange-500/10 rounded-full">
+                                        <Upload className="w-10 h-10 text-orange-500" />
+                                    </div>
+                                    <div>
+                                        <p className="text-white font-bold text-lg uppercase tracking-tight">Mettre à jour l&apos;installeur (.exe)</p>
+                                        <p className="text-slate-500 text-sm max-w-md mx-auto mt-1">
+                                            Le fichier sera disponible immédiatement sous le nom <b>auditia-setup-1.0.0.exe</b>.
+                                        </p>
+                                    </div>
+                                    <input type="file" accept=".exe" className="hidden" ref={exeInputRef} onChange={handleUploadExe} />
+                                    <div className="flex gap-4">
+                                        <Button onClick={() => exeInputRef.current?.click()} disabled={uploadingExe} className="bg-orange-600 hover:bg-orange-500 text-white font-black px-8">
+                                            {uploadingExe ? <RefreshCw className="w-5 h-5 animate-spin mr-2" /> : <Upload className="w-5 h-5 mr-2" />}
+                                            CHOISIR LE FICHIER
+                                        </Button>
+                                        <Button variant="outline" onClick={handleDeleteExe} className="border-red-500/50 text-red-400 hover:bg-red-500/10 font-bold uppercase">
+                                            <Trash2 className="w-4 h-4 mr-2" /> Supprimer l&apos;actuel
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div className="bg-slate-950/50 p-6 rounded-xl border border-slate-800 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-slate-800 rounded-lg"><Download className="w-5 h-5 text-slate-500" /></div>
+                                            <div>
+                                                <p className="text-white font-medium text-sm">Lien de téléchargement public</p>
+                                                <p className="text-[10px] text-orange-500 font-mono">/downloads/auditia-setup-1.0.0.exe</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-slate-950/50 p-6 rounded-xl border border-slate-800 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-slate-800 rounded-lg"><AlertCircle className="w-5 h-5 text-slate-500" /></div>
+                                            <div>
+                                                <p className="text-white font-medium text-sm">Statut du déploiement</p>
+                                                <p className="text-[10px] text-emerald-400 font-bold">PRÊT POUR LE CLOUD</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </TabsContent>
                 </Tabs>
                 {/* MODAL EDIT PLAN */}

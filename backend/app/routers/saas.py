@@ -200,3 +200,17 @@ def upload_executable(
         shutil.copyfileobj(file.file, buffer)
         
     return {"message": "Executable uploaded successfully", "filename": "auditia-setup-1.0.0.exe"}
+
+@router.delete("/admin/upload-exe")
+def delete_executable(
+    admin: models.User = Depends(get_current_superuser)
+):
+    """Admin deletes the downloadable EXE."""
+    DOWNLOAD_DIR = "/app/public_downloads"
+    file_path = os.path.join(DOWNLOAD_DIR, "auditia-setup-1.0.0.exe")
+    
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return {"message": "Executable deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Executable not found")

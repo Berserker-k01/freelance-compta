@@ -1,1 +1,16 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/accounts/page": "app/dashboard/accounts/page.js",
+  "/dashboard/annexes/page": "app/dashboard/annexes/page.js",
+  "/dashboard/audit/page": "app/dashboard/audit/page.js",
+  "/dashboard/companies/page": "app/dashboard/companies/page.js",
+  "/dashboard/documents/page": "app/dashboard/documents/page.js",
+  "/dashboard/import/page": "app/dashboard/import/page.js",
+  "/dashboard/journal/page": "app/dashboard/journal/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/settings/page": "app/dashboard/settings/page.js",
+  "/dashboard/sync/page": "app/dashboard/sync/page.js",
+  "/dashboard/templates/page": "app/dashboard/templates/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
+}

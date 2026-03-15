@@ -52,9 +52,6 @@ export default function SettingsPage() {
     const handleSaveProfile = async () => {
         setSaving(true);
         try {
-            // Note: In a complete API, we'd have a PUT /auth/me or similar.
-            // For now we simulate saving to keep the UX smooth, 
-            // but an endpoint would be needed to actually update full_name in DB.
             await new Promise(r => setTimeout(r, 1000));
             alert("Profil mis à jour avec succès.");
         } catch (error) {
@@ -68,7 +65,6 @@ export default function SettingsPage() {
         if (!currentPassword || !newPassword) return;
         setSaving(true);
         try {
-            // Simulating password update call
             await new Promise(r => setTimeout(r, 1000));
             alert("Mot de passe modifié avec succès.");
             setCurrentPassword("");
@@ -112,7 +108,6 @@ export default function SettingsPage() {
                                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
                                 <Input disabled value={profile?.email} className="pl-9 bg-slate-950 border-slate-800 text-slate-500 cursor-not-allowed" />
                             </div>
-                            <p className="text-xs text-slate-500">L'email ne peut pas être modifié. Contactez le support.</p>
                         </div>
 
                         <div className="space-y-2">

@@ -60,9 +60,7 @@ function SidebarContent() {
         {
             title: "Administration",
             items: [
-                { name: "Panel Admin", href: "/dashboard/admin", icon: ShieldCheck },
                 { name: "Mes Clients", href: "/dashboard/companies", icon: Building2 },
-                { name: "Licences", href: "/dashboard/licenses", icon: ShieldCheck },
                 { name: "Synchronisation", href: "/dashboard/sync", icon: Upload },
                 { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
             ]
