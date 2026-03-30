@@ -7,10 +7,9 @@
   "/dashboard/documents/page": "app/dashboard/documents/page.js",
   "/dashboard/import/page": "app/dashboard/import/page.js",
   "/dashboard/journal/page": "app/dashboard/journal/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/settings/page": "app/dashboard/settings/page.js",
-  "/dashboard/sync/page": "app/dashboard/sync/page.js",
+  "/dashboard/subscription/page": "app/dashboard/subscription/page.js",
   "/dashboard/templates/page": "app/dashboard/templates/page.js",
   "/login/page": "app/login/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js"
 }
