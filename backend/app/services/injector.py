@@ -295,8 +295,11 @@ class ExcelInjector:
             )
 
         # (do NOT use data_only=True — we want to preserve formulas)
-        # We MUST use keep_vba=True so that official .xlsm templates keep their macros!
-        wb = openpyxl.load_workbook(template_path, keep_vba=True, data_only=False)
+        # keep_vba must only be enabled for macro-enabled templates (.xlsm/.xltm),
+        # otherwise Excel may reject a generated .xlsx as invalid format.
+        template_ext = os.path.splitext(template_path)[1].lower()
+        keep_vba = template_ext in {".xlsm", ".xltm"}
+        wb = openpyxl.load_workbook(template_path, keep_vba=keep_vba, data_only=False)
 
         injected = 0
         skipped_sheet = []

@@ -1,7 +1,7 @@
 import { API_BASE_URL, fetchAPI } from "./api";
 
 export interface Document {
-    id: number;
+    id: string;
     name: string;
     filename: string;
     file_type: string;
@@ -13,11 +13,8 @@ export async function getDocuments(companyId: string): Promise<Document[]> {
     return fetchAPI(`/documents/list/${companyId}`);
 }
 
-export async function deleteDocument(id: number): Promise<void> {
-    const res = await fetch(`${API_BASE_URL}/documents/${id}`, {
+export async function deleteDocument(id: string): Promise<void> {
+    await fetchAPI(`/documents/${id}`, {
         method: "DELETE",
     });
-    if (!res.ok) {
-        throw new Error("Failed to delete document");
-    }
 }

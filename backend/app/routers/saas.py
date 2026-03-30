@@ -61,7 +61,22 @@ def upload_payment_proof(
 @router.get("/me", response_model=schemas.UserOut)
 def get_my_subscription(current_user: models.User = Depends(get_current_user)):
     """Get current user subscription status"""
-    return current_user
+    plan = current_user.plan
+    return {
+        "id": current_user.id,
+        "email": current_user.email,
+        "full_name": current_user.full_name,
+        "is_active": current_user.is_active,
+        "is_superuser": current_user.is_superuser,
+        "plan_id": current_user.plan_id,
+        "plan_name": plan.name if plan else None,
+        "plan_has_ai_access": bool(plan.has_ai_access) if plan else False,
+        "plan_file_limit": plan.file_limit if plan else None,
+        "plan_status": current_user.plan_status,
+        "plan_expires_at": current_user.plan_expires_at,
+        "files_processed_count": current_user.files_processed_count or 0,
+        "created_at": current_user.created_at,
+    }
 
 
 # --- ADMIN ROUTES ---

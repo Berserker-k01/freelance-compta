@@ -653,8 +653,16 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldAlert$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/shield-alert.js [app-ssr] (ecmascript) <export default as ShieldAlert>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$infinity$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Infinity$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/infinity.js [app-ssr] (ecmascript) <export default as Infinity>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/log-out.js [app-ssr] (ecmascript) <export default as LogOut>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$upload$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Upload$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/upload.js [app-ssr] (ecmascript) <export default as Upload>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/trash-2.js [app-ssr] (ecmascript) <export default as Trash2>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$code$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileCode$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-code.js [app-ssr] (ecmascript) <export default as FileCode>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$download$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Download$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/download.js [app-ssr] (ecmascript) <export default as Download>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/refresh-cw.js [app-ssr] (ecmascript) <export default as RefreshCw>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-alert.js [app-ssr] (ecmascript) <export default as AlertCircle>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$server$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Server$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/server.js [app-ssr] (ecmascript) <export default as Server>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/api.ts [app-ssr] (ecmascript)");
 "use client";
+;
 ;
 ;
 ;
@@ -685,6 +693,9 @@ function AdminSaasDashboard() {
     const [editingPlan, setEditingPlan] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [assigningUser, setAssigningUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [selectedPlanId, setSelectedPlanId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    // Exe states
+    const [uploadingExe, setUploadingExe] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const exeInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         fetchPlans();
         fetchUsers();
@@ -800,6 +811,46 @@ function AdminSaasDashboard() {
         localStorage.removeItem("access_token");
         router.push("/admin/login");
     };
+    const handleUploadExe = async (event)=>{
+        const file = event.target.files?.[0];
+        if (!file) return;
+        setUploadingExe(true);
+        const token = localStorage.getItem("access_token");
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const res = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["API_BASE_URL"]}/saas/admin/upload-exe`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+                body: formData
+            });
+            if (res.ok) alert("Exécutable mis à jour !");
+            else alert("Erreur lors de l'upload.");
+        } catch (error) {
+            console.error(error);
+        } finally{
+            setUploadingExe(false);
+            if (exeInputRef.current) exeInputRef.current.value = "";
+        }
+    };
+    const handleDeleteExe = async ()=>{
+        if (!confirm("Supprimer l'installeur actuel ?")) return;
+        const token = localStorage.getItem("access_token");
+        try {
+            const res = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["API_BASE_URL"]}/saas/admin/upload-exe`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            if (res.ok) alert("Fichier supprimé.");
+            else alert("Erreur.");
+        } catch (error) {
+            console.error(error);
+        }
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "min-h-screen bg-[#070b14] text-slate-200 p-8",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -817,12 +868,12 @@ function AdminSaasDashboard() {
                                         className: "w-8 h-8 text-orange-500"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 161,
+                                        lineNumber: 207,
                                         columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 160,
+                                    lineNumber: 206,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -832,7 +883,7 @@ function AdminSaasDashboard() {
                                             children: "Console SaaS & Abonnements"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 164,
+                                            lineNumber: 210,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -840,19 +891,19 @@ function AdminSaasDashboard() {
                                             children: "Gestion des offres, clients et vérification des paiements."
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 165,
+                                            lineNumber: 211,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 163,
+                                    lineNumber: 209,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 159,
+                            lineNumber: 205,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -864,20 +915,20 @@ function AdminSaasDashboard() {
                                     className: "w-4 h-4 mr-2"
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 173,
+                                    lineNumber: 219,
                                     columnNumber: 25
                                 }, this),
                                 " DÉCONNEXION"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 168,
+                            lineNumber: 214,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/admin/saas/page.tsx",
-                    lineNumber: 158,
+                    lineNumber: 204,
                     columnNumber: 17
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Tabs"], {
@@ -895,14 +946,14 @@ function AdminSaasDashboard() {
                                             className: "w-4 h-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 179,
+                                            lineNumber: 225,
                                             columnNumber: 130
                                         }, this),
                                         " Preuves de Paiement"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 179,
+                                    lineNumber: 225,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -913,14 +964,14 @@ function AdminSaasDashboard() {
                                             className: "w-4 h-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 180,
+                                            lineNumber: 226,
                                             columnNumber: 129
                                         }, this),
                                         " Clients & Abonnements"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 180,
+                                    lineNumber: 226,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsTrigger"], {
@@ -931,20 +982,38 @@ function AdminSaasDashboard() {
                                             className: "w-4 h-4 mr-2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 181,
+                                            lineNumber: 227,
                                             columnNumber: 129
                                         }, this),
                                         " Offres & Forfaits"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 181,
+                                    lineNumber: 227,
+                                    columnNumber: 25
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsTrigger"], {
+                                    value: "exe",
+                                    className: "data-[state=active]:bg-orange-600 data-[state=active]:text-white",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$server$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Server$3e$__["Server"], {
+                                            className: "w-4 h-4 mr-2"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                            lineNumber: 228,
+                                            columnNumber: 127
+                                        }, this),
+                                        " Exécutables"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/app/admin/saas/page.tsx",
+                                    lineNumber: 228,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 178,
+                            lineNumber: 224,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -959,7 +1028,7 @@ function AdminSaasDashboard() {
                                                 children: "Validation Manuelle des Paiements"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 188,
+                                                lineNumber: 235,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -971,13 +1040,13 @@ function AdminSaasDashboard() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 189,
+                                                lineNumber: 236,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 187,
+                                        lineNumber: 234,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -986,7 +1055,7 @@ function AdminSaasDashboard() {
                                             children: "Aucun paiement en attente."
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 193,
+                                            lineNumber: 240,
                                             columnNumber: 37
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "grid gap-6 md:grid-cols-2 lg:grid-cols-3",
@@ -1005,7 +1074,7 @@ function AdminSaasDashboard() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 200,
+                                                                    lineNumber: 247,
                                                                     columnNumber: 53
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1016,18 +1085,18 @@ function AdminSaasDashboard() {
                                                                         children: "Agrandir la preuve"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 202,
+                                                                        lineNumber: 249,
                                                                         columnNumber: 57
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 201,
+                                                                    lineNumber: 248,
                                                                     columnNumber: 53
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 198,
+                                                            lineNumber: 245,
                                                             columnNumber: 49
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1038,7 +1107,7 @@ function AdminSaasDashboard() {
                                                                     children: p.user_email
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 206,
+                                                                    lineNumber: 253,
                                                                     columnNumber: 53
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
@@ -1046,7 +1115,7 @@ function AdminSaasDashboard() {
                                                                     children: p.plan_name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 207,
+                                                                    lineNumber: 254,
                                                                     columnNumber: 53
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1057,13 +1126,13 @@ function AdminSaasDashboard() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 208,
+                                                                    lineNumber: 255,
                                                                     columnNumber: 53
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 205,
+                                                            lineNumber: 252,
                                                             columnNumber: 49
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -1077,14 +1146,14 @@ function AdminSaasDashboard() {
                                                                             className: "w-4 h-4 mr-1"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                                            lineNumber: 211,
+                                                                            lineNumber: 258,
                                                                             columnNumber: 178
                                                                         }, this),
                                                                         " Valider"
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 211,
+                                                                    lineNumber: 258,
                                                                     columnNumber: 53
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1096,47 +1165,47 @@ function AdminSaasDashboard() {
                                                                             className: "w-4 h-4 mr-1"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                                            lineNumber: 212,
+                                                                            lineNumber: 259,
                                                                             columnNumber: 183
                                                                         }, this),
                                                                         " Rejeter"
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 212,
+                                                                    lineNumber: 259,
                                                                     columnNumber: 53
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 210,
+                                                            lineNumber: 257,
                                                             columnNumber: 49
                                                         }, this)
                                                     ]
                                                 }, p.id, true, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 197,
+                                                    lineNumber: 244,
                                                     columnNumber: 45
                                                 }, this))
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 195,
+                                            lineNumber: 242,
                                             columnNumber: 37
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 191,
+                                        lineNumber: 238,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 186,
+                                lineNumber: 233,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 185,
+                            lineNumber: 232,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -1151,7 +1220,7 @@ function AdminSaasDashboard() {
                                                 children: "Base Clients"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 226,
+                                                lineNumber: 273,
                                                 columnNumber: 33
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -1159,13 +1228,13 @@ function AdminSaasDashboard() {
                                                 children: "Modifiez manuellement les droits d'accès."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 227,
+                                                lineNumber: 274,
                                                 columnNumber: 33
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 225,
+                                        lineNumber: 272,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1179,28 +1248,28 @@ function AdminSaasDashboard() {
                                                                 children: "Email"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 233,
+                                                                lineNumber: 280,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                                 children: "Statut Abonnement"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 234,
+                                                                lineNumber: 281,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                                 children: "Forfait"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 235,
+                                                                lineNumber: 282,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
                                                                 children: "Fichiers Traités"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 236,
+                                                                lineNumber: 283,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableHead"], {
@@ -1208,18 +1277,18 @@ function AdminSaasDashboard() {
                                                                 children: "Actions"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 237,
+                                                                lineNumber: 284,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                        lineNumber: 232,
+                                                        lineNumber: 279,
                                                         columnNumber: 41
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 231,
+                                                    lineNumber: 278,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableBody"], {
@@ -1230,7 +1299,7 @@ function AdminSaasDashboard() {
                                                                     children: u.email
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 243,
+                                                                    lineNumber: 290,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1239,40 +1308,40 @@ function AdminSaasDashboard() {
                                                                         children: "Actif"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 245,
+                                                                        lineNumber: 292,
                                                                         columnNumber: 83
                                                                     }, this) : u.plan_status === "pending" ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                                                         className: "bg-amber-500",
                                                                         children: "En cours"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 246,
+                                                                        lineNumber: 293,
                                                                         columnNumber: 87
                                                                     }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                                                         className: "bg-slate-700 text-slate-300",
                                                                         children: "Inactif"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 247,
+                                                                        lineNumber: 294,
                                                                         columnNumber: 61
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 244,
+                                                                    lineNumber: 291,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
                                                                     children: plans.find((p)=>p.id === u.plan_id)?.name || "Aucun"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 249,
+                                                                    lineNumber: 296,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
                                                                     children: u.files_processed_count
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 250,
+                                                                    lineNumber: 297,
                                                                     columnNumber: 49
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$table$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TableCell"], {
@@ -1288,45 +1357,45 @@ function AdminSaasDashboard() {
                                                                         children: "FORCER LE FORFAIT"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 252,
+                                                                        lineNumber: 299,
                                                                         columnNumber: 53
                                                                     }, this)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 251,
+                                                                    lineNumber: 298,
                                                                     columnNumber: 49
                                                                 }, this)
                                                             ]
                                                         }, u.id, true, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 242,
+                                                            lineNumber: 289,
                                                             columnNumber: 45
                                                         }, this))
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 240,
+                                                    lineNumber: 287,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 230,
+                                            lineNumber: 277,
                                             columnNumber: 33
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 229,
+                                        lineNumber: 276,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 224,
+                                lineNumber: 271,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 223,
+                            lineNumber: 270,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsContent"], {
@@ -1347,12 +1416,12 @@ function AdminSaasDashboard() {
                                                             children: "Créer un Forfait"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 280,
+                                                            lineNumber: 327,
                                                             columnNumber: 45
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                        lineNumber: 279,
+                                                        lineNumber: 326,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1366,7 +1435,7 @@ function AdminSaasDashboard() {
                                                                         children: "Nom du Forfait"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 284,
+                                                                        lineNumber: 331,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1380,13 +1449,13 @@ function AdminSaasDashboard() {
                                                                         placeholder: "Ex: Pro Unlimited"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 285,
+                                                                        lineNumber: 332,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 283,
+                                                                lineNumber: 330,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1400,7 +1469,7 @@ function AdminSaasDashboard() {
                                                                                 children: "Prix (FCFA)"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                lineNumber: 289,
+                                                                                lineNumber: 336,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1414,13 +1483,13 @@ function AdminSaasDashboard() {
                                                                                 className: "bg-slate-800 border-slate-700 text-white"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                lineNumber: 290,
+                                                                                lineNumber: 337,
                                                                                 columnNumber: 53
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 288,
+                                                                        lineNumber: 335,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1431,7 +1500,7 @@ function AdminSaasDashboard() {
                                                                                 children: "Durée (Jours)"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                lineNumber: 293,
+                                                                                lineNumber: 340,
                                                                                 columnNumber: 53
                                                                             }, this),
                                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1445,19 +1514,19 @@ function AdminSaasDashboard() {
                                                                                 className: "bg-slate-800 border-slate-700 text-white"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                lineNumber: 294,
+                                                                                lineNumber: 341,
                                                                                 columnNumber: 53
                                                                             }, this)
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 292,
+                                                                        lineNumber: 339,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 287,
+                                                                lineNumber: 334,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1468,7 +1537,7 @@ function AdminSaasDashboard() {
                                                                         children: "Limite de Fichiers (Vide = Illimité)"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 298,
+                                                                        lineNumber: 345,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1482,13 +1551,13 @@ function AdminSaasDashboard() {
                                                                         placeholder: "Illimité"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 299,
+                                                                        lineNumber: 346,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 297,
+                                                                lineNumber: 344,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1499,7 +1568,7 @@ function AdminSaasDashboard() {
                                                                         children: "Lien de Paiement (Stripe, FedaPay...)"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 302,
+                                                                        lineNumber: 349,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1512,13 +1581,13 @@ function AdminSaasDashboard() {
                                                                         placeholder: "https://buy.stripe.com/..."
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 303,
+                                                                        lineNumber: 350,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 301,
+                                                                lineNumber: 348,
                                                                 columnNumber: 45
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1535,7 +1604,7 @@ function AdminSaasDashboard() {
                                                                         className: "rounded bg-slate-800 border-slate-600 text-indigo-500"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 306,
+                                                                        lineNumber: 353,
                                                                         columnNumber: 49
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -1544,19 +1613,19 @@ function AdminSaasDashboard() {
                                                                         children: "Activer l'Audit IA (Qwen)"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                        lineNumber: 307,
+                                                                        lineNumber: 354,
                                                                         columnNumber: 49
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 305,
+                                                                lineNumber: 352,
                                                                 columnNumber: 45
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                        lineNumber: 282,
+                                                        lineNumber: 329,
                                                         columnNumber: 41
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -1566,28 +1635,28 @@ function AdminSaasDashboard() {
                                                             children: "Ajouter au catalogue"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 311,
+                                                            lineNumber: 358,
                                                             columnNumber: 45
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                        lineNumber: 310,
+                                                        lineNumber: 357,
                                                         columnNumber: 41
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 278,
+                                                lineNumber: 325,
                                                 columnNumber: 37
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 277,
+                                            lineNumber: 324,
                                             columnNumber: 33
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 323,
                                         columnNumber: 29
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1601,7 +1670,7 @@ function AdminSaasDashboard() {
                                                             children: "IA INCLUSE"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 320,
+                                                            lineNumber: 367,
                                                             columnNumber: 61
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1610,12 +1679,12 @@ function AdminSaasDashboard() {
                                                                 className: "w-8 h-8 text-slate-400"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                                lineNumber: 322,
+                                                                lineNumber: 369,
                                                                 columnNumber: 45
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 321,
+                                                            lineNumber: 368,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1626,7 +1695,7 @@ function AdminSaasDashboard() {
                                                                     children: p.name
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 325,
+                                                                    lineNumber: 372,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1643,13 +1712,13 @@ function AdminSaasDashboard() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                    lineNumber: 327,
+                                                                                    lineNumber: 374,
                                                                                     columnNumber: 61
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                                            lineNumber: 327,
+                                                                            lineNumber: 374,
                                                                             columnNumber: 49
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1662,13 +1731,13 @@ function AdminSaasDashboard() {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                    lineNumber: 328,
+                                                                                    lineNumber: 375,
                                                                                     columnNumber: 62
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                                            lineNumber: 328,
+                                                                            lineNumber: 375,
                                                                             columnNumber: 49
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1679,24 +1748,24 @@ function AdminSaasDashboard() {
                                                                                         className: "w-4 h-4 inline"
                                                                                     }, void 0, false, {
                                                                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                        lineNumber: 329,
+                                                                                        lineNumber: 376,
                                                                                         columnNumber: 100
                                                                                     }, this) : `${p.file_limit} liasses`
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                                    lineNumber: 329,
+                                                                                    lineNumber: 376,
                                                                                     columnNumber: 67
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                                            lineNumber: 329,
+                                                                            lineNumber: 376,
                                                                             columnNumber: 49
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 326,
+                                                                    lineNumber: 373,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 p.payment_link && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1707,13 +1776,13 @@ function AdminSaasDashboard() {
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                                    lineNumber: 331,
+                                                                    lineNumber: 378,
                                                                     columnNumber: 64
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 324,
+                                                            lineNumber: 371,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1724,13 +1793,13 @@ function AdminSaasDashboard() {
                                                             children: "EDITER"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 333,
+                                                            lineNumber: 380,
                                                             columnNumber: 41
                                                         }, this)
                                                     ]
                                                 }, p.id, true, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 319,
+                                                    lineNumber: 366,
                                                     columnNumber: 37
                                                 }, this)),
                                             plans.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1738,30 +1807,326 @@ function AdminSaasDashboard() {
                                                 children: "Aucun forfait configuré. Configurez votre offre SaaS."
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 343,
+                                                lineNumber: 390,
                                                 columnNumber: 56
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 317,
+                                        lineNumber: 364,
                                         columnNumber: 29
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 274,
+                                lineNumber: 321,
                                 columnNumber: 25
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 273,
+                            lineNumber: 320,
+                            columnNumber: 21
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$tabs$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["TabsContent"], {
+                            value: "exe",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
+                                className: "bg-slate-900/50 border-slate-800 backdrop-blur-sm",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardHeader"], {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardTitle"], {
+                                                className: "text-white flex items-center gap-2",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$code$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileCode$3e$__["FileCode"], {
+                                                        className: "w-5 h-5 text-orange-400"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 400,
+                                                        columnNumber: 37
+                                                    }, this),
+                                                    " Gestion de l'Exécutable Windows"
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                lineNumber: 399,
+                                                columnNumber: 33
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
+                                                className: "text-slate-400",
+                                                children: "Chargez la nouvelle version de l'application desktop pour vos clients."
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                lineNumber: 402,
+                                                columnNumber: 33
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                        lineNumber: 398,
+                                        columnNumber: 29
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
+                                        className: "space-y-8",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "p-10 border-2 border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center gap-4 bg-slate-950/20",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "p-4 bg-orange-500/10 rounded-full",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$upload$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Upload$3e$__["Upload"], {
+                                                            className: "w-10 h-10 text-orange-500"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                            lineNumber: 407,
+                                                            columnNumber: 41
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 406,
+                                                        columnNumber: 37
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-white font-bold text-lg uppercase tracking-tight",
+                                                                children: "Mettre à jour l'installeur (.exe)"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                                lineNumber: 410,
+                                                                columnNumber: 41
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                className: "text-slate-500 text-sm max-w-md mx-auto mt-1",
+                                                                children: [
+                                                                    "Le fichier sera disponible immédiatement sous le nom ",
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("b", {
+                                                                        children: "auditia-setup-1.0.0.exe"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 412,
+                                                                        columnNumber: 98
+                                                                    }, this),
+                                                                    "."
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                                lineNumber: 411,
+                                                                columnNumber: 41
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 409,
+                                                        columnNumber: 37
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                        type: "file",
+                                                        accept: ".exe",
+                                                        className: "hidden",
+                                                        ref: exeInputRef,
+                                                        onChange: handleUploadExe
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 415,
+                                                        columnNumber: 37
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "flex gap-4",
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                                                onClick: ()=>exeInputRef.current?.click(),
+                                                                disabled: uploadingExe,
+                                                                className: "bg-orange-600 hover:bg-orange-500 text-white font-black px-8",
+                                                                children: [
+                                                                    uploadingExe ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
+                                                                        className: "w-5 h-5 animate-spin mr-2"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 418,
+                                                                        columnNumber: 61
+                                                                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$upload$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Upload$3e$__["Upload"], {
+                                                                        className: "w-5 h-5 mr-2"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 418,
+                                                                        columnNumber: 115
+                                                                    }, this),
+                                                                    "CHOISIR LE FICHIER"
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                                lineNumber: 417,
+                                                                columnNumber: 41
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
+                                                                variant: "outline",
+                                                                onClick: handleDeleteExe,
+                                                                className: "border-red-500/50 text-red-400 hover:bg-red-500/10 font-bold uppercase",
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__["Trash2"], {
+                                                                        className: "w-4 h-4 mr-2"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 422,
+                                                                        columnNumber: 45
+                                                                    }, this),
+                                                                    " Supprimer l'actuel"
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                                lineNumber: 421,
+                                                                columnNumber: 41
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 416,
+                                                        columnNumber: 37
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                lineNumber: 405,
+                                                columnNumber: 33
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                className: "grid md:grid-cols-2 gap-4",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "bg-slate-950/50 p-6 rounded-xl border border-slate-800 flex items-center justify-between",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex items-center gap-4",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    className: "p-2 bg-slate-800 rounded-lg",
+                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$download$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Download$3e$__["Download"], {
+                                                                        className: "w-5 h-5 text-slate-500"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 430,
+                                                                        columnNumber: 90
+                                                                    }, this)
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/app/admin/saas/page.tsx",
+                                                                    lineNumber: 430,
+                                                                    columnNumber: 45
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                            className: "text-white font-medium text-sm",
+                                                                            children: "Lien de téléchargement public"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                                            lineNumber: 432,
+                                                                            columnNumber: 49
+                                                                        }, this),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                            className: "text-[10px] text-orange-500 font-mono",
+                                                                            children: "/downloads/auditia-setup-1.0.0.exe"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                                            lineNumber: 433,
+                                                                            columnNumber: 49
+                                                                        }, this)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/app/admin/saas/page.tsx",
+                                                                    lineNumber: 431,
+                                                                    columnNumber: 45
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                            lineNumber: 429,
+                                                            columnNumber: 41
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 428,
+                                                        columnNumber: 37
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "bg-slate-950/50 p-6 rounded-xl border border-slate-800 flex items-center justify-between",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                            className: "flex items-center gap-4",
+                                                            children: [
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    className: "p-2 bg-slate-800 rounded-lg",
+                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__["AlertCircle"], {
+                                                                        className: "w-5 h-5 text-slate-500"
+                                                                    }, void 0, false, {
+                                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                                        lineNumber: 439,
+                                                                        columnNumber: 90
+                                                                    }, this)
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/app/admin/saas/page.tsx",
+                                                                    lineNumber: 439,
+                                                                    columnNumber: 45
+                                                                }, this),
+                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                    children: [
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                            className: "text-white font-medium text-sm",
+                                                                            children: "Statut du déploiement"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                                            lineNumber: 441,
+                                                                            columnNumber: 49
+                                                                        }, this),
+                                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                                            className: "text-[10px] text-emerald-400 font-bold",
+                                                                            children: "PRÊT POUR LE CLOUD"
+                                                                        }, void 0, false, {
+                                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                                            lineNumber: 442,
+                                                                            columnNumber: 49
+                                                                        }, this)
+                                                                    ]
+                                                                }, void 0, true, {
+                                                                    fileName: "[project]/app/admin/saas/page.tsx",
+                                                                    lineNumber: 440,
+                                                                    columnNumber: 45
+                                                                }, this)
+                                                            ]
+                                                        }, void 0, true, {
+                                                            fileName: "[project]/app/admin/saas/page.tsx",
+                                                            lineNumber: 438,
+                                                            columnNumber: 41
+                                                        }, this)
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                                        lineNumber: 437,
+                                                        columnNumber: 37
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/app/admin/saas/page.tsx",
+                                                lineNumber: 427,
+                                                columnNumber: 33
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/app/admin/saas/page.tsx",
+                                        lineNumber: 404,
+                                        columnNumber: 29
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/app/admin/saas/page.tsx",
+                                lineNumber: 397,
+                                columnNumber: 25
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/app/admin/saas/page.tsx",
+                            lineNumber: 396,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/admin/saas/page.tsx",
-                    lineNumber: 177,
+                    lineNumber: 223,
                     columnNumber: 17
                 }, this),
                 editingPlan && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1777,12 +2142,12 @@ function AdminSaasDashboard() {
                                         children: "Modifier le Forfait"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 355,
+                                        lineNumber: 457,
                                         columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 354,
+                                    lineNumber: 456,
                                     columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -1796,7 +2161,7 @@ function AdminSaasDashboard() {
                                                     children: "Nom"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 359,
+                                                    lineNumber: 461,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1809,13 +2174,13 @@ function AdminSaasDashboard() {
                                                     className: "bg-slate-800 border-slate-700 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 360,
+                                                    lineNumber: 462,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 358,
+                                            lineNumber: 460,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1829,7 +2194,7 @@ function AdminSaasDashboard() {
                                                             children: "Prix (FCFA)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 364,
+                                                            lineNumber: 466,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1843,13 +2208,13 @@ function AdminSaasDashboard() {
                                                             className: "bg-slate-800 border-slate-700 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 365,
+                                                            lineNumber: 467,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 363,
+                                                    lineNumber: 465,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1860,7 +2225,7 @@ function AdminSaasDashboard() {
                                                             children: "Durée (j)"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 368,
+                                                            lineNumber: 470,
                                                             columnNumber: 45
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1874,19 +2239,19 @@ function AdminSaasDashboard() {
                                                             className: "bg-slate-800 border-slate-700 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                                            lineNumber: 369,
+                                                            lineNumber: 471,
                                                             columnNumber: 45
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 367,
+                                                    lineNumber: 469,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 362,
+                                            lineNumber: 464,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1897,7 +2262,7 @@ function AdminSaasDashboard() {
                                                     children: "Lien de Paiement"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 373,
+                                                    lineNumber: 475,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$input$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -1909,13 +2274,13 @@ function AdminSaasDashboard() {
                                                     className: "bg-slate-800 border-slate-700 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 374,
+                                                    lineNumber: 476,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 372,
+                                            lineNumber: 474,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1931,7 +2296,7 @@ function AdminSaasDashboard() {
                                                         })
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 377,
+                                                    lineNumber: 479,
                                                     columnNumber: 41
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$label$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Label"], {
@@ -1940,19 +2305,19 @@ function AdminSaasDashboard() {
                                                     children: "Audit IA Inclus"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 378,
+                                                    lineNumber: 480,
                                                     columnNumber: 41
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 376,
+                                            lineNumber: 478,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 357,
+                                    lineNumber: 459,
                                     columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -1966,7 +2331,7 @@ function AdminSaasDashboard() {
                                             children: "Annuler"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 382,
+                                            lineNumber: 484,
                                             columnNumber: 37
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -1975,29 +2340,29 @@ function AdminSaasDashboard() {
                                             children: "Enregistrer"
                                         }, void 0, false, {
                                             fileName: "[project]/app/admin/saas/page.tsx",
-                                            lineNumber: 383,
+                                            lineNumber: 485,
                                             columnNumber: 37
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                    lineNumber: 381,
+                                    lineNumber: 483,
                                     columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/admin/saas/page.tsx",
-                            lineNumber: 353,
+                            lineNumber: 455,
                             columnNumber: 29
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/admin/saas/page.tsx",
-                        lineNumber: 352,
+                        lineNumber: 454,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/admin/saas/page.tsx",
-                    lineNumber: 351,
+                    lineNumber: 453,
                     columnNumber: 21
                 }, this),
                 assigningUser && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2012,7 +2377,7 @@ function AdminSaasDashboard() {
                                         children: "Assigner un Forfait"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 395,
+                                        lineNumber: 497,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardDescription"], {
@@ -2022,19 +2387,19 @@ function AdminSaasDashboard() {
                                                 children: assigningUser.email
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 396,
+                                                lineNumber: 498,
                                                 columnNumber: 73
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 396,
+                                        lineNumber: 498,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 394,
+                                lineNumber: 496,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
@@ -2045,7 +2410,7 @@ function AdminSaasDashboard() {
                                         children: "Sélectionner l'offre"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 399,
+                                        lineNumber: 501,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2058,7 +2423,7 @@ function AdminSaasDashboard() {
                                                 children: "--- Aucun Forfait ---"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                                lineNumber: 405,
+                                                lineNumber: 507,
                                                 columnNumber: 37
                                             }, this),
                                             plans.map((p)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2071,19 +2436,19 @@ function AdminSaasDashboard() {
                                                     ]
                                                 }, p.id, true, {
                                                     fileName: "[project]/app/admin/saas/page.tsx",
-                                                    lineNumber: 407,
+                                                    lineNumber: 509,
                                                     columnNumber: 41
                                                 }, this))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 400,
+                                        lineNumber: 502,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 398,
+                                lineNumber: 500,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardFooter"], {
@@ -2096,7 +2461,7 @@ function AdminSaasDashboard() {
                                         children: "Annuler"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 412,
+                                        lineNumber: 514,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -2105,35 +2470,35 @@ function AdminSaasDashboard() {
                                         children: "Confirmer"
                                     }, void 0, false, {
                                         fileName: "[project]/app/admin/saas/page.tsx",
-                                        lineNumber: 413,
+                                        lineNumber: 515,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/admin/saas/page.tsx",
-                                lineNumber: 411,
+                                lineNumber: 513,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/admin/saas/page.tsx",
-                        lineNumber: 393,
+                        lineNumber: 495,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/admin/saas/page.tsx",
-                    lineNumber: 392,
+                    lineNumber: 494,
                     columnNumber: 21
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/admin/saas/page.tsx",
-            lineNumber: 156,
+            lineNumber: 202,
             columnNumber: 13
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/admin/saas/page.tsx",
-        lineNumber: 155,
+        lineNumber: 201,
         columnNumber: 9
     }, this);
 }

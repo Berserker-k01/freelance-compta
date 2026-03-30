@@ -8,6 +8,8 @@ from datetime import datetime
 
 from .. import schemas, crud, models
 from ..database import get_db
+from ..auth_utils import get_current_user
+from ..models_user import User
 
 router = APIRouter(
     prefix="/documents",
@@ -26,8 +28,16 @@ async def upload_document(
     file: UploadFile = File(...), 
     name: str = None, # Optional display name
     file_type: str = "other",
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
     # Ensure company upload dir exists
     company_dir = os.path.join(BASE_UPLOAD_DIR, str(company_id))
     if not os.path.exists(company_dir):
@@ -57,12 +67,37 @@ async def upload_document(
     return db_doc
 
 @router.get("/list/{company_id}", response_model=List[schemas.Document])
-def list_documents(company_id: str, db: Session = Depends(get_db)):
-    return db.query(models.Document).filter(models.Document.company_id == company_id).order_by(models.Document.created_at.desc()).all()
+def list_documents(
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
+    return db.query(models.Document).filter(
+        models.Document.company_id == company_id
+    ).order_by(models.Document.created_at.desc()).all()
 
 @router.get("/download/{document_id}")
-def download_document(document_id: str, db: Session = Depends(get_db)):
-    doc = db.query(models.Document).filter(models.Document.id == document_id).first()
+def download_document(
+    document_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    doc = (
+        db.query(models.Document)
+        .join(models.Company, models.Company.id == models.Document.company_id)
+        .filter(
+            models.Document.id == document_id,
+            models.Company.user_id == current_user.id
+        )
+        .first()
+    )
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
         
@@ -72,8 +107,20 @@ def download_document(document_id: str, db: Session = Depends(get_db)):
     return FileResponse(doc.file_path, filename=doc.filename)
 
 @router.delete("/{document_id}")
-def delete_document(document_id: str, db: Session = Depends(get_db)):
-    doc = db.query(models.Document).filter(models.Document.id == document_id).first()
+def delete_document(
+    document_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    doc = (
+        db.query(models.Document)
+        .join(models.Company, models.Company.id == models.Document.company_id)
+        .filter(
+            models.Document.id == document_id,
+            models.Company.user_id == current_user.id
+        )
+        .first()
+    )
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
     

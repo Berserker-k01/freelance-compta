@@ -27,6 +27,11 @@ interface Document {
     created_at: string;
 }
 
+function getAuthHeaders(): Record<string, string> {
+    const token = localStorage.getItem("access_token") || "";
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export default function DocumentsPage() {
     const { activeCompany } = useCompany();
     const [documents, setDocuments] = useState<Document[]>([]);
@@ -44,7 +49,9 @@ export default function DocumentsPage() {
         if (!activeCompany) return;
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/documents/list/${activeCompany.id}`);
+            const res = await fetch(`${API_BASE_URL}/documents/list/${activeCompany.id}`, {
+                headers: getAuthHeaders(),
+            });
             if (res.ok) {
                 const data = await res.json();
                 setDocuments(data);
@@ -56,8 +63,27 @@ export default function DocumentsPage() {
         }
     };
 
-    const handleDownload = (docId: string, filename: string) => {
-        window.open(`${API_BASE_URL}/documents/download/${docId}`, "_blank");
+    const handleDownload = async (docId: string, filename: string) => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/documents/download/${docId}`, {
+                headers: getAuthHeaders(),
+            });
+            if (!res.ok) {
+                alert("Impossible de télécharger le document.");
+                return;
+            }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch {
+            alert("Erreur de connexion lors du téléchargement.");
+        }
     };
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +100,7 @@ export default function DocumentsPage() {
             const res = await fetch(`${API_BASE_URL}/documents/upload/${activeCompany.id}`, {
                 method: "POST",
                 body: formData,
+                headers: getAuthHeaders(),
             });
 
             if (res.ok) {
@@ -96,6 +123,7 @@ export default function DocumentsPage() {
         try {
             const res = await fetch(`${API_BASE_URL}/documents/${docId}`, {
                 method: "DELETE",
+                headers: getAuthHeaders(),
             });
             if (res.ok) {
                 fetchDocuments();

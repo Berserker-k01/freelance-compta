@@ -128,6 +128,9 @@ class UserOut(UserBase):
     is_active: bool
     is_superuser: bool
     plan_id: Optional[str] = None
+    plan_name: Optional[str] = None
+    plan_has_ai_access: Optional[bool] = False
+    plan_file_limit: Optional[int] = None
     plan_status: str
     plan_expires_at: Optional[datetime] = None
     files_processed_count: int

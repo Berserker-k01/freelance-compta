@@ -378,7 +378,22 @@ async def generate_liasse(
     current_user: User = Depends(get_current_user)
 ):
     """Generate the fiscal liasse (OTR/SYSCOHADA) by injecting account balances into the template."""
-    company = db.query(Company).filter(Company.id == company_id).first()
+    if not current_user.is_superuser:
+        if current_user.plan_status != "active":
+            raise HTTPException(
+                status_code=403,
+                detail="Votre abonnement n'est pas actif. Veuillez finaliser votre souscription."
+            )
+        if current_user.plan_expires_at and current_user.plan_expires_at < datetime.utcnow():
+            raise HTTPException(
+                status_code=403,
+                detail="Votre abonnement a expiré. Veuillez renouveler votre plan."
+            )
+
+    company = db.query(Company).filter(
+        Company.id == company_id,
+        Company.user_id == current_user.id
+    ).first()
     if not company:
         raise HTTPException(status_code=404, detail="Société introuvable")
 
@@ -404,14 +419,7 @@ async def generate_liasse(
     # ---------------------------------------------------------
     # CHECKPOINT IA : QWEN 2.5 (Embarqué in-process)
     # ---------------------------------------------------------
-    if use_ia:
-        # Check plan permissions
-        if not (current_user.is_superuser or (current_user.plan and current_user.plan.has_ai_access)):
-            raise HTTPException(
-                status_code=403, 
-                detail="Votre abonnement ne permet pas l'Audit IA. Veuillez passer au forfait Premium."
-            )
-        
+    if use_ia and (current_user.is_superuser or (current_user.plan and current_user.plan.has_ai_access)):
         try:
             from ..services.llm_audit import valider_coherence_ia_async
             
@@ -460,7 +468,11 @@ async def generate_liasse(
     return FileResponse(
         output_path,
         filename=output_filename,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        media_type=(
+            "application/vnd.ms-excel.sheet.macroEnabled.12"
+            if output_filename.lower().endswith(".xlsm")
+            else "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ),
     )
 
 

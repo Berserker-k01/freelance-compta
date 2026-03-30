@@ -12,6 +12,8 @@ import charset_normalizer
 from .. import schemas, crud, models
 from ..database import get_db
 from ..syscohada import seed_syscohada
+from ..auth_utils import get_current_user
+from ..models_user import User
 
 router = APIRouter(
     prefix="/accounting",
@@ -21,27 +23,81 @@ router = APIRouter(
 
 # --- ACCOUNTS ---
 @router.post("/accounts/", response_model=schemas.Account)
-def create_account(account: schemas.AccountCreate, company_id: str, db: Session = Depends(get_db)):
+def create_account(
+    account: schemas.AccountCreate,
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
     return crud.create_account(db=db, account=account, company_id=company_id)
 
 @router.get("/accounts/{company_id}", response_model=List[schemas.Account])
-def read_accounts(company_id: str, skip: int = 0, limit: int = 1000, db: Session = Depends(get_db)):
+def read_accounts(
+    company_id: str,
+    skip: int = 0,
+    limit: int = 1000,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
     # Increased limit for full plan
     accounts = crud.get_accounts(db, company_id=company_id, skip=skip, limit=limit)
     return accounts
 
 @router.post("/accounts/seed/{company_id}")
-def seed_default_plan(company_id: str, db: Session = Depends(get_db)):
+def seed_default_plan(
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """Initialize SYSCOHADA plan for a company"""
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
     return seed_syscohada(db, company_id)
 
 # --- JOURNALS ---
 @router.get("/journals/{company_id}", response_model=List[schemas.Journal])
-def read_journals(company_id: str, db: Session = Depends(get_db)):
+def read_journals(
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
     return db.query(models.Journal).filter(models.Journal.company_id == company_id).all()
 
 @router.post("/journals/", response_model=schemas.Journal)
-def create_journal(journal: schemas.JournalCreate, company_id: str, db: Session = Depends(get_db)):
+def create_journal(
+    journal: schemas.JournalCreate,
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
     db_journal = models.Journal(**journal.model_dump(), company_id=company_id)
     db.add(db_journal)
     db.commit()
@@ -50,33 +106,71 @@ def create_journal(journal: schemas.JournalCreate, company_id: str, db: Session 
 
 # --- ENTRIES ---
 @router.post("/entries/", response_model=schemas.Entry)
-def create_entry_transaction(entry: schemas.EntryCreate, db: Session = Depends(get_db)):
+def create_entry_transaction(
+    entry: schemas.EntryCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     # Validate Debit = Credit
     total_debit = sum(line.debit for line in entry.lines)
     total_credit = sum(line.credit for line in entry.lines)
     
     if abs(total_debit - total_credit) > 0.05: # Allow small float error
         raise HTTPException(status_code=400, detail=f"Unbalanced Entry: Debit ({total_debit}) != Credit ({total_credit})")
-        
+
+    journal = (
+        db.query(models.Journal)
+        .join(models.Company, models.Company.id == models.Journal.company_id)
+        .filter(
+            models.Journal.id == entry.journal_id,
+            models.Company.user_id == current_user.id
+        )
+        .first()
+    )
+    if not journal:
+        raise HTTPException(status_code=404, detail="Journal introuvable")
+
     return crud.create_entry(db=db, entry=entry)
 
 @router.get("/entries/", response_model=List[schemas.Entry])
-def read_entries(company_id: str = None, journal_id: str = None, skip: int = 0, limit: int = 200, db: Session = Depends(get_db)):
-    query = db.query(models.Entry)
+def read_entries(
+    company_id: str = None,
+    journal_id: str = None,
+    skip: int = 0,
+    limit: int = 200,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    query = (
+        db.query(models.Entry)
+        .join(models.Journal, models.Journal.id == models.Entry.journal_id)
+        .join(models.Company, models.Company.id == models.Journal.company_id)
+        .filter(models.Company.user_id == current_user.id)
+    )
     if journal_id:
-        query = query.filter(models.Entry.journal_id == journal_id)
+        query = query.filter(models.Journal.id == journal_id)
     elif company_id:
-        # Filter by company through journal
-        query = query.join(models.Journal).filter(models.Journal.company_id == company_id)
+        query = query.filter(models.Company.id == company_id)
     return query.order_by(models.Entry.date.desc()).offset(skip).limit(limit).all()
 
 # --- REPAIR ENCODING ---
 @router.post("/repair-encoding/{company_id}")
-def repair_encoding(company_id: str, db: Session = Depends(get_db)):
+def repair_encoding(
+    company_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Repare les caractères accentués mal encodés (ex: R‚sultat -> Résultat).
     Ceci arrive quand un fichier CP850 est importé sans spécifier l'encodage.
     """
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
     # Mapping des caractères CP850 mal interprétés comme CP1252/UTF-8
     REPLACEMENTS = {
         "‚": "é",
@@ -143,7 +237,12 @@ def repair_encoding(company_id: str, db: Session = Depends(get_db)):
 
 # --- IMPORT BALANCE ---
 @router.post("/import-balance/{company_id}")
-async def import_balance(company_id: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def import_balance(
+    company_id: str,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
     """
     Importe une Balance Générale (Excel ou CSV) au format SYSCOHADA Révisé.
 
@@ -153,6 +252,13 @@ async def import_balance(company_id: str, file: UploadFile = File(...), db: Sess
     - 8 colonnes  : Compte | Libellé | Débit Mvt | Crédit Mvt | Reprise AN | ... | Solde D | Solde C
     Lorsque les soldes ET les mouvements sont présents, on utilise les SOLDES (colonnes finales).
     """
+
+    company = db.query(models.Company).filter(
+        models.Company.id == company_id,
+        models.Company.user_id == current_user.id
+    ).first()
+    if not company:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
 
     # ------------------------------------------------------------------ #
     # 1. Sauvegarde physique du fichier                                    #

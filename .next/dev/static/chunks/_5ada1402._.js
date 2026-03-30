@@ -197,6 +197,14 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/api.ts [app-client] (ecmascript)");
 ;
+function getAuthHeaders() {
+    if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+    ;
+    const token = localStorage.getItem("access_token") || "";
+    return token ? {
+        Authorization: `Bearer ${token}`
+    } : {};
+}
 async function validatePrerequisites(companyId, documentId) {
     const url = `/templates/validate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchAPI"])(url);
@@ -211,7 +219,9 @@ async function generateLiasse(companyId, filename = "liasse_fiscale.xlsx", docum
     if (templateId) params.append("template_id", templateId.toString());
     const queryString = params.toString() ? `?${params.toString()}` : "";
     const url = `${__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["API_BASE_URL"]}/templates/generate/${companyId}${queryString}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        headers: getAuthHeaders()
+    });
     if (!response.ok) {
         const err = await response.json().catch(()=>({}));
         let errorMsg = "Erreur lors de la génération de la liasse";
@@ -220,11 +230,36 @@ async function generateLiasse(companyId, filename = "liasse_fiscale.xlsx", docum
         }
         throw new Error(errorMsg);
     }
+    const contentType = (response.headers.get("content-type") || "").toLowerCase();
+    const isExcelContent = contentType.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") || contentType.includes("application/vnd.ms-excel.sheet.macroenabled.12") || contentType.includes("application/octet-stream");
     const blob = await response.blob();
+    // Safety net: avoid downloading an HTML/JSON error payload as ".xlsx"
+    if (!isExcelContent) {
+        const textPayload = await blob.text().catch(()=>"");
+        let detail = textPayload || "Le serveur n'a pas renvoyé un fichier Excel valide.";
+        try {
+            const parsed = JSON.parse(textPayload);
+            if (parsed?.detail) {
+                detail = typeof parsed.detail === "string" ? parsed.detail : JSON.stringify(parsed.detail);
+            }
+        } catch  {
+        // keep raw payload
+        }
+        throw new Error(detail);
+    }
+    // Check ZIP signature for xlsx/xlsm (PK)
+    const signature = new Uint8Array(await blob.slice(0, 2).arrayBuffer());
+    const isZip = signature.length === 2 && signature[0] === 0x50 && signature[1] === 0x4b;
+    if (!isZip) {
+        throw new Error("Le fichier généré est invalide (format Excel corrompu).");
+    }
+    const disposition = response.headers.get("content-disposition") || "";
+    const serverFilenameMatch = disposition.match(/filename="?([^"]+)"?/i);
+    const effectiveFilename = serverFilenameMatch?.[1] || filename;
     const urlBlob = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = urlBlob;
-    a.download = filename;
+    a.download = effectiveFilename;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(urlBlob);
@@ -238,7 +273,8 @@ async function uploadTemplate(file, name, year) {
     // Using fetch directly as this is multipart/form-data
     const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["API_BASE_URL"]}/templates/upload`, {
         method: "POST",
-        body: formData
+        body: formData,
+        headers: getAuthHeaders()
     });
     if (!response.ok) {
         const error = await response.json().catch(()=>({}));
@@ -323,12 +359,9 @@ async function getDocuments(companyId) {
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchAPI"])(`/documents/list/${companyId}`);
 }
 async function deleteDocument(id) {
-    const res = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["API_BASE_URL"]}/documents/${id}`, {
+    await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["fetchAPI"])(`/documents/${id}`, {
         method: "DELETE"
     });
-    if (!res.ok) {
-        throw new Error("Failed to delete document");
-    }
 }
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);

@@ -22,6 +22,9 @@ type SubscriptionPlan = {
 
 type UserData = {
     plan_id: string | null;
+    plan_name?: string | null;
+    plan_has_ai_access?: boolean;
+    plan_file_limit?: number | null;
     plan_status: string;
     plan_expires_at: string | null;
     files_processed_count: number;
@@ -98,7 +101,16 @@ export default function SubscriptionPage() {
 
     if (loading) return <div className="p-10 text-center text-slate-400">Chargement de votre offre...</div>;
 
-    const activePlan = plans.find(p => p.id === user?.plan_id);
+    const activePlan = plans.find(p => p.id === user?.plan_id) || (user?.plan_id ? {
+        id: user.plan_id,
+        name: user.plan_name || "Plan actif",
+        description: null,
+        price: 0,
+        duration_days: 0,
+        has_ai_access: !!user.plan_has_ai_access,
+        file_limit: user.plan_file_limit ?? null,
+        payment_link: null,
+    } : undefined);
     const isPending = user?.plan_status === "pending";
 
     return (
@@ -120,7 +132,7 @@ export default function SubscriptionPage() {
                                     <Badge className="bg-emerald-500">Premium</Badge>
                                 </h2>
                                 <p className="text-emerald-200/80 mt-1">
-                                    Valide jusqu'au : {new Date(user.plan_expires_at!).toLocaleDateString()}
+                                    Valide jusqu'au : {user.plan_expires_at ? new Date(user.plan_expires_at).toLocaleDateString() : "Non renseigné"}
                                 </p>
                             </div>
                         </div>
