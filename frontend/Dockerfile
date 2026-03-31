@@ -8,7 +8,9 @@ RUN npm ci
 
 COPY . .
 
-# Start the application in dev mode
-CMD ["npm", "run", "dev"]
+# Build and run in production mode
+RUN npm run build
+ENV NODE_ENV=production
+CMD ["npm", "run", "start"]
 
 EXPOSE 3000
