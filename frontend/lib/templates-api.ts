@@ -41,9 +41,14 @@ function getAuthHeaders(): Record<string, string> {
 /** Validate all prerequisites before generating the liasse */
 export async function validatePrerequisites(
     companyId: string,
-    documentId?: string
+    documentId?: string,
+    documentIdN1?: string
 ): Promise<ValidationResult> {
-    const url = `/templates/validate/${companyId}${documentId ? `?document_id=${documentId}` : ""}`;
+    const params = new URLSearchParams();
+    if (documentId) params.append("document_id", documentId);
+    if (documentIdN1) params.append("document_id_n1", documentIdN1);
+    const qs = params.toString();
+    const url = `/templates/validate/${companyId}${qs ? `?${qs}` : ""}`;
     return fetchAPI(url);
 }
 
@@ -57,9 +62,16 @@ export async function getPreflightCheck(
 }
 
 /** Download the full OTR Liasse Fiscale as an Excel file */
-export async function generateLiasse(companyId: string, filename: string = "liasse_fiscale.xlsx", documentId?: string, templateId?: string): Promise<void> {
+export async function generateLiasse(
+    companyId: string,
+    filename: string = "liasse_fiscale.xlsx",
+    documentId?: string,
+    templateId?: string,
+    documentIdN1?: string
+): Promise<void> {
     const params = new URLSearchParams();
     if (documentId) params.append("document_id", documentId.toString());
+    if (documentIdN1) params.append("document_id_n1", documentIdN1.toString());
     if (templateId) params.append("template_id", templateId.toString());
     const queryString = params.toString() ? `?${params.toString()}` : "";
     const url = `${API_BASE_URL}/templates/generate/${companyId}${queryString}`;
@@ -121,11 +133,17 @@ export async function generateLiasse(companyId: string, filename: string = "lias
 }
 
 /** Upload a dynamic template */
-export async function uploadTemplate(file: File, name: string, year: number): Promise<Template> {
+export async function uploadTemplate(
+    file: File,
+    name: string,
+    year: number,
+    comparatifNN1: boolean = false
+): Promise<Template> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("name", name);
     formData.append("year", year.toString());
+    formData.append("comparatif_n_n1", comparatifNN1 ? "true" : "false");
 
     // Using fetch directly as this is multipart/form-data
     const response = await fetch(`${API_BASE_URL}/templates/upload`, {

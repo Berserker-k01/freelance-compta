@@ -65,6 +65,8 @@ export default function TemplatesPage() {
     const [documents, setDocuments] = useState<Document[]>([]);
     const [templates, setTemplates] = useState<Template[]>([]);
     const [selectedDocId, setSelectedDocId] = useState<string>("all");
+    /** Balance importée pour l'exercice N-1 (liasse comparative OTR). */
+    const [selectedDocIdN1, setSelectedDocIdN1] = useState<string>("");
     const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
 
     // Dialog States
@@ -82,6 +84,7 @@ export default function TemplatesPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
     const [uploadName, setUploadName] = useState("Modèle Personnalisé");
+    const [uploadComparatifNN1, setUploadComparatifNN1] = useState(false);
 
     // Mapping Editor states
     const [isMappingDialogOpen, setIsMappingDialogOpen] = useState(false);
@@ -113,7 +116,7 @@ export default function TemplatesPage() {
     useEffect(() => {
         if (!isDialogOpen || !activeCompany) return;
         runValidation();
-    }, [selectedDocId, isDialogOpen]);
+    }, [selectedDocId, selectedDocIdN1, isDialogOpen]);
 
     const runValidation = async () => {
         if (!activeCompany) return;
@@ -123,8 +126,9 @@ export default function TemplatesPage() {
         setGenerateError(null);
         try {
             const docId = selectedDocId === "all" ? undefined : selectedDocId;
+            const docN1 = selectedDocIdN1 || undefined;
             const [valResult, prefResult] = await Promise.all([
-                validatePrerequisites(activeCompany.id, docId),
+                validatePrerequisites(activeCompany.id, docId, docN1),
                 getPreflightCheck(activeCompany.id, docId).catch(() => null)
             ]);
             setValidation(valResult);
@@ -149,6 +153,7 @@ export default function TemplatesPage() {
         setPreflight(null);
         setGenerateError(null);
         setSelectedDocId(documents.length > 0 ? documents[0].id.toString() : "all");
+        setSelectedDocIdN1("");
         if (templates.length > 0) {
             setSelectedTemplateId(templates[0].id.toString());
         } else {
@@ -164,12 +169,13 @@ export default function TemplatesPage() {
         setGenerateError(null);
 
         const docId = selectedDocId === "all" ? undefined : selectedDocId;
+        const docN1 = selectedDocIdN1 || undefined;
 
         try {
             if (!selectedTemplateId) throw new Error("Veuillez sélectionner un modèle.");
             const tmpl = templates.find(t => t.id.toString() === selectedTemplateId);
             const filename = `Liasse_${tmpl?.name}_${activeCompany.name}_2026.xlsx`;
-            await generateLiasse(activeCompany.id, filename, docId, selectedTemplateId);
+            await generateLiasse(activeCompany.id, filename, docId, selectedTemplateId, docN1);
             setIsDialogOpen(false);
         } catch (error: any) {
             setGenerateError(error.message || "Erreur lors de la génération.");
@@ -184,7 +190,7 @@ export default function TemplatesPage() {
 
         setUploading(true);
         try {
-            await uploadTemplate(file, uploadName, 2026);
+            await uploadTemplate(file, uploadName, 2026, uploadComparatifNN1);
             await loadTemplates();
             setIsUploadDialogOpen(false);
             setUploadName("Modèle Personnalisé");
@@ -259,6 +265,18 @@ export default function TemplatesPage() {
                             <Label className="text-slate-300">Fichier (.xlsx)</Label>
                             <Input className="bg-slate-950 border-slate-700 text-slate-200 file:text-slate-200" type="file" accept=".xlsx" ref={fileInputRef} />
                         </div>
+                        <label className="flex items-start gap-2 text-sm text-slate-400 cursor-pointer select-none">
+                            <input
+                                type="checkbox"
+                                className="mt-1 rounded border-slate-600"
+                                checked={uploadComparatifNN1}
+                                onChange={(e) => setUploadComparatifNN1(e.target.checked)}
+                            />
+                            <span>
+                                Dupliquer chaque montant auto-mappé en <strong className="text-slate-300">colonne suivante</strong> pour N-1
+                                (utile pour canevas OTR avec deux colonnes d&apos;exercice côte à côte).
+                            </span>
+                        </label>
                     </div>
                     <DialogFooter>
                         <Button variant="outline" className="border-slate-700 hover:bg-slate-800 text-slate-300" onClick={() => setIsUploadDialogOpen(false)}>Annuler</Button>
@@ -304,7 +322,7 @@ export default function TemplatesPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="source" className="text-sm font-medium text-slate-300">Source des données (Balance)</Label>
+                            <Label htmlFor="source" className="text-sm font-medium text-slate-300">Balance exercice N (courant)</Label>
                             <Select value={selectedDocId} onValueChange={setSelectedDocId}>
                                 <SelectTrigger id="source" className="bg-slate-950 border-slate-700 text-slate-200">
                                     <SelectValue placeholder="Sélectionner un fichier..." />
@@ -318,6 +336,26 @@ export default function TemplatesPage() {
                                     ))}
                                 </SelectContent>
                             </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="sourceN1" className="text-sm font-medium text-slate-300">Balance N-1 (comparatif, optionnel)</Label>
+                            <Select value={selectedDocIdN1 || "none"} onValueChange={(v) => setSelectedDocIdN1(v === "none" ? "" : v)}>
+                                <SelectTrigger id="sourceN1" className="bg-slate-950 border-slate-700 text-slate-200">
+                                    <SelectValue placeholder="Aucune" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-slate-900 border-slate-700 text-slate-200">
+                                    <SelectItem value="none" className="focus:bg-slate-800 focus:text-slate-100">— Aucune —</SelectItem>
+                                    {documents.map((doc) => (
+                                        <SelectItem key={`n1-${doc.id}`} value={doc.id.toString()} className="focus:bg-slate-800 focus:text-slate-100">
+                                            {doc.name} — {new Date(doc.created_at).toLocaleDateString("fr-FR")}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <p className="text-[11px] text-slate-500 leading-relaxed">
+                                Requis si le modèle contient des colonnes N / N-1 (auto-mapping « comparatif » ou mapping avec <code className="text-slate-400">period: n1</code>).
+                            </p>
                         </div>
 
                         {selectedDocId === "all" && (

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from ..database import get_db
@@ -34,6 +34,49 @@ import json
 from fastapi import UploadFile, File, Form
 from openpyxl.utils import get_column_letter
 
+
+def _mapping_requires_n1(mapping: dict) -> bool:
+    for v in mapping.values():
+        if isinstance(v, dict) and str(v.get("period", "n")).lower() == "n1":
+            return True
+    return False
+
+
+def _apply_knowledge_rules_to_mapping(
+    mapping: dict,
+    sheet_name: str,
+    anchor_col: int,
+    anchor_row: int,
+    rules: list,
+    *,
+    comparatif_n_n1: bool,
+) -> None:
+    """
+    rules : tuples (offset, règle) ou (offset, règle, "n1").
+    Si comparatif_n_n1 : chaque paire (offset, règle) crée aussi colonne+1 en période N-1.
+    """
+    for rule_entry in rules:
+        if len(rule_entry) == 2:
+            col_offset, account_rule = rule_entry
+            specs = [("n", account_rule, col_offset)]
+            if comparatif_n_n1:
+                specs.append(("n1", account_rule, col_offset + 1))
+        elif len(rule_entry) >= 3:
+            col_offset, account_rule, period = rule_entry[0], rule_entry[1], str(rule_entry[2]).lower()
+            if period not in ("n", "n1"):
+                period = "n"
+            specs = [(period, account_rule, col_offset)]
+        else:
+            continue
+        for period, account_rule, off in specs:
+            target_col_idx = anchor_col + off
+            cell_addr = f"{sheet_name}!{get_column_letter(target_col_idx)}{anchor_row}"
+            if period == "n1":
+                mapping[cell_addr] = {"rule": account_rule, "period": "n1"}
+            else:
+                mapping[cell_addr] = account_rule
+
+
 @router.get("/list")
 def list_templates(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """List all available report templates."""
@@ -42,11 +85,12 @@ def list_templates(db: Session = Depends(get_db), current_user: User = Depends(g
 
 @router.post("/upload")
 async def upload_dynamic_template(
-    file: UploadFile = File(...), 
-    name: str = Form("Nouveau Canevas"), 
-    year: int = Form(2026), 
+    file: UploadFile = File(...),
+    name: str = Form("Nouveau Canevas"),
+    year: int = Form(2026),
+    comparatif_n_n1: bool = Form(False),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Smart Loader: Upload an Excel template and auto-map basic tags."""
     import openpyxl
@@ -144,11 +188,15 @@ async def upload_dynamic_template(
                     if len(val) > 3:
                         for keyword, rules in KNOWLEDGE_BASE.items():
                             if keyword in val:
-                                for col_offset, account_rule in rules:
-                                    target_col_idx = cell.column + col_offset
-                                    cell_addr = f"{sheet_name}!{get_column_letter(target_col_idx)}{cell.row}"
-                                    mapping[cell_addr] = account_rule
-                                break # Match trouvé => on ne cherche plus d'autres mots pour cette cellule
+                                _apply_knowledge_rules_to_mapping(
+                                    mapping,
+                                    sheet_name,
+                                    cell.column,
+                                    cell.row,
+                                    rules,
+                                    comparatif_n_n1=comparatif_n_n1,
+                                )
+                                break  # Match trouvé => on ne cherche plus d'autres mots pour cette cellule
         except Exception:
             continue
     wb.close()
@@ -184,10 +232,11 @@ REQUIRED_ACCOUNT_CLASSES = {
 
 @router.get("/validate/{company_id}")
 def validate_prerequisites(
-    company_id: str, 
-    document_id: Optional[str] = None, 
+    company_id: str,
+    document_id: Optional[str] = None,
+    document_id_n1: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """
     Vérifie tous les prérequis avant de générer la liasse.
@@ -254,6 +303,42 @@ def validate_prerequisites(
             "status": "OK",
             "detail": f"{nb_entries:,} écriture(s) disponible(s) pour la génération.",
         })
+
+    # ------------------------------------------------------------------ #
+    # 3b. Balance N-1 (liasse comparative)                               #
+    # ------------------------------------------------------------------ #
+    if document_id_n1:
+        doc_n1 = (
+            db.query(models.Document)
+            .filter(
+                models.Document.id == document_id_n1,
+                models.Document.company_id == company_id,
+            )
+            .first()
+        )
+        if not doc_n1:
+            msg = "Le fichier balance N-1 est introuvable pour ce dossier."
+            checks.append({"name": "Balance N-1", "status": "KO", "detail": msg})
+            blockers.append(msg)
+        else:
+            n1_entries = (
+                db.query(func.count(Entry.id))
+                .join(Journal, Journal.id == Entry.journal_id)
+                .filter(Journal.company_id == company_id)
+                .filter(Entry.document_id == document_id_n1)
+                .scalar()
+                or 0
+            )
+            if n1_entries == 0:
+                msg = "La balance N-1 sélectionnée ne contient aucune écriture importée."
+                checks.append({"name": "Balance N-1", "status": "KO", "detail": msg})
+                blockers.append(msg)
+            else:
+                checks.append({
+                    "name": "Balance N-1",
+                    "status": "OK",
+                    "detail": f"{n1_entries:,} écriture(s) — {doc_n1.name}",
+                })
 
     # ------------------------------------------------------------------ #
     # 4. Balance équilibrée (Σ Débit = Σ Crédit)                         #
@@ -368,14 +453,55 @@ def preflight_check(
     injector = ExcelInjector(db, company_id, document_id=document_id)
     return injector.pre_flight_check()
 
+
+@router.get("/trace/{filename}")
+def get_generation_trace(
+    filename: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Download trace JSON generated alongside a liasse export.
+    The trace file must exist in temp_exports and follow "<xlsx>.trace.json" naming.
+    """
+    safe_name = os.path.basename(filename)
+    if not safe_name.endswith(".trace.json"):
+        raise HTTPException(status_code=400, detail="Nom de trace invalide.")
+
+    trace_path = os.path.join(OUTPUT_DIR, safe_name)
+    if not os.path.exists(trace_path):
+        raise HTTPException(status_code=404, detail="Trace introuvable.")
+
+    # Optional read check to prevent serving malformed content as JSON file
+    try:
+        with open(trace_path, "r", encoding="utf-8") as fp:
+            payload = json.load(fp)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Trace illisible.")
+
+    # If superuser, always allowed; otherwise ensure company ownership from trace payload.
+    if not current_user.is_superuser:
+        trace_company_id = payload.get("company_id")
+        company = (
+            db.query(Company)
+            .filter(Company.id == trace_company_id, Company.user_id == current_user.id)
+            .first()
+        ) if trace_company_id else None
+        if not company:
+            raise HTTPException(status_code=403, detail="Accès interdit à cette trace.")
+
+    return JSONResponse(content=payload)
+
 @router.get("/generate/{company_id}")
 async def generate_liasse(
     company_id: str,
     document_id: Optional[str] = None,
+    document_id_n1: Optional[str] = None,
     template_id: Optional[str] = None,
     use_ia: bool = True,
+    strict_mode: bool = True,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     """Generate the fiscal liasse (OTR/SYSCOHADA) by injecting account balances into the template."""
     if not current_user.is_superuser:
@@ -414,7 +540,33 @@ async def generate_liasse(
     except Exception:
         mapping_config_dict = {}
 
-    injector = ExcelInjector(db, company_id, document_id=document_id)
+    if document_id_n1:
+        doc_n1 = (
+            db.query(models.Document)
+            .filter(
+                models.Document.id == document_id_n1,
+                models.Document.company_id == company_id,
+            )
+            .first()
+        )
+        if not doc_n1:
+            raise HTTPException(status_code=404, detail="Balance N-1 introuvable pour ce dossier.")
+
+    if _mapping_requires_n1(mapping_config_dict) and not document_id_n1:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "Ce modèle inclut des cellules en période N-1. "
+                "Sélectionnez une balance d'exercice N-1 ou adaptez le mapping."
+            ),
+        )
+
+    injector = ExcelInjector(
+        db,
+        company_id,
+        document_id=document_id,
+        document_id_n1=document_id_n1,
+    )
 
     # ---------------------------------------------------------
     # CHECKPOINT IA : QWEN 2.5 (Embarqué in-process)
@@ -458,6 +610,7 @@ async def generate_liasse(
             template_path=working_template_path,
             output_path=output_path,
             mapping_config=mapping_config_dict,
+            strict_mode=strict_mode,
         )
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))

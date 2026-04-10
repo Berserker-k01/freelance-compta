@@ -355,18 +355,7 @@ async def import_balance(
         # Generate positional column names
         num_cols = df.shape[1]
         col_names = [f"col_{i}" for i in range(num_cols)]
-        
-    df.columns = df.columns.astype(str)
-    
-    # Correction a posteriori des voyelles altérées (si l'encodage lu était erroné/latin1 pour un fichier dos/cp850)
-    REPLACEMENTS = {
-        "‚": "é", "…": "à", "Š": "è", "ƒ": "â", "“": "ô", 
-        "†": "ê", "ˆ": "ê", "‰": "ë", "‡": "ç", "Ž": "é", "": "é"
-    }
-    for old, new in REPLACEMENTS.items():
-        df = df.replace(to_replace=old, value=new, regex=True)
-
-    # ── Standard SYSCOHADA balance layouts ──
+        # ── Standard SYSCOHADA balance layouts ──
         # 4-col : Compte | Libellé | Débit | Crédit
         # 6-col : Compte | Libellé | Débit Mvt | Crédit Mvt | Solde D | Solde C
         # 8-col : Compte | Libellé | Débit Mvt | Crédit Mvt | AN D | AN C | Solde D | Solde C
@@ -386,6 +375,16 @@ async def import_balance(
             col_names[num_cols - 2] = "solde_debit"
             col_names[num_cols - 1] = "solde_credit"
         df.columns = col_names
+        
+    df.columns = df.columns.astype(str)
+    
+    # Correction a posteriori des voyelles altérées (si l'encodage lu était erroné/latin1 pour un fichier dos/cp850)
+    REPLACEMENTS = {
+        "‚": "é", "…": "à", "Š": "è", "ƒ": "â", "“": "ô", 
+        "†": "ê", "ˆ": "ê", "‰": "ë", "‡": "ç", "Ž": "é", "": "é"
+    }
+    for old, new in REPLACEMENTS.items():
+        df = df.replace(to_replace=old, value=new, regex=True)
 
     df.columns = [str(c).strip().lower() for c in df.columns]
 
