@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,7 +66,7 @@ interface JournalEntry {
     lines: EntryLine[];
 }
 
-export default function JournalPage() {
+function JournalPageContent() {
     const { activeCompany } = useCompany();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [journals, setJournals] = useState<Journal[]>([]);
@@ -476,5 +477,13 @@ export default function JournalPage() {
                 </TabsContent>
             </Tabs>
         </div>
+    );
+}
+
+export default function JournalPage() {
+    return (
+        <Suspense fallback={<div className="p-10">Chargement...</div>}>
+            <JournalPageContent />
+        </Suspense>
     );
 }
