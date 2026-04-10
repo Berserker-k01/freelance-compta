@@ -154,9 +154,10 @@ class ExcelInjector:
         Parse a mapping rule string and compute the value.
         Supports variables extra-comptables via # (ex: "#nif", "#dirigeant_nom").
         Wrappers supported:
-        - ABS() : Valeur absolue totale
-        - SD()  : Solde Débiteur stricte (ignore les soldes créditeurs, renvoie positif)
-        - SC()  : Solde Créditeur stricte (ignore les soldes débiteurs, renvoie positif)
+        - ABS()    : Valeur absolue totale
+        - SD()     : Solde Débiteur strict (ignore les soldes créditeurs, renvoie positif)
+        - SC()     : Solde Créditeur strict (ignore les soldes débiteurs, renvoie positif)
+        - SIGNED() : Retourne le signe comptable passif (crediteur positif, debiteur negatif)
         """
         rule = rule.strip()
         if not rule:
@@ -179,6 +180,7 @@ class ExcelInjector:
         is_abs = False
         is_sd = False
         is_sc = False
+        is_signed = False
 
         rule_upper = rule.upper()
         if rule_upper.startswith("ABS(") and rule_upper.endswith(")"):
@@ -190,6 +192,9 @@ class ExcelInjector:
         elif rule_upper.startswith("SC(") and rule_upper.endswith(")"):
             is_sc = True
             rule = rule[3:-1]
+        elif rule_upper.startswith("SIGNED(") and rule_upper.endswith(")"):
+            is_signed = True
+            rule = rule[7:-1]
 
         total = 0.0
         patterns = [p.strip() for p in rule.split(",") if p.strip()]
@@ -243,6 +248,9 @@ class ExcelInjector:
             result = max(0.0, total)
         elif is_sc:
             result = abs(min(0.0, total)) # SC returns positive value of credit balances
+        elif is_signed:
+            # total = debit - credit, but many passif lines expect credit-positive sign.
+            result = -total
         elif is_abs:
             result = abs(total)
         else:

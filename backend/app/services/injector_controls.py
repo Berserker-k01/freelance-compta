@@ -8,6 +8,7 @@ Objectifs:
 from __future__ import annotations
 
 from typing import Any
+from collections import Counter
 
 
 def compute_post_injection_controls(
@@ -35,6 +36,16 @@ def compute_post_injection_controls(
         for t in trace
         if isinstance(t.get("matched_accounts_count"), int) and t["matched_accounts_count"] > 80
     ]
+    account_hits = Counter()
+    for row in trace:
+        for code in row.get("matched_accounts_sample") or []:
+            account_hits[str(code)] += 1
+    overlapped_accounts = [
+        {"account_code": code, "mapped_cells_count": count}
+        for code, count in account_hits.items()
+        if count >= 6
+    ]
+    overlapped_accounts.sort(key=lambda x: x["mapped_cells_count"], reverse=True)
 
     return {
         "general_ledger": {
@@ -51,6 +62,7 @@ def compute_post_injection_controls(
         "trace_review": {
             "cells_numeric_zero_match": zero_match_trace[:50],
             "cells_high_account_count": heavy_match[:30],
+            "accounts_reused_many_times": overlapped_accounts[:30],
             "injection_row_count": len(trace),
         },
         "mapping": {

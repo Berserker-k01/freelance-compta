@@ -56,6 +56,17 @@ def test_resolve_rule_prefix_three_digits_ok(db_session, seed_company_balanced):
     assert val == 1000.0
 
 
+def test_signed_wrapper_for_compte_13_semantics(db_session, seed_company_balanced):
+    inj = ExcelInjector(db_session, seed_company_balanced["company_id"])
+    inj._fetch_balances()
+    inj.balances["13"] = -3000.0  # crediteur
+    val, _ = inj._resolve_rule("SIGNED(13)", cell_ref="Passif!X1", strict_mode=True)
+    assert val == 3000.0
+    inj.balances["13"] = 2500.0  # debiteur
+    val2, _ = inj._resolve_rule("SIGNED(13)", cell_ref="Passif!X2", strict_mode=True)
+    assert val2 == -2500.0
+
+
 def test_pre_flight_balanced(db_session, seed_company_balanced):
     inj = ExcelInjector(db_session, seed_company_balanced["company_id"])
     pf = inj.pre_flight_check()
